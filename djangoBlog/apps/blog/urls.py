@@ -3,8 +3,9 @@
 __author__ = "Monkey"
 
 from django.conf.urls import url
-from apps.user import views
+from django.contrib import admin
+from .branch_site import branch_site
+
 
 urlpatterns = [
-
 ]

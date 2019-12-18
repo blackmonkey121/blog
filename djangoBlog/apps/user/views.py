@@ -8,3 +8,5 @@ def index(request):
     return HttpResponse("Anything is OK!")
 
 # TODO 重写User表，支持头像上传 邮箱验证
+
+# TODO 权限管理 SSO
