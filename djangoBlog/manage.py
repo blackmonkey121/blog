@@ -2,9 +2,11 @@
 import os
 import sys
 
+PROFILE_LIST = {1: 'develop',
+                2: 'product'}
+
 if __name__ == "__main__":
-    profile = os.environ.get('PROJECT_PROFILE','develop')
-    print("ret : {}".format(profile))
+    profile = os.environ.get('PROJECT_PROFILE', PROFILE_LIST.get(1,2))
     os.environ.setdefault('DJANGO_SETTINGS_MODULE','djangoBlog.settings.{}'.format(profile))
     # os.environ.setdefault("DJANGO_SETTINGS_MODULE", "djangoBlog.settings")
     try:
