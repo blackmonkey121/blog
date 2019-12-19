@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.admin.models import LogEntry
 from django.utils.html import format_html
 from django.urls import reverse
 from .models import Category, Post, Tag
@@ -6,6 +7,10 @@ from .branch_site import branch_site
 from .base_admin import BaseAdmin
 from .adminforms import PostAdminForm
 
+
+admin.AdminSite.site_header = 'djangoBlog(管理员:{})'.format(admin.AdminSite.urls)
+admin.AdminSite.site_title = 'djangoBlog(管理员:{})'
+admin.AdminSite.index_title = '管理员首页'
 
 # TODO SSO
 # TODO 抽取Admin基类 base_admin.py
@@ -65,8 +70,8 @@ class CategoryAdmin(BaseAdmin):
     post_count.short_description = "文章数量"
 
 
-@admin.register(Tag)
-class TagAdmin(BaseAdmin,site=branch_site):
+@admin.register(Tag, site=branch_site)
+class TagAdmin(BaseAdmin):
     list_display = ('name', 'status', 'created_time')
     fields = ('name', 'status')
 
@@ -79,7 +84,7 @@ class PostAdmin(BaseAdmin):
     form = PostAdminForm
 
     list_display = ('title', 'category', 'created_time',
-                    'status', 'operator', 'post_count')
+                    'status', 'operator')
 
     list_display_links = ['title', 'category']  # 在展示的字段上 添加的超链接
 
@@ -128,8 +133,8 @@ class PostAdmin(BaseAdmin):
         })
     )
 
-    # filter_horizontal = ('tags',)
-    filter_vertical = ('tag',)
+    # filter_horizontal = ('tag',)
+    # filter_vertical = ('tag',)
 
     def operator(self, obj):
         """
@@ -148,3 +153,9 @@ class PostAdmin(BaseAdmin):
             'all': ('https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap-grid.css',),
         }
         js = ('https://cdn.bootcss.com/jquery/3.4.1/core.js',)
+
+
+# 日志
+@admin.register(LogEntry, site=branch_site)
+class LogEntryAdmin(admin.ModelAdmin):
+    list_display = ['object_repr', 'object_id', 'action_flag', 'user', 'change_message']

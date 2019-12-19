@@ -20,7 +20,7 @@ from apps.blog.branch_site import branch_site
 
 
 urlpatterns = [
-    url(r'^super_admin/', admin.site.urls),
-    url(r'^user_admin/', branch_site.urls),
+    url(r'^super_admin/', admin.site.urls, name='super_admin'),
+    url(r'^user_admin/', branch_site.urls, name='user_admin'),
     url(r'^user/', include('apps.user.urls', namespace='user')),
 ]
