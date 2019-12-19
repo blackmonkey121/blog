@@ -3,14 +3,18 @@ from django.utils.html import format_html
 from django.urls import reverse
 from .models import Category, Post, Tag
 from .branch_site import branch_site
+from .base_admin import BaseAdmin
+from .adminforms import PostAdminForm
+
 
 # TODO SSO
+# TODO 抽取Admin基类 base_admin.py
 
-
-class PostInline(admin.TabularInline):   # StackedInline 样式不用
+# class PostInline(admin.StackedInline):   # admin.StackedInline
+class PostInline(admin.TabularInline):  # StackedInline 样式不同  也可以继承 admin.StackedInline
     fields = ('title', 'desc')
-    extra = 1
-    model = Post
+    extra = 1  # 表示 编辑框的个数
+    model = Post  # 指定是那个model
 
 
 # 自定义过滤器
@@ -41,67 +45,53 @@ class CategoryOwnerFilter(admin.SimpleListFilter):
         return queryset
 
 
-@admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'is_nav', 'created_time', 'owner', 'status', 'post_count')
+# site = branch_site 分支站点展示用来分割权限
+@admin.register(Category, site=branch_site)
+class CategoryAdmin(BaseAdmin):
     # 定义在详细信息中显示的字段 可以是列表 元组
+    list_display = ('name', 'is_nav', 'created_time', 'owner', 'status', 'post_count')
 
+    # 也可以由fieldsets 字段 来指定
     fields = ('name', 'status', 'is_nav')
 
-    inlines = [PostInline,]
-
-    # 新增记录时需要写入的信息
-
-    def save_model(self, request, obj, form, change):
-        """
-        指定作者只能是当前登陆用户而不能是其他人
-        :param request: 当前的请求对象
-        :param obj: 当前要保存的对象
-        :param form: 页面提交过来的表单对象
-        :param change: 保存本次的数据是新增的还是更新的
-        """
-        obj.owner = request.user
-        return super(CategoryAdmin, self).save_model(request, obj, form, change)
+    # 在 分类页面展示 行内编辑区 PostInline 在上方定义
+    inlines = (PostInline,)
 
     def post_count(self, obj):
+        """ 文章数目的统计 """
         return obj.post_set.count()
 
+    # 指定在展示页面 表头信息
     post_count.short_description = "文章数量"
-
-    def get_queryset(self, request):
-        qs = super(CategoryAdmin, self).get_queryset(request)
-        return qs.filter(owner=request.user)
 
 
 @admin.register(Tag)
-class TagAdmin(admin.ModelAdmin):
+class TagAdmin(BaseAdmin,site=branch_site):
     list_display = ('name', 'status', 'created_time')
     fields = ('name', 'status')
 
-    def save_model(self, request, obj, form, change):
-        obj.owner = request.user
-        return super(TagAdmin, self).save_model(request, obj, form, change)
 
-    def get_queryset(self, request):
-        qs = super(TagAdmin, self).get_queryset(request)
-        return qs.filter(owner=request.user)
+@admin.register(Post, site=branch_site)
+class PostAdmin(BaseAdmin):
+    # 后端管理页面的渲染会按照模型表定义的来生成HTML元素 这是给予ModelAdmin和ModelForm的
+    # 写一个我们自己的form，指定给ModelAdmin就OK了
+    # form字段  PostAdminForm 在.adminforms.py 中
+    form = PostAdminForm
 
-
-@admin.register(Post,site=branch_site)
-class PostAdmin(admin.ModelAdmin):
-    list_display = ('title', 'category', 'created_time', 'status', 'operator', 'post_count')
+    list_display = ('title', 'category', 'created_time',
+                    'status', 'operator', 'post_count')
 
     list_display_links = ['title', 'category']  # 在展示的字段上 添加的超链接
-    list_filter = [CategoryOwnerFilter]      # 过滤字段
-    search_fields = ['title', 'category__name']   # 检索的字段
 
-    actions_on_top = True    # 动作相关是否在顶部展示
-    actions_on_bottom = False   # 动作相关是否在底部展示
+    list_filter = [CategoryOwnerFilter]  # 过滤字段
+
+    search_fields = ['title', 'category__name']  # 检索的字段
+
+    actions_on_top = True  # 动作相关是否在顶部展示
+    actions_on_bottom = False  # 动作相关是否在底部展示
 
     # 编辑页面
     # save_on_top = True      # 保存、编辑、编辑并新建 按钮是否在顶部展示
-
-    exclude = ('owner',)
 
     # fields： 限制新建 时需要写入的字段  配置真是字段的顺序
     # fields = (
@@ -118,58 +108,43 @@ class PostAdmin(admin.ModelAdmin):
     # )
 
     fieldsets = (
-        ('基础配置',{
+        ('基础配置', {
             'description': '基础配置描述',
             'fields': (
-                ('title','category'),
+                ('title', 'category'),
             ),
         }
-    ),
-        ('内容',{
+         ),
+        ('内容', {
             'description': '文章内容',
             'fields': (
                 'desc',
                 'content',
             ),
         }),
-        ('额外信息',{
+        ('额外信息', {
             'classes': ('collapse',),
-            'fields': (('tag','status'),),
+            'fields': (('tag', 'status'),),
         })
     )
 
     # filter_horizontal = ('tags',)
-    # filter_vertical = ('tags',)
+    filter_vertical = ('tag',)
 
     def operator(self, obj):
         """
-
         :param obj: 当前对象
         """
         return format_html(
             '<a href="{}">编辑</a>',
-            reverse('branch_admin:blog_post_change',args=(obj.id,))
-                           )
+            reverse('branch_admin:blog_post_change', args=(obj.id,))
+        )
+
     operator.short_description = '操作'
-    def post_count(self, obj):
-        """
-        :param obj: 当前对象
-        """
-
-    post_count.short_description = '总数'
-
-    def save_model(self, request, obj, form, change):
-        obj.owner = request.user
-        return super(PostAdmin, self).save_model(request, obj, form, change)
-
-    def get_queryset(self, request):
-        qs = super(PostAdmin,self).get_queryset(request)
-        return qs.filter(owner = request.user)
-
 
     # 添加自定义的js 和 CSS
     class Media:
         css = {
-            'all':('https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap-grid.css',),
+            'all': ('https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap-grid.css',),
         }
         js = ('https://cdn.bootcss.com/jquery/3.4.1/core.js',)
