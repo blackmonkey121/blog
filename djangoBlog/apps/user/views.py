@@ -5,7 +5,7 @@ from django.shortcuts import render, HttpResponse
 
 
 def index(request):
-    return HttpResponse("Anything is OK!")
+    return render(request, 'blog/article.html')
 
 # TODO 重写User表，支持头像上传 邮箱验证
 

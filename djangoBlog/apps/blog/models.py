@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 from django.db import models
 
 # Create your models here.
+# 数据处理尽可能的集中在了models层，使得views层逻辑更为简单清晰
+# FIXME: 虽然应该将数据处理层独立出来，方便后期的扩展和维护,我觉得就Blog而言 集中在Models这样就够了
 
 
 class Category(models.Model):
@@ -19,6 +21,24 @@ class Category(models.Model):
     is_nav = models.BooleanField(default=False, verbose_name="是否为导航")
     owner = models.ForeignKey(User, verbose_name="作者")
     created_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
+
+
+    @classmethod
+    def get_navs(cls):
+        nav_categories = []
+        normal_categories = []
+
+        categories = cls.objects.filter(status=cls.STATUS_NORMAL)
+        for elem in categories:
+            if elem.is_nav:
+                nav_categories.append(elem)
+            else:
+                normal_categories.append(elem)
+
+        return {
+            'navs': nav_categories,
+            'categories': normal_categories
+        }
 
     class Meta:
         verbose_name = verbose_name_plural = "分类"
@@ -63,10 +83,48 @@ class Post(models.Model):
     status = models.PositiveIntegerField(default=STATUS_NORMAL,
                                          choices=STATUS_ITEMS,
                                          verbose_name="状态")
-    category = models.ForeignKey(Category,verbose_name="文章分类")
+    category = models.ForeignKey(Category, verbose_name="文章分类")
     owner = models.ForeignKey(User, verbose_name="作者")
-    tag = models.ForeignKey(Tag,verbose_name='标签')
+    tag = models.ForeignKey(Tag, verbose_name='标签')
     created_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
+
+    # add keys pv nv
+    pv = models.PositiveIntegerField(default=1)
+    nv = models.PositiveIntegerField(default=1)
+
+    # FIXME: 可以添加过滤条件
+    @classmethod
+    def get_hot_articles(cls):
+        return cls.objects.filter(status=cls.STATUS_NORMAL).order_by('-pv')
+
+
+    @staticmethod
+    def get_article_tag(tag_id):
+        try:
+            tag = Tag.objects.filter(id=tag_id)
+        except Tag.DoesNotExist:
+            tag = None
+            article_list = []
+        else:
+            article_list = tag.first().post_set.filter(status=Post.STATUS_NORMAL).select_related('owner', 'category')
+        return article_list, tag
+
+    # FIXME：需要过滤当前用户定义的标签 category = Category.objects.filter(id=category_id, owner=user)  user 需要获取
+    @staticmethod
+    def get_article_category(category_id):
+        try:
+            category = Category.objects.filter(id=category_id)
+        except Category.DoesNotExist:
+            category = None
+            article_list = []
+        else:
+            article_list = category.post_set.filter(status=Post.STATUS_NORMAL).select_related('owner', 'category')
+        return article_list, category
+
+    @classmethod
+    def get_latest_article(cls):
+        queryset = cls.objects.filter(status=cls.STATUS_NORMAL)
+        return queryset
 
     class Meta:
         verbose_name = verbose_name_plural = "文章"
@@ -74,3 +132,4 @@ class Post(models.Model):
 
     def __str__(self):
         return '<Post:{}>'.format(self.title)
+

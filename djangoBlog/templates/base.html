@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}
+        首页
+    {% endblock %}:MonkeyBlog</title>
+</head>
+<body>
+<!-- 页面主体开始 -->
+<div id="container">
+    <!-- 顶部导航开始 -->
+    <div id="navbar">
+
+    </div>
+    <!-- 顶部导航结束 -->
+
+    <!-- 页面导航导航开始 -->
+    <div id="nav">
+        <div class="nav-title">
+        {% block nav-title %}
+            User:Someone
+        {% endblock %}
+        </div>
+        <div class="nav-body">
+        <ul>
+             {% for nav in navs %}
+                            <li>
+                                <a href="{% url 'blog:category_list' nav.id %}">{{ nav.name }}</a>
+                            </li>
+             {% endfor %}
+        </ul>
+
+
+        </div>
+    </div>
+    <!-- 页面导航结束 -->
+
+    <!-- 左侧边栏开始 -->
+    <div id="left">
+        <div class="content">
+            {% for sidebar in sidebars %}
+                <h4>{{ sidebar.title }}</h4>
+                {{ sidebar.content_html }}
+
+            {% endfor %}
+
+        </div>
+    </div>
+    <!-- 左侧边栏结束 -->
+    <!-- 中间开始 -->
+    <div id="center">
+        {% block main-page %}
+
+        {% endblock %}
+    </div>
+    <!-- 中部结束 -->
+    <!-- 右侧开始-->
+    <div id="right"></div>
+    <!-- 右侧结束-->
+
+    <!-- 底部声明信息开始-->
+    <div id="bottom">
+        <div class="bottom-content">
+            {% for cate in categories %}
+                <a href="{% url 'blog:category_list' cate.id %}">{{ cate.name }}</a>
+            {% endfor %}
+
+        </div>
+    </div>
+    <!-- 声明结束 -->
+
+
+
+</div>
+
+</body>
+</html>

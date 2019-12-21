@@ -1,0 +1,5 @@
+拆分Settings后 要注意：
+    1 修改manage.py 中 环境变量的配置
+    2 修改wsgi.py 中 环境变量
+    2 修改settings 中关于BASE_DIR的配置 因为BASE_DIR是相对于settings.py文件位置确定的，
+拆分会造成BASE_DIR深入一层，因此要多取一次dirname()

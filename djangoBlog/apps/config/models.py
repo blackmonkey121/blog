@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 from django.db import models
 
 # Create your models here.
+from django.template.loader import render_to_string
+
 
 class Link(models.Model):
     STATUS_NORMAL = 1
@@ -32,14 +34,23 @@ class Link(models.Model):
 
 
 class SideBar(models.Model):
+
+    DISPLAY_HTML = 1
+    DISPLAY_LATEST = 2
+    DISPLAY_HOT = 3
+    DISPLAY_COMMIT = 4
+    SIDE_TYPE = (
+        (DISPLAY_HTML, 'HTML'),
+        (DISPLAY_LATEST, '最新文章'),
+        (DISPLAY_HOT, '最热文章'),
+        (DISPLAY_COMMIT, '最近评论'),
+    )
+
     STATUS_SHOW = 1
     STATUS_HIDE = 0
     STATUS_ITEMS = (
         (STATUS_HIDE,"隐藏"),
         (STATUS_HIDE,"展示")
-    )
-    SIDE_TYPE = (
-        ((k,v) for k,v in enumerate(['HTML','最新文章','最热文章','最近评论']))
     )
 
     title = models.CharField(max_length=50, verbose_name= "标题")
@@ -48,6 +59,37 @@ class SideBar(models.Model):
     status = models.PositiveIntegerField(default=STATUS_SHOW, choices=STATUS_ITEMS, verbose_name="状态" ,help_text="展示或隐藏")
     owner = models.ForeignKey(User, verbose_name="作者")
     created_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
+
+    @classmethod
+    def get_sidebars(cls):
+        return {'sidebars': cls.objects.filter(status=cls.STATUS_SHOW)}
+
+    @property
+    def content_html(self):
+        """ 直接在models层 渲染模版 """
+
+        from apps.blog.models import Post    # 避免循环引用
+        from apps.comment.models import Comment
+
+        result = ''
+        if self.display_type == self.DISPLAY_HTML:
+            result = self.content
+        elif self.display_type == self.DISPLAY_LATEST:
+            context = {
+                'posts': Post.get_latest_article()
+            }
+            result = render_to_string('config/blocks/sidebar_posts.html',context)
+        elif self.display_type == self.DISPLAY_HOT:
+            context = {
+                'posts': Post.get_hot_articles()
+            }
+            result = render_to_string('config/blocks/sidebar_posts.html', context)
+        elif self.display_type == self.DISPLAY_COMMIT:
+            context = {
+                'comments': Comment.objects.filter(status=Comment.STATUS_NORMAL)
+            }
+            result = render_to_string('config/blocks/sidebar_comments.html',context)
+        return result
 
     class Meta:
         verbose_name = verbose_name_plural = "侧边栏"

@@ -3,9 +3,10 @@
 __author__ = "Monkey"
 
 from django.conf.urls import url
-from django.contrib import admin
-from .branch_site import branch_site
-
+from .views import *
 
 urlpatterns = [
+    url('^category/(?P<category_id>\d+)/$', post_list, name='category_list'),
+    url('^tag/(?P<tag_id>\d+)/$',post_list, name='tag_list'),
+    url('^post/(?P<post_id>\d+).html$', post_detail, name='article_detail'),
 ]

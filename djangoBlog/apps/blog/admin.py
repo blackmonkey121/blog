@@ -80,7 +80,7 @@ class TagAdmin(BaseAdmin):
 class PostAdmin(BaseAdmin):
     # 后端管理页面的渲染会按照模型表定义的来生成HTML元素 这是给予ModelAdmin和ModelForm的
     # 写一个我们自己的form，指定给ModelAdmin就OK了
-    # form字段  PostAdminForm 在.adminforms.py 中
+    # form字段  PostAdminForm 在 adminforms.py 中
     form = PostAdminForm
 
     list_display = ('title', 'category', 'created_time',
