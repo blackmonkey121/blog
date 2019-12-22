@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <title>
+        {% block title %}
+        {% endblock %}
+    </title>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/login_regist.css' %}">
+</head>
+<body>
+<div id="container">
+    <!-- top start -->
+    <div id="top">
+        <div class="title">
+            <span><i>Monkey Blog</i></span>
+        </div>
+    </div>
+    <!-- top end -->
+
+
+    <!-- left start -->
+    <div id="left">
+        <img src="{% static 'img/login.jpg' %}" alt="">
+    </div>
+    <!-- left end -->
+
+    {% block right %}
+
+    {% endblock %}
+
+
+
+    <!-- bottom start -->
+    <div id="bottom" class="clearfix">
+        <div class="text">
+            &copy;Copyright 2019-10-01 by Author:Monkey.
+        </div>
+
+
+    </div>
+    <!-- bottom end -->
+
+</div>
+
+<script src="{% static 'js/jquery3.2.1.js' %}"></script>
+{% block js %}
+{% endblock %}
+</body>
+</html>

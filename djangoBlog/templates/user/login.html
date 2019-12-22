@@ -1,32 +1,13 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Login MonkeyBlog</title>
-    <link rel="stylesheet" href="{% static 'css/base.css' %}">
-    <link rel="stylesheet" href="{% static 'css/login_regist.css' %}">
-</head>
-<body>
-<div id="container">
-    <!-- top start -->
-    <div id="top">
-        <div class="title">
-            <span><i>MonkeyBlog</i></span>
-        </div>
-    </div>
-    <!-- top end -->
+{% extends 'user/base.html' %}
+
+{% block title %}
+    Monkey Blog Login
+{% endblock %}
 
 
-    <!-- left start -->
-    <div id="left">
-        <img src="{% static 'img/login.jpg' %}" alt="">
-    </div>
-    <!-- left end -->
+{% block right %}
 
-    {% block right %}
-            <!-- right start -->
-        <div id="right">
+            <div class="right right-login">
         <div id="userInfo">Blog Login</div>
 
         <div id="msg">
@@ -61,29 +42,13 @@
 
                 <div class="input-line">
                     <input type="submit" value="登陆">
-                    <a href="">注册</a>
+                    <a href="{% url 'user:regist' %}">注册</a>
                 </div>
 
 
             </form>
         </div>
     </div>
-    <!-- left end -->
-    {% endblock %}
 
+{% endblock %}
 
-
-    <!-- bottom start -->
-    <div id="bottom" class="clearfix">
-        <div class="text">
-            &copy;Copyright 2019-10-01 by Author:Monkey.
-        </div>
-
-
-    </div>
-    <!-- bottom end -->
-
-</div>
-
-</body>
-</html>

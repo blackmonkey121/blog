@@ -34,18 +34,21 @@
     transition: all 600ms;
 }
 
-img:hover{
+#left>img:hover{
     transform: scale(1.2);
 }
 
 /* right */
-#right{
+.right{
     float: right;
-    margin: 110px auto;
     padding-left: 5%;
     border-left: 1px solid deepskyblue;
     width: 40%;
 
+}
+
+.right-login{
+    margin: 110px auto;
 }
 
 #userInfo{
@@ -152,4 +155,39 @@ input[type='submit']:hover{
 
 #bottom .text{
     text-align: center;
+}
+
+/* regist */
+
+.right-regist{
+    margin: 40px auto;
+}
+
+
+#avatar{
+    margin: auto 4px;
+}
+
+#avatar img{
+    height: 64px;
+}
+
+
+.input-line-regist{
+    margin: 0;
+}
+.input-line-regist p{
+    clear: both;
+}
+#regist-button{
+    width: 280px;
+    margin: 10px 0;
+}
+
+.right-regist .input-line input{
+    width: 280px;
+}
+
+#avatar input{
+    display: none;
 }

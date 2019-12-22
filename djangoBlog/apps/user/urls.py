@@ -7,5 +7,5 @@ from apps.user import views
 
 urlpatterns = [
     url(r'^login', views.login,name='login'),
-    url(r'^regist', views.login,name='regist'),
+    url(r'^regist', views.regist,name='regist'),
 ]
