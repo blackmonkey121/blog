@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from django.db import models
 
 # Create your models here.
@@ -19,7 +18,7 @@ class Category(models.Model):
                                          verbose_name="正常")
 
     is_nav = models.BooleanField(default=False, verbose_name="是否为导航")
-    owner = models.ForeignKey(User, verbose_name="作者")
+    owner = models.ForeignKey('user.UserInfo', verbose_name="作者")
     created_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
 
 
@@ -58,7 +57,7 @@ class Tag(models.Model):
     status = models.PositiveIntegerField(default=STATUS_NORMAL,
                                          choices=STATUS_ITEMS,
                                          verbose_name="状态")
-    owner = models.ForeignKey(User, verbose_name="作者")
+    owner = models.ForeignKey('user.UserInfo', verbose_name="作者")
     created_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
 
     class Meta:
@@ -84,7 +83,7 @@ class Post(models.Model):
                                          choices=STATUS_ITEMS,
                                          verbose_name="状态")
     category = models.ForeignKey(Category, verbose_name="文章分类")
-    owner = models.ForeignKey(User, verbose_name="作者")
+    owner = models.ForeignKey('user.UserInfo', verbose_name="作者")
     tag = models.ForeignKey(Tag, verbose_name='标签')
     created_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
 
@@ -101,19 +100,19 @@ class Post(models.Model):
     @staticmethod
     def get_article_tag(tag_id):
         try:
-            tag = Tag.objects.filter(id=tag_id)
+            tag = Tag.objects.get(id=tag_id)
         except Tag.DoesNotExist:
             tag = None
             article_list = []
         else:
-            article_list = tag.first().post_set.filter(status=Post.STATUS_NORMAL).select_related('owner', 'category')
+            article_list = tag.post_set.filter(status=Post.STATUS_NORMAL).select_related('owner', 'category')
         return article_list, tag
 
     # FIXME：需要过滤当前用户定义的标签 category = Category.objects.filter(id=category_id, owner=user)  user 需要获取
     @staticmethod
     def get_article_category(category_id):
         try:
-            category = Category.objects.filter(id=category_id)
+            category = Category.objects.get(id=category_id)
         except Category.DoesNotExist:
             category = None
             article_list = []

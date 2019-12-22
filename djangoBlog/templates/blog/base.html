@@ -1,5 +1,7 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}
@@ -7,6 +9,11 @@
     {% endblock %}:MonkeyBlog</title>
 </head>
 <body>
+
+<link rel="stylesheet" href="{% static 'css/base.css' %}">
+{% block css %}
+
+{% endblock %}
 <!-- 页面主体开始 -->
 <div id="container">
     <!-- 顶部导航开始 -->
@@ -70,7 +77,9 @@
     </div>
     <!-- 声明结束 -->
 
+{% block js %}
 
+{% endblock %}
 
 </div>
 

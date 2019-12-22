@@ -1,0 +1,31 @@
+/* 页面基本样式 */
+body{
+    font: 16px "华文楷体","Microsoft Sans Serif","黑体", "Microsoft Yahei";
+    background: rgba(255, 255, 255, 1);
+    color: #9a9a9a;
+}
+
+/* 清除浮动 */
+.clearfix:after,.clearfix:before
+    {
+        content: "";
+        display: table;
+    }
+.clearfix:after
+    {
+        clear: both;
+    }
+
+
+/* 清除默认样式 */
+body,h1,h2,h3,h4,h5,h6,p,ul,ol{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* 超链接标签 */
+a{
+    text-decoration:none;
+    color: #3b9a7c;
+}

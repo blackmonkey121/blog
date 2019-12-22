@@ -26,10 +26,11 @@ def post_list(request,category_id=None, tag_id=None):
     #             article_list = article_list.filter(category_id=category_id)
 
     # FIXME: 一样的逻辑，可以抽取 ，封装类时注意
+
     if tag_id:
         article_list, tag = Post.get_article_tag(tag_id)
     elif category_id:
-        article_list, category = Post.get_article_tag(category_id)
+        article_list, category = Post.get_article_category(category_id)
     else:
         article_list = Post.get_latest_article()
 

@@ -7,5 +7,11 @@
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://localhost:3306/djangoBlog</jdbc-url>
     </data-source>
+    <data-source source="LOCAL" name="MySQL - djangoBlog@localhost" uuid="6e4425ee-9a16-422b-9a1b-2b9a421e7d04">
+      <driver-ref>mysql.8</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://localhost:3306/djangoBlog</jdbc-url>
+    </data-source>
   </component>
 </project>

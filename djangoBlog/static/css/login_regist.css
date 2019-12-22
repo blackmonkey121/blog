@@ -1,0 +1,155 @@
+/*   top    */
+
+#top {
+    background: rgba(6, 3, 238, 0.1);
+    height: 84px;
+    padding: 0.1px;
+}
+
+#top .title span{
+    font-size: 64px;
+    margin:10px 0;
+    transition: margin-left .8s;
+}
+
+#top .title span:hover{
+    margin-left: 100px;
+}
+
+
+
+/* left */
+
+#left {
+    float:left;
+    margin: 80px 10px 20px 80px;
+    width: 45%;
+    height: auto;
+    overflow: hidden;
+}
+
+#left>img{
+    width:80%;
+    height: 360px;
+    transition: all 600ms;
+}
+
+img:hover{
+    transform: scale(1.2);
+}
+
+/* right */
+#right{
+    float: right;
+    margin: 110px auto;
+    padding-left: 5%;
+    border-left: 1px solid deepskyblue;
+    width: 40%;
+
+}
+
+#userInfo{
+    font-size: 36px;
+    color: deepskyblue;
+    width: 200px;
+    margin: 20px;
+    text-align: center;
+}
+
+.input-line{
+    height: 60px;
+}
+
+.input-line *{
+    float: left;
+
+}
+
+input{
+    margin-top: 12px;
+}
+
+.input-line p{
+    margin-top: 18px;
+    width: 70px;
+    color: deepskyblue;
+    font-size: 16px;
+    text-align: left;
+
+}
+
+.control-line>input{
+    width: 200px;
+    height: 24px;
+    outline: none;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid deepskyblue;
+
+}
+
+input[type="checkbox"]{
+    width: 16px;
+    height: 16px;
+    margin-top: 21px;
+    vertical-align: bottom;
+}
+
+.c{
+    margin-left: 48px;
+}
+
+p>a{
+    text-decoration: none;
+    color: rgb(155, 152, 155);
+}
+
+.input-line>a,input[type='submit']{
+    width: 120px;
+    height: 30px;
+    border: 2px solid deepskyblue;
+    font-size: 20px;
+    text-align: center;
+    border-radius: 5px;
+    margin-left: 10px;
+    color: #FFF;
+}
+
+.input-line>a{
+    float: left;
+    text-decoration: none;
+    margin-top: 11px;
+    background-color: deepskyblue;
+    height: 27px;
+    text-align: center;
+}
+
+input[type='submit']{
+    color: deepskyblue;
+}
+
+input[type='submit']:hover{
+    color: #fff1fa;
+    background-color: deepskyblue;
+    /*cursor:hand;*/
+    cursor: pointer;
+}
+
+.input-line>a:hover{
+    background-color: #fff;
+    color: deepskyblue;
+}
+
+
+
+/* bottom */
+#bottom {
+    position: fixed;
+    bottom:25px;
+    left: 0;
+    right: 0;
+}
+
+#bottom .text{
+    text-align: center;
+}

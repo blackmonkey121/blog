@@ -118,8 +118,7 @@ class PostAdmin(BaseAdmin):
             'fields': (
                 ('title', 'category'),
             ),
-        }
-         ),
+        }),
         ('内容', {
             'description': '文章内容',
             'fields': (
