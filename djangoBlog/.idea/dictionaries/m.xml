@@ -4,6 +4,7 @@
       <w>adminforms</w>
       <w>navbar</w>
       <w>regist</w>
+      <w>smtp</w>
     </words>
   </dictionary>
 </component>

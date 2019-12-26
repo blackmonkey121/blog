@@ -5,5 +5,5 @@ $("#id_avatar").on("change", function () {
         $("#avatar img").attr("src", fileReader.result);
         console.log(fileReader.result)
     }
-
 });
+

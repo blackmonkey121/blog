@@ -7,9 +7,9 @@
 
 {% block right %}
 
-            <div class="right right-login">
-        <div id="userInfo">Blog Login</div>
+    <div class="right right-login">
 
+        <div id="userInfo">Blog Login</div>
         <div id="msg">
             <form action="{% url 'user:login' %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
@@ -48,7 +48,12 @@
 
             </form>
         </div>
+
     </div>
+
+{% endblock %}
+
+{% block js %}
 
 {% endblock %}
 

@@ -1,5 +1,44 @@
 {% extends 'user/base.html' %}
 
 {% block right %}
+<div class="right right-login">
 
+        <div id="userInfo">Blog Reset Password</div>
+        <div id="msg">
+            <form action="{% url 'user:resetpwd' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="input-line">
+                    <p>邮箱</p>
+                    <div class="control-line">
+                        <input type="email" name="email" placeholder="邮箱">
+                    </div>
+
+                </div>
+
+                <div class="input-line">
+                    <p>新密码</p>
+                    <div class="control-line">
+                        <input type="password" name="password" placeholder="6-20位密码">
+                    </div>
+
+                </div>
+
+                <div class="input-line">
+                    <p>重复密码</p>
+                    <div class="control-line">
+                        <input type="password" name="repassword" placeholder="重复密码">
+                    </div>
+
+                </div>
+
+                <div class="input-line">
+                    <input type="submit" value="改密">
+                    <a href="{% url 'user:login' %}">登陆</a>
+                </div>
+
+
+            </form>
+        </div>
+
+    </div>
 {% endblock %}
