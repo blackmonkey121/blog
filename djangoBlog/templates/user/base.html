@@ -10,6 +10,7 @@
     </title>
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
     <link rel="stylesheet" href="{% static 'css/login_regist.css' %}">
+    <link rel="stylesheet" href="{% static 'toastr/toastr.min.css'%}">
 </head>
 <body>
 <div id="container">
@@ -48,6 +49,10 @@
 
 <script src="{% static 'js/jquery3.2.1.js' %}"></script>
 <script src="{% static 'js/log_regist.js' %}"></script>
+<script src="{% static 'toastr/toastr.min.js' %}"></script>
+<script type="text/javascript">
+    toastr.options.positionClass = 'toast-top-right';
+</script>
 {% block js %}
 {% endblock %}
 </body>

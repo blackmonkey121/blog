@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect, HttpResponse
+from django.http import JsonResponse
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from itsdangerous import SignatureExpired
-
+from django.contrib.auth.hashers import make_password
 from .models import UserInfo
 from django.conf import settings
 from celery import Celery
@@ -24,7 +25,9 @@ class CheckData(object):
         if set(self.key_list).issubset(set(self.data.keys())):
             self.__merge_password()
         else:
+            pass
             self.error_dict["info"] = "必填信息不完整"
+            print(set(self.key_list) - set(self.data.keys()))
 
     def __merge_password(self):
         """
@@ -58,9 +61,9 @@ class CheckData(object):
             self.error_dict['repassword'] = "两次密码不一致"
 
     def check_email(self, email):
-        print(email)
         if not match(r'^[0-9a-zA-Z_]{0,19}@[0-9a-zA-Z]{1,13}\.[com,cn,net]{1,3}$', email):
             self.error_dict['email'] = "必填项：请确保你的邮箱是合法"
+
         elif UserInfo.objects.filter(email=email):
             self.error_dict['email'] = "邮箱已存在"
 
@@ -87,56 +90,67 @@ class CheckData(object):
 
             self.data[key] = self.data.get(key)[0]
 
-        return self.error_dict
-
 
 def login(request):
 
+    ret_msg = {'status': 0, 'msg': {}}
     if request.method == "POST":
-        check_data = CheckData(args_list=['username','password'] ,**request.POST)
-        error_dict = check_data.clean_data()
-        if not len(error_dict):
-
-            username = request.POST.get('username')
-            password = request.POST.get('password')
-
-            if UserInfo.objects.filter(username=username).first().is_active:
-                user = auth.authenticate(username=username,
-                                         password=password)
-
-                if user:
+        check = CheckData(args_list=['username','password'] ,**request.POST)
+        check.clean_data()
+        if not check.error_dict:
+            check.data.pop('save')
+            user = auth.authenticate(**check.data)
+            if user:
+                if not user.is_check:
+                    ret_msg["msg"]["username"] = "账户未激活 email:{}".format(user.email)
+                else:
                     auth.login(request, user)
-                    return redirect(reverse('blog:category_list', kwargs={'category_id': 1}))
+                    ret_msg["status"] = 1
+                    ret_msg["msg"] = reverse('blog:category_list', kwargs={'category_id': 1})
             else:
-                error_dict['active'] = "未激活的账户，请激活后登陆"
+                ret_msg["msg"]["password"] = "用户名或密码不正确。"
 
+        else:
+            ret_msg['msg'] = check.error_dict
+        return JsonResponse(ret_msg)
     return render(request, 'user/login.html')
 
 
 def regist(request):
-    error_dict = {}
+    ret_msg = {'status': 0, 'msg': {}}
     if request.method == "POST":
-        check = CheckData(args_list=['username', 'password','email','phone','nickname','avatar'],**request.POST)
-        error_dict = check.error_dict
+        # 数据检验
+        avatar = [request.FILES.get('avatar'),]
+        check = CheckData(args_list=['username', 'password','email','phone','nickname','avatar'],**request.POST, avatar=avatar)
+        check.clean_data()
 
-        if not error_dict:
-                user = UserInfo.objects.create_user(**check.data)
+        # 用户名唯一 校验
+        if UserInfo.objects.filter(username=request.POST.get('username')):
+            check.error_dict["username"] = "用户名已被注册，换一个吧！"
 
-                # 发送激活邮件，包含激活链接: http://127.0.0.1:8000/user/active/3
-                # 激活链接中需要包含用户的身份信息, 并且要把身份信息进行加密
-                # 加密用户的身份信息，生成激活token
-                serializer = Serializer(settings.SECRET_KEY, 3600)
-                info = {'confirm': user.id}
-                token = serializer.dumps(info)  # bytes
-                token = token.decode()
-                # 发邮件
-                send_register_active_email.delay(user.email, user.username, token)
-                return redirect(reverse('user:login'))
+        if not check.error_dict:
 
-    return render(request, './user/regist.html', context={'error_dict':error_dict})
-    # 注册
+            ret_msg['status'] = 1
+            ret_msg['msg'] = reverse('user:login')
+            print(check.data)
+            user = UserInfo.objects.create_user(**check.data)
 
-    # 返回登陆页面
+            # 发送激活邮件，包含激活链接: http://127.0.0.1:8000/user/active/3
+            # 激活链接中需要包含用户的身份信息, 并且要把身份信息进行加密
+            # 加密用户的身份信息，生成激活token
+            serializer = Serializer(settings.SECRET_KEY, 3600)
+            info = {'confirm': user.id}
+            token = serializer.dumps(info)  # bytes
+            token = token.decode()
+            # 发邮件
+            send_register_active_email.delay(user.email, user.username, token)
+        else:
+            ret_msg['msg'] = check.error_dict
+            print(ret_msg['msg'])
+
+        return JsonResponse(ret_msg)
+
+    return render(request, './user/regist.html')
 
 
 def active(request, token):
@@ -151,7 +165,7 @@ def active(request, token):
 
         # 根据id获取用户信息
         user = UserInfo.objects.filter(id=user_id).first()
-        user.is_active = 1
+        user.is_check = True
         user.save()
 
         # 跳转到登录页面
@@ -165,19 +179,34 @@ def active(request, token):
 def logout(request):
     auth.logout(request)
     request.session.flush()
-
+    return redirect(reverse('user:login'))
 
 @login_required()
 def resetpwd(request):
+    ret_msg = {"status": 0, "msg": {}}
     if request.method == "POST":
-        check = CheckData(args_list=['password', 'email'] ,**request.POST)
-        error_dict = check.error_dict
-        print(error_dict)
-        if not error_dict:
-            user = request.user
+        # 重写 验证类的邮箱验证方法
+        class myCheckData(CheckData):
+            def check_email(self, email):
+                if not match(r'^[0-9a-zA-Z_]{0,19}@[0-9a-zA-Z]{1,13}\.[com,cn,net]{1,3}$', email):
+                    self.error_dict['email'] = "必填项：请确保你的邮箱是合法"
+
+        check = myCheckData(args_list=['password', 'email'] ,**request.POST)
+        check.clean_data()
+        user = request.user
+
+        if user.email != request.POST.get('email'):
+            check.error_dict['email'] = "邮箱错误，查验后再试！"
+
+        if not check.error_dict:
             user.set_password(request.POST.get('password'))
             user.save()
-            return HttpResponse("reset password ok")
+            ret_msg['status'] = 1
+            ret_msg['msg'] = reverse("user:logout")
+            return JsonResponse(ret_msg)
+
+        ret_msg['msg'] = check.error_dict
+        return JsonResponse(ret_msg)
 
     return render(request, './user/resetpwd.html')
 

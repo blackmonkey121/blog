@@ -70,6 +70,7 @@
 
 input{
     margin-top: 12px;
+    padding-left: 8px;
 }
 
 .input-line p{
@@ -79,6 +80,13 @@ input{
     font-size: 16px;
     text-align: left;
 
+}
+
+.control-line>span{
+    display: block;
+    margin-top: 16px;
+    margin-left: 4px;
+    color: red;
 }
 
 .control-line>input{
@@ -107,7 +115,7 @@ p>a{
     color: rgb(155, 152, 155);
 }
 
-.input-line>a,input[type='submit']{
+.input-line>a,input[name='submit']{
     width: 120px;
     height: 30px;
     border: 2px solid deepskyblue;
@@ -127,11 +135,11 @@ p>a{
     text-align: center;
 }
 
-input[type='submit']{
+input[name='submit']{
     color: deepskyblue;
 }
 
-input[type='submit']:hover{
+input[name='submit']:hover{
     color: #fff1fa;
     background-color: deepskyblue;
     /*cursor:hand;*/
@@ -179,7 +187,7 @@ input[type='submit']:hover{
 .input-line-regist p{
     clear: both;
 }
-#regist-button{
+#btn-regist{
     width: 280px;
     margin: 10px 0;
 }
@@ -190,4 +198,9 @@ input[type='submit']:hover{
 
 #avatar input{
     display: none;
+}
+
+.has-error{
+    color: red;
+    background: rgba(200,0,0,0.2);
 }

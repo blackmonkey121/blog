@@ -9,5 +9,6 @@ urlpatterns = [
     url(r'^login', views.login,name='login'),
     url(r'^regist', views.regist,name='regist'),
     url(r'^active/(?P<token>.*)$', views.active, name='active'),
-    url(r'^resetpwd', views.resetpwd, name='resetpwd')
+    url(r'^resetpwd', views.resetpwd, name='resetpwd'),
+    url(r'^logout', views.logout, name='logout')
 ]

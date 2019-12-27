@@ -11,6 +11,7 @@
                     <p>邮箱</p>
                     <div class="control-line">
                         <input type="email" name="email" placeholder="邮箱">
+                        <span></span>
                     </div>
 
                 </div>
@@ -19,6 +20,7 @@
                     <p>新密码</p>
                     <div class="control-line">
                         <input type="password" name="password" placeholder="6-20位密码">
+                        <span></span>
                     </div>
 
                 </div>
@@ -27,12 +29,13 @@
                     <p>重复密码</p>
                     <div class="control-line">
                         <input type="password" name="repassword" placeholder="重复密码">
+                        <span></span>
                     </div>
 
                 </div>
 
                 <div class="input-line">
-                    <input type="submit" value="改密">
+                    <input id="btn-resetpwd" type="button" name="submit" value="改密">
                     <a href="{% url 'user:login' %}">登陆</a>
                 </div>
 

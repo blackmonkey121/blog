@@ -1,8 +1,9 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-
+from django.contrib.auth.hashers import make_password
 
 # Create your models here.
+
 
 # TODO: 重写User表添加更详细的信息 例如头像 位置 偏好等
 class UserInfo(AbstractUser):
@@ -13,7 +14,7 @@ class UserInfo(AbstractUser):
     avatar = models.FileField(upload_to="avatars/", default="avatars/default.jpeg", verbose_name="头像")
     nickname = models.CharField(max_length=64, blank=True, default='匿名用户', verbose_name='昵称')
     email = models.EmailField(blank=False,unique=True,db_index=True)
-
+    is_check = models.BooleanField(blank=False, default=False, verbose_name="email是否验证")
     def __str__(self):
         return self.username
 
