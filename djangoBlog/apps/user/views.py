@@ -5,11 +5,10 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from itsdangerous import SignatureExpired
-from django.contrib.auth.hashers import make_password
 from .models import UserInfo
 from django.conf import settings
 from celery import Celery
-from celery_task.tasks import send_register_active_email
+from celery_task.tasks import send_register_active_email,send_getpwd_email
 from re import match
 app = Celery('celery_tasks.tasks', broker='redis://127.0.0.1:6379/0')
 
@@ -27,7 +26,6 @@ class CheckData(object):
         else:
             pass
             self.error_dict["info"] = "必填信息不完整"
-            print(set(self.key_list) - set(self.data.keys()))
 
     def __merge_password(self):
         """
@@ -92,6 +90,9 @@ class CheckData(object):
 
 
 def login(request):
+    if request.user.username:
+        return redirect(reverse('blog:category_list', kwargs={'category_id': 1}))
+
 
     ret_msg = {'status': 0, 'msg': {}}
     if request.method == "POST":
@@ -117,11 +118,14 @@ def login(request):
 
 
 def regist(request):
+    print("请求")
     ret_msg = {'status': 0, 'msg': {}}
     if request.method == "POST":
         # 数据检验
         avatar = [request.FILES.get('avatar'),]
-        check = CheckData(args_list=['username', 'password','email','phone','nickname','avatar'],**request.POST, avatar=avatar)
+        data = request.POST.copy()
+        data.pop('avatar')
+        check = CheckData(args_list=['username', 'password','email','phone','nickname','avatar'],**data, avatar=avatar)
         check.clean_data()
 
         # 用户名唯一 校验
@@ -132,9 +136,8 @@ def regist(request):
 
             ret_msg['status'] = 1
             ret_msg['msg'] = reverse('user:login')
-            print(check.data)
+            print("创建中")
             user = UserInfo.objects.create_user(**check.data)
-
             # 发送激活邮件，包含激活链接: http://127.0.0.1:8000/user/active/3
             # 激活链接中需要包含用户的身份信息, 并且要把身份信息进行加密
             # 加密用户的身份信息，生成激活token
@@ -146,7 +149,6 @@ def regist(request):
             send_register_active_email.delay(user.email, user.username, token)
         else:
             ret_msg['msg'] = check.error_dict
-            print(ret_msg['msg'])
 
         return JsonResponse(ret_msg)
 
@@ -179,7 +181,9 @@ def active(request, token):
 def logout(request):
     auth.logout(request)
     request.session.flush()
-    return redirect(reverse('user:login'))
+    return HttpResponse('')
+
+
 
 @login_required()
 def resetpwd(request):
@@ -202,12 +206,67 @@ def resetpwd(request):
             user.set_password(request.POST.get('password'))
             user.save()
             ret_msg['status'] = 1
-            ret_msg['msg'] = reverse("user:logout")
+            ret_msg['msg'] = "修改密码成功！"
             return JsonResponse(ret_msg)
 
         ret_msg['msg'] = check.error_dict
         return JsonResponse(ret_msg)
 
     return render(request, './user/resetpwd.html')
+
+
+def forgetpwd(request):
+    ret_msg = {"status": 0, "msg": {}}
+    if request.method == "POST":
+
+        # 重写 验证类的邮箱验证方法
+        class myCheckData(CheckData):
+            def check_email(self, email):
+                if not match(r'^[0-9a-zA-Z_]{0,19}@[0-9a-zA-Z]{1,13}\.[com,cn,net]{1,3}$', email):
+                    self.error_dict['email'] = "必填项：请确保你的邮箱是合法"
+
+        check = myCheckData(args_list=['email'], **request.POST)
+        check.clean_data()
+
+        # 检查邮箱是否注册 注册拿到用户 没注册 写入错误信息
+        if not check.error_dict:
+            email = request.POST.get('email')
+            user = UserInfo.objects.filter(email=email).first()
+
+            if user:
+                serializer = Serializer(settings.SECRET_KEY, 3600)
+                info = {'confirm': user.id}
+                token = serializer.dumps(info)  # bytes
+                token = token.decode()
+                # 发邮件
+                send_getpwd_email.delay(email, user.username, token)
+
+                ret_msg['status'] = 1
+                ret_msg['msg'] = "验证邮件已发送，请前往{}查验".format(email)
+                return JsonResponse(ret_msg)
+            else:
+                check.error_dict['email'] = "此邮箱尚未注册！"
+
+        ret_msg['msg'] = check.error_dict
+        return JsonResponse(ret_msg)
+
+    return render(request, './user/forgetpwd.html')
+
+def pwdreset(request,token):
+    serializer = Serializer(settings.SECRET_KEY, 3600)
+    try:
+        info = serializer.loads(token)
+        user_id = info['confirm']
+        user_pwd = info['pwd']
+
+        # 根据id获取用户信息
+        user = UserInfo.objects.filter(id=user_id).first()
+        user.set_password(user_pwd)
+
+        # 打印提示信息
+        return HttpResponse("改密成功！请前往登陆页面登陆！")
+    except SignatureExpired as e:
+        # 激活链接已过期
+        return HttpResponse('激活链接已过期')
 
 

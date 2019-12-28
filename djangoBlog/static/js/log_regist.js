@@ -54,8 +54,6 @@ $("#btn-login").on('click', function () {
     })
 });
 
-
-
 // 注册
 $("#btn-regist").on('click', function () {
 
@@ -77,13 +75,9 @@ $("#btn-regist").on('click', function () {
         processData: false,   // 告诉jQuery不要处理我的数据
         contentType: false,  // 告诉jQuery不要设置content类型
 
-        breforeSend:function(xhr, settings){
-           xhr.setRequestHeader("X-CSRFToken", $.cookie('csrftoken'));
-        alert("hello")
-           },
-
         success: function (data) {
             if (data.status) {
+
                 location.href = data.msg;
             } else {
                 $.each(data.msg, function (k, v) {
@@ -123,8 +117,63 @@ $("#btn-resetpwd").on('click',function () {
         },
         success:function (data) {
             if(data.status){
-                alert("改密成功！");
-                location.href = data.msg
+                toastr.options={
+                    "timeOut":1000,
+                    "onHidden": function(){
+                        location.href = '/user/login'
+                    }
+                };
+                toastr.success(data.msg);
+            }
+            else {
+                toastr.options = {
+                    "timeOut": 1000,
+                };
+                toastr.error("邮箱不正确或两次密码不一致。","改密失败");
+
+                $.each(data.msg, function (k, v) {
+                    $("input[name=" + k + "]").addClass('has-error').next().text(v)
+                })
+
+            }
+        }
+    });
+
+    // 清除错误提示样式 和信息
+        $(".control-line input").on('focus', function () {
+        $(this).removeClass('has-error').next().text('')
+    })
+
+});
+
+//找回密码
+
+$("#btn-forgetpwd").on('click',function () {
+    // 准备数据
+
+    // var data = new FormData;
+
+    // data.append('email', $('input[name=email]').val());
+
+    // 发送数据
+
+    $.post({
+        url:'/user/forgetpwd',
+        data:{
+            "email":$('input[name=email]').val(),
+            "csrfmiddlewaretoken":$("[name='csrfmiddlewaretoken']").val()
+        },
+
+        success:function (data) {
+            if(data.status){
+                toastr.options={
+                    "timeOut":1000,
+                    "onHidden": function(){
+                        location.href = '/user/login'
+                    }
+                };
+                toastr.success(data.msg);
+
             }
             else {
                 $.each(data.msg, function (k, v) {
@@ -142,7 +191,6 @@ $("#btn-resetpwd").on('click',function () {
 
 });
 
-//找回密码
 
 
 

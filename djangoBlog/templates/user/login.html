@@ -11,9 +11,8 @@
 
         <div id="userInfo">Blog Login</div>
         <div id="msg">
-            <form action="{% url 'user:login' %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-                <div class="input-line">
+                <div class="input-line clearfix">
                     <p>用户名</p>
                     <div class="control-line">
                         <input type="text" name="username" placeholder="用户名">
@@ -22,7 +21,7 @@
 
                 </div>
 
-                <div class="input-line">
+                <div class="input-line clearfix">
                     <p>密码</p>
                     <div class="control-line">
                         <input type="password" name="password" placeholder="6-20位密码">
@@ -31,7 +30,7 @@
 
                 </div>
 
-                <div class="input-line">
+                <div class="input-line clearfix">
                     <input type="checkbox" name="isSave" checked>
                     <p>记住密码</p>
 
@@ -46,9 +45,6 @@
                     <input type="button" value="登陆" id="btn-login" name="submit">
                     <a href="{% url 'user:regist' %}">注册</a>
                 </div>
-
-
-            </form>
         </div>
 
     </div>

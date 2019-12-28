@@ -5,7 +5,6 @@
 
         <div id="userInfo">Blog Reset Password</div>
         <div id="msg">
-            <form action="{% url 'user:resetpwd' %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="input-line">
                     <p>邮箱</p>
@@ -36,11 +35,9 @@
 
                 <div class="input-line">
                     <input id="btn-resetpwd" type="button" name="submit" value="改密">
-                    <a href="{% url 'user:login' %}">登陆</a>
+                    <a href="{% url 'user:login' %}">返回</a>
                 </div>
 
-
-            </form>
         </div>
 
     </div>

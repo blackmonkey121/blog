@@ -1,9 +1,11 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render,redirect,HttpResponse
+
 from .models import Post, Tag, Category
 from apps.config.models import SideBar, Link
 # Create your views here.
 
-
+@login_required()
 def post_list(request,category_id=None, tag_id=None):
 
     tag = category = None
@@ -46,6 +48,7 @@ def post_list(request,category_id=None, tag_id=None):
     # return HttpResponse('Anything is OK!')
 
 
+@login_required()
 def post_detail(request, post_id=None):
     try:
         article = Post.objects.filter(id = post_id)
@@ -61,6 +64,6 @@ def post_detail(request, post_id=None):
                   context=context)
     # return HttpResponse('Anything is OK!')
 
-
+@login_required()
 def links(request):
     return HttpResponse('links:Anything is OK!')

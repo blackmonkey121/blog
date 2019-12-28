@@ -22,15 +22,16 @@
 
 #left {
     float:left;
-    margin: 80px 10px 20px 80px;
-    width: 45%;
-    height: auto;
+    margin: 40px 40px 20px 10px;
+    width: 500px;
+    height: 500px;
     overflow: hidden;
+    border-radius: 300px;
 }
 
 #left>img{
-    width:80%;
-    height: 360px;
+    width:500px;
+    height: 500px;
     transition: all 600ms;
 }
 
@@ -40,10 +41,9 @@
 
 /* right */
 .right{
-    float: right;
+    float: left;
     padding-left: 5%;
     border-left: 1px solid deepskyblue;
-    width: 40%;
 
 }
 
