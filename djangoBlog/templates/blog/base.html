@@ -14,12 +14,13 @@
 <link rel="stylesheet" href="{% static 'toastr/toastr.min.css'%}">
 <link rel="stylesheet" href="{% static 'css/navbar/reset.min.css'%}">
 <link rel="stylesheet" href="{% static 'css/navbar/style.css'%}">
+<link rel="stylesheet" href="{% static 'css/theme/default.css'%}">
 <script src="{% static 'js/jquery3.2.1.js' %}"></script>
 {% block css %}
 
 {% endblock %}
 <!-- 页面主体开始 -->
-<div id="container">
+<div id="container" class="clearfix">
     <!-- 顶部导航开始 -->
     <div id="navbar" class="clearfix">
 
@@ -39,36 +40,38 @@
 		<a href="#click" class="menu">
 			<h2 class="menu-title menu-title_2nd">文章分类</h2>
 			<ul class="menu-dropdown">
-				<li>Kevin</li>
-				<li>Jim</li>
-				<li>Andy</li>
+                {% for nav in navs %}
+                    <li>
+                        {{ nav.name }}
+                    </li>
+                    {% empty %}
+                    <li>没有分类</li>
+                {% endfor %}
 			</ul>
 		</a>
 	</li>
 	<li>
 		<a href="#click" class="menu">
-		<h2 class="menu-title menu-title_3rd">things</h2>
+		<h2 class="menu-title menu-title_3rd">标签分类</h2>
 		<ul class="menu-dropdown">
-			<li>bench</li>
-			<li>pizza</li>
-			<li>Honda CB125</li>
-			<li>space</li>
-			<li>black matter</li>
-			<li>apple</li>
-			<li>philodendron</li>
-			<li>liver</li>
-			<li>brass</li>
+
+        {% for cate in categories %}
+                    <li>{{ cate.name }}</li>
+            {% empty %}
+            <li>没有标签</li>
+                {% endfor %}
+
 		</ul>
 		</a>
 	</li>
 	<li>
 		<a href="#" class="menu">
-			<h2 class="menu-title menu-title_4th">UNtitle</h2>
+			<h2 class="menu-title menu-title_4th">收藏夹</h2>
 			<ul class="menu-dropdown">
 				<li id="li-logout"></li>
-				<li>修改密码</li>
-				<li>个人主页</li>
-				<li>个人中心</li>
+				<li>待完成</li>
+				<li>待完成</li>
+				<li>待完成</li>
 			</ul>
 		</a>
 	</li>
@@ -79,54 +82,191 @@
 
     <!-- 页面导航导航开始 -->
     <div id="nav">
-        <div class="nav-title">
+        <div id="nav-title">
         {% block nav-title %}
-            User:Someone
+            <p>{{ user.username }}</p>
         {% endblock %}
         </div>
-        <div class="nav-body">
-        <ul>
-             {% for nav in navs %}
-                            <li>
-                                <a href="{% url 'blog:category_list' nav.id %}">{{ nav.name }}</a>
-                            </li>
-             {% endfor %}
-        </ul>
+        <div id="nav-body" class="clearfix">
 
+                <ul class="clearfix">
+                    <li><a href="">新建文章</a></li>
+                    <li><a href="">首页</a></li>
+                    <li><a href="/user_admin">管理</a></li>
+                </ul>
 
+                <div id="blog-status">
+                    <span>文章-100</span>
+                    <span>分类-7</span>
+                    <span>评论-100</span>
+                </div>
+
+            </div>
         </div>
+
     </div>
     <!-- 页面导航结束 -->
 
     <!-- 左侧边栏开始 -->
-    <div id="left">
+    <div id="left" class="clearfix">
         <div class="content">
-            {% for sidebar in sidebars %}
-                <h4>{{ sidebar.title }}</h4>
-                {{ sidebar.content_html }}
 
-            {% endfor %}
+            {% block main-page %}
+
+            {% endblock %}
+        <div class="article">
+            <p class="article-title">Linux / MacOS Redis settings</p>
+            <div class="article-summary">摘要：下载 下载redis压缩包 最新的为 5.0.4 地址 http://download.redis.io/releases/redis-5.0.4.tar.gz 安装 1 解压 切换工作目录到redis文件所在目录然后解压文件 切换 默认的下载目录 cd ~/Downloads 解压文件 tar
+            <span class="article-content">阅读全文</span>
+            </div>
+            <div class="cookies">
+                <span>Posted data:2019-12-12 20:22</span>
+                <i></i>
+                <span>Author:Monkey</span>
+                <i></i>
+                <span>Read:100</span>
+                <i></i>
+                <span>Comment:20</span>
+            </div>
+        </div>
+
+                <div class="article">
+            <p class="article-title">Linux / MacOS Redis settings</p>
+            <div class="article-summary">摘要：下载 下载redis压缩包 最新的为 5.0.4 地址 http://download.redis.io/releases/redis-5.0.4.tar.gz 安装 1 解压 切换工作目录到redis文件所在目录然后解压文件 切换 默认的下载目录 cd ~/Downloads 解压文件 tar
+            <span class="article-content">阅读全文</span>
+            </div>
+            <div class="cookies">
+                <span>Posted data:2019-12-12 20:22</span>
+                <i></i>
+                <span>Author:Monkey</span>
+                <i></i>
+                <span>Read:100</span>
+                <i></i>
+                <span>Comment:20</span>
+            </div>
+        </div>
+                <div class="article">
+            <p class="article-title">Linux / MacOS Redis settings</p>
+            <div class="article-summary">摘要：下载 下载redis压缩包 最新的为 5.0.4 地址 http://download.redis.io/releases/redis-5.0.4.tar.gz 安装 1 解压 切换工作目录到redis文件所在目录然后解压文件 切换 默认的下载目录 cd ~/Downloads 解压文件 tar
+            <span class="article-content">阅读全文</span>
+            </div>
+            <div class="cookies">
+                <span>Posted data:2019-12-12 20:22</span>
+                <i></i>
+                <span>Author:Monkey</span>
+                <i></i>
+                <span>Read:100</span>
+                <i></i>
+                <span>Comment:20</span>
+            </div>
+        </div>
+                <div class="article">
+            <p class="article-title">Linux / MacOS Redis settings</p>
+            <div class="article-summary">摘要：下载 下载redis压缩包 最新的为 5.0.4 地址 http://download.redis.io/releases/redis-5.0.4.tar.gz 安装 1 解压 切换工作目录到redis文件所在目录然后解压文件 切换 默认的下载目录 cd ~/Downloads 解压文件 tar
+            <span class="article-content">阅读全文</span>
+            </div>
+
+            <div class="cookies">
+                <span>Posted data:2019-12-12 20:22</span>
+                <i></i>
+                <span>Author:Monkey</span>
+                <i></i>
+                <span>Read:100</span>
+                <i></i>
+                <span>Comment:20</span>
+            </div>
+        </div>
+                <div class="article">
+            <p class="article-title">Linux / MacOS Redis settings</p>
+            <div class="article-summary">摘要：下载 下载redis压缩包 最新的为 5.0.4 地址 http://download.redis.io/releases/redis-5.0.4.tar.gz 安装 1 解压 切换工作目录到redis文件所在目录然后解压文件 切换 默认的下载目录 cd ~/Downloads 解压文件 tar
+            <span class="article-content">阅读全文</span>
+            </div>
+            <div class="cookies">
+                <span>Posted data:2019-12-12 20:22</span>
+                <i></i>
+                <span>Author:Monkey</span>
+                <i></i>
+                <span>Read:100</span>
+                <i></i>
+                <span>Comment:20</span>
+            </div>
+        </div>
+                <div class="article">
+            <p class="article-title">Linux / MacOS Redis settings</p>
+            <div class="article-summary">摘要：下载 下载redis压缩包 最新的为 5.0.4 地址 http://download.redis.io/releases/redis-5.0.4.tar.gz 安装 1 解压 切换工作目录到redis文件所在目录然后解压文件 切换 默认的下载目录 cd ~/Downloads 解压文件 tar
+            <span class="article-content">阅读全文</span>
+            </div>
+            <div class="cookies">
+                <span>Posted data:2019-12-12 20:22</span>
+                <i></i>
+                <span>Author:Monkey</span>
+                <i></i>
+                <span>Read:100</span>
+                <i></i>
+                <span>Comment:20</span>
+            </div>
+        </div>
+                <div class="article">
+            <p class="article-title">Linux / MacOS Redis settings</p>
+            <div class="article-summary">摘要：下载 下载redis压缩包 最新的为 5.0.4 地址 http://download.redis.io/releases/redis-5.0.4.tar.gz 安装 1 解压 切换工作目录到redis文件所在目录然后解压文件 切换 默认的下载目录 cd ~/Downloads 解压文件 tar
+            <span class="article-content">阅读全文</span>
+            </div>
+            <div class="cookies">
+                <span>Posted data:2019-12-12 20:22</span>
+                <i></i>
+                <span>Author:Monkey</span>
+                <i></i>
+                <span>Read:100</span>
+                <i></i>
+                <span>Comment:20</span>
+            </div>
+        </div>
+
+
+
 
         </div>
     </div>
     <!-- 左侧边栏结束 -->
-    <!-- 中间开始 -->
-    <div id="center">
-        {% block main-page %}
 
-        {% endblock %}
-    </div>
-    <!-- 中部结束 -->
     <!-- 右侧开始-->
-    <div id="right"></div>
+    <div id="right" class="clearfix">
+        <div class="data">
+            <p>jsjsdnfkjkd</p><br>
+            <p>jsjsdnfkjkd</p><br>
+            <p>jsjsdnfkjkd</p><br>
+            <p>jsjsdnfkjkd</p><br>
+            <p>jsjsdnfkjkd</p><br>
+            <p>jsjsdnfkjkd</p><br>
+            <p>jsjsdnfkjkd</p><br>
+            <p>jsjsdnfkjkd</p><br>
+            <p>jsjsdnfkjkd</p><br>
+            <p>jsjsdnfkjkd</p><br>
+            <p>jsjsdnfkjkd</p><br>
+        </div>
+
+        {#            {% for sidebar in sidebars %}#}
+{#                <h4>{{ sidebar.title }}</h4>#}
+{#                {{ sidebar.content_html }}#}
+{##}
+{#            {% endfor %}#}
+{##}
+{#        {% for cate in categories %}#}
+{#                    <a href="{% url 'blog:category_list' cate.id %}">{{ cate.name }}</a>#}
+{#                {% endfor %}#}
+
+    </div>
     <!-- 右侧结束-->
+
 
     <!-- 底部声明信息开始-->
     <div id="bottom">
         <div class="bottom-content">
-            {% for cate in categories %}
-                <a href="{% url 'blog:category_list' cate.id %}">{{ cate.name }}</a>
-            {% endfor %}
+
+
+            <div class="text">
+            Copyright&copy; 2019-10-01 by Author:Monkey All Rights Reserved
+        </div>
 
         </div>
     </div>
@@ -142,7 +282,6 @@
 
 {% endblock %}
 
-</div>
 
 </body>
 </html>

@@ -8,8 +8,10 @@
 
 {% block right %}
 
+
 <div class="right right-regist">
-        <div id="userInfo">Blog Regist</div>
+
+        <div id="userInfo">Blog Regist<span id="btn-go-login">登陆</span></div>
 
         <div id="msg">
                 {% csrf_token %}
@@ -84,7 +86,6 @@
                 <div class="input-line input-line-regist">
                     <p></p>
                     <input id="btn-regist" type="button" value="注册" name="submit">
-{#                    <a  href="">登陆</a>#}
                 </div>
 
         </div>

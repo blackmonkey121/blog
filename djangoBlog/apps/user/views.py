@@ -118,14 +118,16 @@ def login(request):
 
 
 def regist(request):
-    print("请求")
     ret_msg = {'status': 0, 'msg': {}}
     if request.method == "POST":
         # 数据检验
         avatar = [request.FILES.get('avatar'),]
         data = request.POST.copy()
-        data.pop('avatar')
-        check = CheckData(args_list=['username', 'password','email','phone','nickname','avatar'],**data, avatar=avatar)
+        try:
+            data.pop('avatar')
+        except Exception as e:
+            print(e)
+        check = CheckData(args_list=['username', 'password','email','phone','nickname'],**data, avatar=avatar)
         check.clean_data()
 
         # 用户名唯一 校验
@@ -136,7 +138,6 @@ def regist(request):
 
             ret_msg['status'] = 1
             ret_msg['msg'] = reverse('user:login')
-            print("创建中")
             user = UserInfo.objects.create_user(**check.data)
             # 发送激活邮件，包含激活链接: http://127.0.0.1:8000/user/active/3
             # 激活链接中需要包含用户的身份信息, 并且要把身份信息进行加密
@@ -182,7 +183,6 @@ def logout(request):
     auth.logout(request)
     request.session.flush()
     return HttpResponse('')
-
 
 
 @login_required()
@@ -252,21 +252,41 @@ def forgetpwd(request):
 
     return render(request, './user/forgetpwd.html')
 
-def pwdreset(request,token):
+def pwdreset(request, token):
+
+    ret_msg = {'status': 0, 'msg': {}}
     serializer = Serializer(settings.SECRET_KEY, 3600)
+    if request.method == "POST":
+        user_id = request.COOKIES.get('repwd_user_id')
+        if user_id:
+            check = CheckData(args_list=['password'], **request.POST)
+            check.clean_data()
+
+            if not check.error_dict:
+                user_id = request.COOKIES.get('repwd_user_id')
+                print(user_id)
+                user = UserInfo.objects.filter(id=user_id).first()
+                print(user)
+                password = request.POST.get("password")
+                user.set_password(password)
+                user.save()
+                ret_msg['status'] = 1
+
+            ret_msg['msg'] = check.error_dict
+        ret_msg['msg'] = '改密链接失效！'
+        return JsonResponse(ret_msg)
+
     try:
         info = serializer.loads(token)
         user_id = info['confirm']
-        user_pwd = info['pwd']
-
         # 根据id获取用户信息
         user = UserInfo.objects.filter(id=user_id).first()
-        user.set_password(user_pwd)
+        if user:
+            response = HttpResponse(render(request,'user/pwdreset.html'))
+            response.set_cookie('repwd_user_id',user_id,max_age=60*10)
 
-        # 打印提示信息
-        return HttpResponse("改密成功！请前往登陆页面登陆！")
+            return response
+
     except SignatureExpired as e:
         # 激活链接已过期
         return HttpResponse('激活链接已过期')
-
-

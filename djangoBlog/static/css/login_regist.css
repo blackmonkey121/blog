@@ -41,6 +41,7 @@
 
 /* right */
 .right{
+    position: relative;
     float: left;
     padding-left: 5%;
     border-left: 1px solid deepskyblue;
@@ -152,7 +153,6 @@ input[name='submit']:hover{
 }
 
 
-
 /* bottom */
 #bottom {
     position: fixed;
@@ -167,8 +167,37 @@ input[name='submit']:hover{
 
 /* regist */
 
+#btn-go-login{
+    width: 100px;
+    height: 29px;
+    border: 2px solid white;
+    position: absolute;
+    border-radius: 8px;
+    background: deepskyblue;
+    text-align: center;
+    font-size: 26px;
+    color: white;
+    left: 330px;
+    top:24px
+
+}
+
+#btn-go-login:hover{
+    cursor: pointer;
+    color: deepskyblue;
+    background: white;
+    border: 2px solid deepskyblue;
+}
+
+#btn-go-login:active{
+    cursor: pointer;
+    color: rgba(0, 147, 196, 1);
+    background: white;
+    border: 2px solid rgba(0, 147, 196, 1);
+}
+
 .right-regist{
-    margin: 40px auto;
+    margin: 20px auto;
 }
 
 

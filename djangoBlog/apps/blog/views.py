@@ -43,7 +43,7 @@ def post_list(request,category_id=None, tag_id=None):
     context.update(Category.get_navs())
     context.update(SideBar.get_sidebars())
 
-    return render(request, 'blog/article.html',
+    return render(request, 'blog/article_list.html',
                   context=context)
     # return HttpResponse('Anything is OK!')
 
@@ -63,6 +63,7 @@ def post_detail(request, post_id=None):
     return render(request,'blog/article_detail.html',
                   context=context)
     # return HttpResponse('Anything is OK!')
+
 
 @login_required()
 def links(request):
