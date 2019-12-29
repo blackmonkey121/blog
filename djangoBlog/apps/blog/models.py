@@ -1,4 +1,5 @@
 from django.db import models
+from apps.user.models import UserInfo
 
 # Create your models here.
 # 数据处理尽可能的集中在了models层，使得views层逻辑更为简单清晰
@@ -103,8 +104,9 @@ class Post(models.Model):
         return article_list, category
 
     @classmethod
-    def get_latest_article(cls):
-        queryset = cls.objects.filter(status=cls.STATUS_NORMAL)
+    def get_latest_article(cls,user_id):
+        user = UserInfo.objects.filter(id=user_id)
+        queryset = cls.objects.filter(status=cls.STATUS_NORMAL, owner=user)
         return queryset
 
     class Meta:

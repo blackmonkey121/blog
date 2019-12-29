@@ -264,9 +264,7 @@ def pwdreset(request, token):
 
             if not check.error_dict:
                 user_id = request.COOKIES.get('repwd_user_id')
-                print(user_id)
                 user = UserInfo.objects.filter(id=user_id).first()
-                print(user)
                 password = request.POST.get("password")
                 user.set_password(password)
                 user.save()

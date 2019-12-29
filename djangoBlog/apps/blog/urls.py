@@ -10,6 +10,4 @@ urlpatterns = [
     url(r'^category/(?P<category_id>\d+)/$', CategoryView.as_view(), name='category_list'),
     url(r'^tag/(?P<tag_id>\d+)/$',TagView.as_view(), name='tag_list'),
     url(r'^post/(?P<post_id>\d+).html$', ArticleDetailView.as_view(), name='article_detail'),
-    url(r'^test$',test)
-
 ]

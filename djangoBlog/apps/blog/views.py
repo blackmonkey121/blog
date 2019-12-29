@@ -7,17 +7,15 @@ from apps.config.models import SideBar, Link
 # Create your views here.
 
 
-class ArticleListView(ListView):
-    queryset = Post.get_latest_article()
-    paginate_by = 1
-    context_object_name = 'article_list'  # 不设置需要在模版中使用 object_list
-    template_name = 'blog/article_list.html'
-
-
 class CommonViewMixmin(object):
     """
     为IndexView 添加通用数据
     """
+
+    # 过滤文章 作者只能看到作者本人的文章
+    def get_queryset(self, **kwargs):
+        return Post.get_latest_article(user_id=self.request.user.id)
+
     def get_context_data(self, **kwargs):
         """ 重写get_context_data 方法 （这个方法属于ListView的父类 MultipleObjectMixin） """
         context = super().get_context_data(**kwargs)    # 多继承 super 会按照MRO列表执行方法
@@ -47,9 +45,8 @@ class CommonViewMixmin(object):
             'categories': normal_categories,
         }
 
-
 class IndexView(CommonViewMixmin, ListView):
-    queryset = Post.get_latest_article()
+
     paginate_by = 3
     context_object_name = "article_list"
     template_name = "blog/article_list.html"
@@ -74,6 +71,7 @@ class CategoryView(IndexView):
 
 
 class TagView(IndexView):
+
     def get_context_data(self, **kwargs):
         """ 重写get_context_data 方法 产生期望的数据集 """
         context = super().get_context_data(**kwargs)
@@ -92,83 +90,12 @@ class TagView(IndexView):
 
 
 class ArticleDetailView(CommonViewMixmin, DetailView):
-    queryset = Post.get_latest_article()
+
     template_name = 'blog/article_detail.html'
     context_object_name = "article"
     pk_url_kwarg = "post_id"
 
 
-
-
-
-
-@login_required()
-def post_list(request,category_id=None, tag_id=None):
-
-    tag = category = None
-
-    # if tag_id:
-    #     try:
-    #         tag = Tag.objects.get(id=tag_id)
-    #     except Tag.DoesNotExist:
-    #         article_list = []
-    #     else:
-    #         article_list = tag.post_set.filter(status=Post.STATUS_NORMAL)
-    # else:
-    #     article_list = Post.objects.filter(status=Post.STATUS_NORMAL)
-    #     if category_id:
-    #         try:
-    #             category = Category.objects.filter(id=category_id)
-    #         except Category.DoesNotExist:
-    #             category = None
-    #         else:
-    #             article_list = article_list.filter(category_id=category_id)
-
-    # FIXME: 一样的逻辑，可以抽取 ，封装类时注意
-
-    if tag_id:
-        article_list, tag = Post.get_article_tag(tag_id)
-    elif category_id:
-        article_list, category = Post.get_article_category(category_id)
-    else:
-        article_list = Post.get_latest_article()
-
-    context = {'category': category,
-               'tag': tag,
-               'article_list': article_list}
-
-    context.update(Category.get_navs())
-    context.update(SideBar.get_sidebars())
-
-    return render(request, 'blog/article_list.html',
-                  context=context)
-    # return HttpResponse('Anything is OK!')
-
-
-@login_required()
-def post_detail(request, post_id=None):
-    try:
-        article = Post.objects.filter(id = post_id)
-    except Post.DoesNotExist:
-        article = None
-
-    context = {
-        'article': article
-    }
-    context.update(Category.get_navs())
-    context.update(SideBar.get_sidebars())
-    return render(request,'blog/article_detail.html',
-                  context=context)
-    # return HttpResponse('Anything is OK!')
-
-
 @login_required()
 def links(request):
     return HttpResponse('links:Anything is OK!')
-
-
-def test(request):
-    o = Post.objects.filter(pk=1).first()
-    o = o.get_count
-    print(o())
-    return HttpResponse(str(o()))

@@ -10,7 +10,7 @@ class UserInfo(AbstractUser):
     """
     用户信息表
     """
-    phone = models.CharField(max_length=11, blank=False, unique=True, verbose_name='手机号',db_index=True)
+    phone = models.CharField(max_length=11, blank=True, unique=True, verbose_name='手机号',db_index=True,default=00000000000)
     avatar = models.FileField(upload_to="avatars/", default="avatars/default.jpeg", verbose_name="头像")
     nickname = models.CharField(max_length=64, blank=True, default='匿名用户', verbose_name='昵称')
     email = models.EmailField(blank=False,unique=True,db_index=True)
