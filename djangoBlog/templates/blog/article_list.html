@@ -12,20 +12,35 @@
 {% block main-page %}
 
 <!-- 文章列表 -->
-    <ul>
-    {% for article in article_list %}
-        <li>
-            <a href="{% url 'blog:article_detail' article.id %}">{{ article.title }}</a>
 
-        <div>
-        <span>作者：{{ article.owner.username }}</span>
-        <span>分类：{{ article.category.name }}</span>
+    {% for article in article_list %}
+
+            <div class="article">
+            <p class="article-title">{{ article.title }}</p>
+            <div class="article-summary">摘要:{{ article.desc | truncatechars:80 }}
+            <span class="article-content"><a href="{% url 'blog:article_detail' article.id %}">阅读全文</a></span>
+            </div>
+            <div class="cookies">
+                <span>Posted data:{{ article.created_time }}</span>
+                <i></i>
+                <span>Author:{{ article.owner }}</span>
+                <i></i>
+                <span>Comment:{{ article.comment_set.count }}</span>
+            </div>
         </div>
-        <p>
-        {{ article.desc }}
-        </p>
-    </li>
     {% endfor %}
-    </ul>
+
+    <!-- 分页逻辑 -->
+    {% if page_obj %}
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">上一页</a>
+        {% endif %}
+
+        Page {{ page_obj.number }} of {{ paginator.num_pages }}.
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">下一页</a>
+        {% endif %}
+    {% endif %}
 
 {% endblock %}

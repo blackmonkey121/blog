@@ -6,7 +6,10 @@ from django.conf.urls import url
 from .views import *
 
 urlpatterns = [
-    url('^category/(?P<category_id>\d+)/$', post_list, name='category_list'),
-    url('^tag/(?P<tag_id>\d+)/$',post_list, name='tag_list'),
-    url('^post/(?P<post_id>\d+).html$', post_detail, name='article_detail'),
+    url(r'^$', IndexView.as_view(), name='index'),
+    url(r'^category/(?P<category_id>\d+)/$', CategoryView.as_view(), name='category_list'),
+    url(r'^tag/(?P<tag_id>\d+)/$',TagView.as_view(), name='tag_list'),
+    url(r'^post/(?P<post_id>\d+).html$', ArticleDetailView.as_view(), name='article_detail'),
+    url(r'^test$',test)
+
 ]
