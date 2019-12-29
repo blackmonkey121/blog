@@ -21,24 +21,6 @@ class Category(models.Model):
     owner = models.ForeignKey('user.UserInfo', verbose_name="作者")
     created_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
 
-
-    @classmethod
-    def get_navs(cls):
-        nav_categories = []
-        normal_categories = []
-
-        categories = cls.objects.filter(status=cls.STATUS_NORMAL)
-        for elem in categories:
-            if elem.is_nav:
-                nav_categories.append(elem)
-            else:
-                normal_categories.append(elem)
-
-        return {
-            'navs': nav_categories,
-            'categories': normal_categories
-        }
-
     class Meta:
         verbose_name = verbose_name_plural = "分类"
 
