@@ -13,8 +13,9 @@ class CommonViewMixmin(object):
     """
 
     # 过滤文章 作者只能看到作者本人的文章
-    def get_queryset(self, **kwargs):
-        return Post.get_latest_article(user_id=self.request.user.id)
+    queryset = Post.get_latest_article()
+    # def get_queryset(self, **kwargs):
+    #     return Post.get_latest_article(user_id=self.request.user.id)
 
     def get_context_data(self, **kwargs):
         """ 重写get_context_data 方法 （这个方法属于ListView的父类 MultipleObjectMixin） """

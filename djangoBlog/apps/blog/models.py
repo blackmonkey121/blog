@@ -104,9 +104,8 @@ class Post(models.Model):
         return article_list, category
 
     @classmethod
-    def get_latest_article(cls,user_id):
-        user = UserInfo.objects.filter(id=user_id)
-        queryset = cls.objects.filter(status=cls.STATUS_NORMAL, owner=user)
+    def get_latest_article(cls):
+        queryset = cls.objects.filter(status=cls.STATUS_NORMAL)
         return queryset
 
     class Meta:

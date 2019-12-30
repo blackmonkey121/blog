@@ -8,6 +8,7 @@
         首页
     {% endblock %}:MonkeyBlog</title>
 </head>
+
 <body>
 
 <link rel="stylesheet" href="{% static 'css/base.css' %}">
@@ -27,13 +28,23 @@
         <ul class="hList">
 	<li>
 		<a href="#click" class="menu">
-			<h2 class="menu-title">用户:{{ user.username | truncatechars:9}}</h2>
+            {% if user.username %}
+            <h2 class="menu-title">用户:{{ user.username | truncatechars:9}}</h2>
 			<ul class="menu-dropdown">
 				<li id="li-logout">注销登陆</li>
 				<li id="li-resetpwd">修改密码</li>
 				<li>个人主页</li>
 				<li>个人中心</li>
 			</ul>
+                {% else %}
+                <h2 class="menu-title">[登陆了|注册]</h2>
+			<ul class="menu-dropdown">
+				<li id="li-login" onclick="location.href='{% url 'user:login' %}'">登陆</li>
+				<li id="li-regist"  onclick="location.href='{% url 'user:regist' %}'">注册</li>
+			</ul>
+
+            {% endif %}
+
 		</a>
 	</li>
 	<li>
@@ -84,7 +95,7 @@
     <div id="nav">
         <div id="nav-title">
         {% block nav-title %}
-            <p>{{ user.username }}</p>
+
         {% endblock %}
         </div>
         <div id="nav-body" class="clearfix">
@@ -122,15 +133,15 @@
 
         </div>
 
-        {#            {% for sidebar in sidebars %}#}
-{#                <h4>{{ sidebar.title }}</h4>#}
-{#                {{ sidebar.content_html }}#}
-{##}
-{#            {% endfor %}#}
-{##}
-{#        {% for cate in categories %}#}
-{#                    <a href="{% url 'blog:category_list' cate.id %}">{{ cate.name }}</a>#}
-{#                {% endfor %}#}
+        {% for sidebar in sidebars %}
+                <h4>{{ sidebar.title }}</h4>
+            {{ sidebar.content_html }}
+
+            {% endfor %}
+
+        {% for cate in categories %}
+                    <a href="{% url 'blog:category_list' cate.id %}">{{ cate.name }}</a>
+                {% endfor %}
 
     </div>
     <!-- 右侧结束-->
@@ -151,6 +162,8 @@
     </div>
     <!-- 声明结束 -->
 </div>
+
+<!-- 页面js -->
 {% block js %}
     <script src="{% static 'js/navbar.js' %}"></script>
     <script src="{% static 'toastr/toastr.min.js' %}"></script>
@@ -163,4 +176,5 @@
 
 
 </body>
+
 </html>

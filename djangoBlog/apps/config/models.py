@@ -66,26 +66,28 @@ class SideBar(models.Model):
     @property
     def content_html(self):
         """ 直接在models层 渲染模版 """
+        # FIXME: 每次查询只需要获取前n条记录！！！ 改写逻辑层切片操作
+        # TODO: 直接写SQL查询 需要注意线上数据库的兼容
 
         from apps.blog.models import Post    # 避免循环引用
         from apps.comment.models import Comment
 
         result = ''
         if self.display_type == self.DISPLAY_HTML:
-            result = self.content
+            result = self.content[:5]
         elif self.display_type == self.DISPLAY_LATEST:
             context = {
-                'posts': Post.get_latest_article()
+                'posts': Post.get_latest_article()[:5]
             }
             result = render_to_string('config/blocks/sidebar_posts.html',context)
         elif self.display_type == self.DISPLAY_HOT:
             context = {
-                'posts': Post.get_hot_articles()
+                'posts': Post.get_hot_articles()[:5]
             }
             result = render_to_string('config/blocks/sidebar_posts.html', context)
         elif self.display_type == self.DISPLAY_COMMIT:
             context = {
-                'comments': Comment.objects.filter(status=Comment.STATUS_NORMAL)
+                'comments': Comment.objects.filter(status=Comment.STATUS_NORMAL)[:5]
             }
             result = render_to_string('config/blocks/sidebar_comments.html',context)
         return result

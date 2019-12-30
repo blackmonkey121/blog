@@ -9,6 +9,15 @@
     {{ user.username }}
 {% endblock %}
 
+
+{% block nav-title %}
+    {% if user.username %}
+        <p><a href="#"></a>{{ user.username }}</p>
+        {% else %}
+        <p><a href="{% url 'user:regist' %}">{{ user.username | default:"匿名用户"}}</a></p>
+    {% endif %}
+{% endblock %}
+
 {% block main-page %}
 
 <!-- 文章列表 -->
@@ -23,7 +32,7 @@
             <div class="cookies">
                 <span>Posted data:{{ article.created_time }}</span>
                 <i></i>
-                <span>Author:{{ article.owner }}</span>
+                <span><a href=""></a>Author:{{ article.owner }}</span>
                 <i></i>
                 <span>Comment:{{ article.comment_set.count }}</span>
             </div>

@@ -17,7 +17,7 @@ from djangoBlog.settings import develop
 from django.conf.urls import url,include
 from django.contrib import admin
 from django.contrib.staticfiles.views import serve
-
+from apps.blog.views import IndexView
 from apps.blog.branch_site import branch_site
 from apps.user.views import login
 
@@ -28,5 +28,6 @@ urlpatterns = [
     url(r'^blog/', include('apps.blog.urls', namespace='blog')),
     url(r'^config/', include('apps.config.urls', namespace='config')),
     url(r'^media/(?P<path>.*)$', serve, {"document_root": develop.MEDIA_ROOT}),
+    url(r'^', IndexView.as_view(), name="index")
 
 ]
