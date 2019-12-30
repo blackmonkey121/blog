@@ -59,12 +59,7 @@ class SideBar(models.Model):
     owner = models.ForeignKey('user.UserInfo', verbose_name="作者")
     created_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
 
-    @classmethod
-    def get_sidebars(cls):
-        return {'sidebars': cls.objects.filter(status=cls.STATUS_SHOW)}
-
-    @property
-    def content_html(self):
+    def content_html(self,user_id):
         """ 直接在models层 渲染模版 """
         # FIXME: 每次查询只需要获取前n条记录！！！ 改写逻辑层切片操作
         # TODO: 直接写SQL查询 需要注意线上数据库的兼容
@@ -77,17 +72,17 @@ class SideBar(models.Model):
             result = self.content[:5]
         elif self.display_type == self.DISPLAY_LATEST:
             context = {
-                'posts': Post.get_latest_article()[:5]
+                'posts': Post.get_latest_article(user_id=user_id)[:5]
             }
             result = render_to_string('config/blocks/sidebar_posts.html',context)
         elif self.display_type == self.DISPLAY_HOT:
             context = {
-                'posts': Post.get_hot_articles()[:5]
+                'posts': Post.get_hot_articles(user_id=user_id)[:5]
             }
             result = render_to_string('config/blocks/sidebar_posts.html', context)
         elif self.display_type == self.DISPLAY_COMMIT:
             context = {
-                'comments': Comment.objects.filter(status=Comment.STATUS_NORMAL)[:5]
+                'comments': Comment.objects.filter(status=Comment.STATUS_NORMAL,target__owner_id=user_id )[:5]
             }
             result = render_to_string('config/blocks/sidebar_comments.html',context)
         return result

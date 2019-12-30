@@ -54,10 +54,10 @@ class CategoryOwnerFilter(admin.SimpleListFilter):
 @admin.register(Category, site=branch_site)
 class CategoryAdmin(BaseAdmin):
     # 定义在详细信息中显示的字段 可以是列表 元组
-    list_display = ('name', 'is_nav', 'created_time', 'owner', 'status', 'post_count')
+    list_display = ('name', 'created_time', 'owner', 'status', 'post_count')
 
     # 也可以由fieldsets 字段 来指定
-    fields = ('name', 'status', 'is_nav')
+    fields = ('name', 'status')
 
     # 在 分类页面展示 行内编辑区 PostInline 在上方定义
     inlines = (PostInline,)

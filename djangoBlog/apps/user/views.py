@@ -91,12 +91,11 @@ class CheckData(object):
 
 def login(request):
     if request.user.username:
-        return redirect(reverse('blog:category_list', kwargs={'category_id': 1}))
-
+        return redirect(reverse('index'))
 
     ret_msg = {'status': 0, 'msg': {}}
     if request.method == "POST":
-        check = CheckData(args_list=['username','password'] ,**request.POST)
+        check = CheckData(args_list=['username', 'password'], **request.POST)
         check.clean_data()
         if not check.error_dict:
             check.data.pop('save')
@@ -107,7 +106,7 @@ def login(request):
                 else:
                     auth.login(request, user)
                     ret_msg["status"] = 1
-                    ret_msg["msg"] = reverse('blog:category_list', kwargs={'category_id': 1})
+                    ret_msg["msg"] = reverse('index')
             else:
                 ret_msg["msg"]["password"] = "用户名或密码不正确。"
 

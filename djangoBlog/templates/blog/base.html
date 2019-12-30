@@ -12,10 +12,10 @@
 <body>
 
 <link rel="stylesheet" href="{% static 'css/base.css' %}">
-<link rel="stylesheet" href="{% static 'toastr/toastr.min.css'%}">
-<link rel="stylesheet" href="{% static 'css/navbar/reset.min.css'%}">
-<link rel="stylesheet" href="{% static 'css/navbar/style.css'%}">
-<link rel="stylesheet" href="{% static 'css/theme/default.css'%}">
+<link rel="stylesheet" href="{% static 'toastr/toastr.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/navbar/reset.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/navbar/style.css' %}">
+<link rel="stylesheet" href="{% static 'css/theme/default.css' %}">
 <script src="{% static 'js/jquery3.2.1.js' %}"></script>
 {% block css %}
 
@@ -26,67 +26,67 @@
     <div id="navbar" class="clearfix">
 
         <ul class="hList">
-	<li>
-		<a href="#click" class="menu">
-            {% if user.username %}
-            <h2 class="menu-title">用户:{{ user.username | truncatechars:9}}</h2>
-			<ul class="menu-dropdown">
-				<li id="li-logout">注销登陆</li>
-				<li id="li-resetpwd">修改密码</li>
-				<li>个人主页</li>
-				<li>个人中心</li>
-			</ul>
-                {% else %}
-                <h2 class="menu-title">[登陆了|注册]</h2>
-			<ul class="menu-dropdown">
-				<li id="li-login" onclick="location.href='{% url 'user:login' %}'">登陆</li>
-				<li id="li-regist"  onclick="location.href='{% url 'user:regist' %}'">注册</li>
-			</ul>
+            <li>
+                <a href="#click" class="menu">
+                    {% if user.username %}
+                        <h2 class="menu-title">用户:{{ user.username | truncatechars:9 }}</h2>
+                        <ul class="menu-dropdown">
+                            <li id="li-logout">注销登陆</li>
+                            <li id="li-resetpwd">修改密码</li>
+                            <li>个人主页</li>
+                            <li>个人中心</li>
+                        </ul>
+                    {% else %}
+                        <h2 class="menu-title">[登陆了|注册]</h2>
+                        <ul class="menu-dropdown">
+                            <li id="li-login" onclick="location.href='{% url 'user:login' %}'">登陆</li>
+                            <li id="li-regist" onclick="location.href='{% url 'user:regist' %}'">注册</li>
+                        </ul>
 
-            {% endif %}
+                    {% endif %}
 
-		</a>
-	</li>
-	<li>
-		<a href="#click" class="menu">
-			<h2 class="menu-title menu-title_2nd">文章分类</h2>
-			<ul class="menu-dropdown">
-                {% for nav in navs %}
-                    <li>
-                        {{ nav.name }}
-                    </li>
-                    {% empty %}
-                    <li>没有分类</li>
-                {% endfor %}
-			</ul>
-		</a>
-	</li>
-	<li>
-		<a href="#click" class="menu">
-		<h2 class="menu-title menu-title_3rd">标签分类</h2>
-		<ul class="menu-dropdown">
+                </a>
+            </li>
+            <li>
+                <a href="#click" class="menu">
+                    <h2 class="menu-title menu-title_2nd">文章分类</h2>
+                    <ul class="menu-dropdown">
+                        {% for category in categories %}
+                            <li>
+                                {{ category.name }}
+                            </li>
+                        {% empty %}
+                            <li>没有分类</li>
+                        {% endfor %}
+                    </ul>
+                </a>
+            </li>
+            <li>
+                <a href="#click" class="menu">
+                    <h2 class="menu-title menu-title_3rd">标签分类</h2>
+                    <ul class="menu-dropdown">
 
-        {% for cate in categories %}
-                    <li>{{ cate.name }}</li>
-            {% empty %}
-            <li>没有标签</li>
-                {% endfor %}
+                        {% for tag in tags %}
+                            <li>{{ tag.name }}</li>
+                        {% empty %}
+                            <li>没有标签</li>
+                        {% endfor %}
 
-		</ul>
-		</a>
-	</li>
-	<li>
-		<a href="#" class="menu">
-			<h2 class="menu-title menu-title_4th">收藏夹</h2>
-			<ul class="menu-dropdown">
-				<li id="li-logout"></li>
-				<li>待完成</li>
-				<li>待完成</li>
-				<li>待完成</li>
-			</ul>
-		</a>
-	</li>
-</ul>
+                    </ul>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="menu">
+                    <h2 class="menu-title menu-title_4th">收藏夹</h2>
+                    <ul class="menu-dropdown">
+                        <li id="li-logout"></li>
+                        <li>待完成</li>
+                        <li>待完成</li>
+                        <li>待完成</li>
+                    </ul>
+                </a>
+            </li>
+        </ul>
 
     </div>
     <!-- 顶部导航结束 -->
@@ -94,26 +94,30 @@
     <!-- 页面导航导航开始 -->
     <div id="nav">
         <div id="nav-title">
-        {% block nav-title %}
+    <p><a href="{% url 'blog:home' user.id %}"></a>{{ visited_user.username|default:"Monkey'Blog首页" }}</p>
 
-        {% endblock %}
         </div>
         <div id="nav-body" class="clearfix">
 
-                <ul class="clearfix">
-                    <li><a href="">新建文章</a></li>
-                    <li><a href="">首页</a></li>
-                    <li><a href="/user_admin">管理</a></li>
-                </ul>
+            <ul class="clearfix">
+                <li><a href="">新建文章</a></li>
+                <li><a href="{% url 'index' %}">首页</a></li>
+               <li><a href=" {% if user.username %}
+                    {% url 'blog:home' user.id %}
+                    {% else %}
+                    {% url 'user:login'%}
+                {% endif %}">个人主页</a></li>
+                <li><a href="/user_admin">管理</a></li>
+            </ul>
 
-                <div id="blog-status">
-                    <span>文章-100</span>
-                    <span>分类-7</span>
-                    <span>评论-100</span>
-                </div>
-
+            <div id="blog-status">
+                <span>文章-{{ visited_user.post_set.count }}</span>
+                <span>分类-{{ categories|length }}</span>
+                <span>标签-{{ tags|length }}</span>
             </div>
+
         </div>
+    </div>
 
     <!-- 页面导航结束 -->
 
@@ -133,20 +137,48 @@
 
         </div>
 
-        {% for sidebar in sidebars %}
-                <h4>{{ sidebar.title }}</h4>
-            {{ sidebar.content_html }}
-
+        <hr>
+<!-- sidebar category -->
+        <ul>
+            <li class="li-title">>>分类</li>
+            {% for category in categories %}
+                <li>
+                    <a href="">{{ category.name}}({{ category.post_set.count }})</a>
+                </li>
+                {% empty %}
+                <li>哎呀！还没有分类！</li>
             {% endfor %}
+        </ul>
 
-        {% for cate in categories %}
-                    <a href="{% url 'blog:category_list' cate.id %}">{{ cate.name }}</a>
-                {% endfor %}
+        <hr>
+
+<!-- sidebar tag-->
+        <ul>
+            <li class="li-title">>>标签</li>
+            {% for tag in tags %}
+                <li>
+                    <a href="">{{ tag.name }}({{ tag.post_set.count }})</a>
+                </li>
+                {% empty %}
+                <li>哎呀！还没有标签！</li>
+            {% endfor %}
+        </ul>
+
+    <hr>
+        <hr>
+
+            {% for sidebar in sidebars %}
+
+            <h4>{{ sidebar.title }}</h4>
+            {{ sidebar.html }}
+
+        {% endfor %}
+
+
+
 
     </div>
     <!-- 右侧结束-->
-
-
 
 
     <!-- 底部声明信息开始-->
@@ -155,8 +187,8 @@
 
 
             <div class="text">
-            Copyright&copy; 2019-10-01 by Author:Monkey All Rights Reserved
-        </div>
+                Copyright&copy; 2019-10-01 by Author:Monkey All Rights Reserved
+            </div>
 
         </div>
     </div>

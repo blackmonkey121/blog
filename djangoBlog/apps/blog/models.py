@@ -7,6 +7,7 @@ from apps.user.models import UserInfo
 
 
 class Category(models.Model):
+    STATUS_DEFAULT = 2
     STATUS_NORMAL = 1
     STATUS_DELETE = 0
     STATUS_ITEMS = (
@@ -18,7 +19,6 @@ class Category(models.Model):
                                          choices=STATUS_ITEMS,
                                          verbose_name="正常")
 
-    is_nav = models.BooleanField(default=False, verbose_name="是否为导航")
     owner = models.ForeignKey('user.UserInfo', verbose_name="作者")
     created_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
 
@@ -30,6 +30,7 @@ class Category(models.Model):
 
 
 class Tag(models.Model):
+    STATUS_DEFAULT = 2
     STATUS_NORMAL = 1
     STATUS_DELETE = 0
     STATUS_ITEMS = (
@@ -76,9 +77,10 @@ class Post(models.Model):
 
     # FIXME: 可以添加过滤条件
     @classmethod
-    def get_hot_articles(cls):
+    def get_hot_articles(cls, user_id=None):
+        if user_id is not None:
+            return cls.objects.filter(status=cls.STATUS_NORMAL, owner_id=user_id).order_by('-pv')
         return cls.objects.filter(status=cls.STATUS_NORMAL).order_by('-pv')
-
 
     @staticmethod
     def get_article_tag(tag_id):
@@ -104,9 +106,10 @@ class Post(models.Model):
         return article_list, category
 
     @classmethod
-    def get_latest_article(cls):
-        queryset = cls.objects.filter(status=cls.STATUS_NORMAL)
-        return queryset
+    def get_latest_article(cls, user_id=None):
+        if user_id is not None:
+            return cls.objects.filter(status=cls.STATUS_NORMAL, owner_id=user_id)
+        return cls.objects.filter(status=cls.STATUS_NORMAL)
 
     class Meta:
         verbose_name = verbose_name_plural = "文章"

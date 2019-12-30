@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404
 from django.views.generic import DetailView, ListView
 from .models import Post, Tag, Category
 from apps.config.models import SideBar, Link
+from apps.user.models import UserInfo
 # Create your views here.
 
 
@@ -12,43 +13,85 @@ class CommonViewMixmin(object):
     为IndexView 添加通用数据
     """
 
-    # 过滤文章 作者只能看到作者本人的文章
+    def get_current_user_id(self: object) -> object:
+
+        user_id = self.kwargs.get('user_id')
+        if user_id:
+            return user_id
+
+        post_id = self.kwargs.get('post_id')
+        if post_id:
+            return Post.objects.filter(id=post_id).first().owner.id
+
+        tag_id = self.kwargs.get('tag_id')
+        if tag_id:
+            return Tag.objects.filter(id=tag_id).first().owner.id
+    # 获取查询集文章
     queryset = Post.get_latest_article()
-    # def get_queryset(self, **kwargs):
-    #     return Post.get_latest_article(user_id=self.request.user.id)
+
+    def get_queryset(self, **kwargs):
+
+        user_id = self.get_current_user_id()
+
+        if user_id:
+            return Post.get_latest_article(user_id=user_id)
+        else:
+            return Post.get_latest_article()
 
     def get_context_data(self, **kwargs):
-        """ 重写get_context_data 方法 （这个方法属于ListView的父类 MultipleObjectMixin） """
+        """
+        重写get_context_data 方法 （这个方法属于ListView的父类 MultipleObjectMixin）
+        添加侧边栏数据 和 其它附加数据集
+        """
+        # get visited user id
+        user_id = self.get_current_user_id()
         context = super().get_context_data(**kwargs)    # 多继承 super 会按照MRO列表执行方法
+
+        # add sidebars data
         context.update({
-            'sidebars':self.get_sidebars()
+            'sidebars':self.get_sidebars(owner_id=user_id)
         })
-        context.update(
-            self.get_navs()
-        )
+
+        # add categories
+        context.update({
+            'categories': self.get_categories(owner_id=user_id)
+        })
+
+        # add tags
+        context.update({
+            'tags': self.get_tags(owner_id=user_id)
+        })
+
+        # current visited user id
+        context.update({
+            'visited_user': UserInfo.objects.filter(id=user_id).first()
+        })
+
         return context
 
-    def get_sidebars(self):
-        return SideBar.objects.filter(status=SideBar.STATUS_SHOW)
+    @staticmethod
+    def get_sidebars(owner_id: int = None):
+        sidebars = []
+        titles = SideBar.objects.filter(status=SideBar.STATUS_SHOW, owner_id=owner_id)
+        for title in titles:
+            sidebars.append({'title': title.title,'html':title.content_html(owner_id)})
+        return sidebars
 
-    def get_navs(self):
-        categories = Category.objects.filter(status=Category.STATUS_NORMAL)
-        nav_categories = []
-        normal_categories = []
-        for cate in categories:
-            if cate.is_nav:
-                nav_categories.append(cate)
-            else:
-                normal_categories.append(cate)
+    @staticmethod
+    def get_categories(owner_id: int = None):
+        if owner_id is not None:
+            return Category.objects.filter(status=Category.STATUS_NORMAL, owner_id=owner_id)
+        return Category.objects.filter(status=Category.STATUS_DEFAULT)
 
-        return {
-            'navs': nav_categories,
-            'categories': normal_categories,
-        }
+    @staticmethod
+    def get_tags(owner_id: int = None):
+        if owner_id is not None:
+            return Tag.objects.filter(status=Tag.STATUS_NORMAL, owner_id=owner_id)
+        return Tag.objects.filter(status=Tag.STATUS_DEFAULT)
+
 
 class IndexView(CommonViewMixmin, ListView):
-
-    paginate_by = 3
+    paginate_by = 5
     context_object_name = "article_list"
     template_name = "blog/article_list.html"
 
