@@ -11,6 +11,9 @@
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
     <link rel="stylesheet" href="{% static 'css/login_regist.css' %}">
     <link rel="stylesheet" href="{% static 'toastr/toastr.min.css'%}">
+{#    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>#}
+    <script src="https://cdn.bootcss.com/limonte-sweetalert2/8.11.8/sweetalert2.all.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/limonte-sweetalert2/8.11.8/sweetalert2.min.css">
 </head>
 <body>
 <div id="container">
@@ -53,7 +56,6 @@
 <script type="text/javascript">
     toastr.options.positionClass = 'toast-top-right';
 </script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 {% block js %}
 {% endblock %}
 </body>

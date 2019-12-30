@@ -178,15 +178,11 @@ $("#btn-regist").on('click', function () {
 
         success: function (data) {
             if (data.status) {
-                toastr.options = {
-                    timeOut:100,
-                    onHidden: function(){
-                        location.href = data.msg;
-                    }
-                };
-                toastr.info("注册成功！请马上到邮箱:"+data.email+"激活哦！")
-
-
+                 swal.fire(
+                  "注册成功！请马上到邮箱:"+data.email+"激活哦！",
+                  'success'
+                );
+                 location.href = '/user/login'
             } else {
                 toastr.error("注册信息有些不太对吧！看看提示再试吧！");
                 $.each(data.msg, function (k, v) {
@@ -341,7 +337,19 @@ $("#btn-pwdreset").on('click', function () {
 
 
 $("#btn-go-login").on('click', function () {
-    alert("111");
-    location.href = '/user/login';
-    alert("123")
+swal.fire({
+  title: '确定放弃注册吗？',
+  text: '你将回到登陆窗口！',
+  type: 'info',
+  showCancelButton: true,
+  confirmButtonColor: '#3085d6',
+  cancelButtonColor: '#d33',
+  confirmButtonText: '确定！',
+    cancelButtonText: "取消"
+}).then(function(reject){
+  if(reject.value){
+      location.href = '/user/login'
+  }
+})
+
 });
