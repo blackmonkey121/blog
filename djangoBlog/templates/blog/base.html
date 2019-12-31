@@ -5,13 +5,13 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}
-        首页
-    {% endblock %}:MonkeyBlog</title>
+    {% endblock %}MonkeyBlog</title>
 </head>
 
 <body>
 
 <link rel="stylesheet" href="{% static 'css/base.css' %}">
+<link rel="stylesheet" href="{% static 'fontawesome/css/font-awesome.css' %}">
 <link rel="stylesheet" href="{% static 'toastr/toastr.min.css' %}">
 <link rel="stylesheet" href="{% static 'css/navbar/reset.min.css' %}">
 <link rel="stylesheet" href="{% static 'css/navbar/style.css' %}">
@@ -29,18 +29,18 @@
             <li>
                 <a href="#click" class="menu">
                     {% if user.username %}
-                        <h2 class="menu-title">用户:{{ user.username | truncatechars:9 }}</h2>
+                        <h2 class="menu-title"><i class="fa fa-user-circle"></i> {{ user.username | truncatechars:9 }}</h2>
                         <ul class="menu-dropdown">
-                            <li id="li-logout">注销登陆</li>
-                            <li id="li-resetpwd">修改密码</li>
-                            <li onclick="location.href='{% url 'blog:home' user.id %}'">个人主页</li>
-                            <li>个人中心</li>
+                            <li id="li-logout"><i class="fa fa-power-off"></i> 注销登陆</li>
+                            <li id="li-resetpwd"><i class="fa fa-pencil-square-o"></i> 修改密码</li>
+                            <li onclick="location.href='{% url 'blog:home' user.id %}'"><i class="fa fa-home"></i> 个人主页</li>
+                            <li><i class="fa fa-street-view"></i> 个人中心</li>
                         </ul>
                     {% else %}
-                        <h2 class="menu-title">[登陆了|注册]</h2>
+                        <h2 class="menu-title"><i class="fa fa-user-circle"></i> [登陆了|注册]</h2>
                         <ul class="menu-dropdown">
-                            <li id="li-login" onclick="location.href='{% url 'user:login' %}'">登陆</li>
-                            <li id="li-regist" onclick="location.href='{% url 'user:regist' %}'">注册</li>
+                            <li id="li-login" onclick="location.href='{% url 'user:login' %}'"><i class="fa fa-paper-plane"></i> 登陆</li>
+                            <li id="li-regist" onclick="location.href='{% url 'user:regist' %}'"><i class="fa fa-registered"></i> 注册</li>
                         </ul>
 
                     {% endif %}
@@ -49,11 +49,11 @@
             </li>
             <li>
                 <a href="#click" class="menu">
-                    <h2 class="menu-title menu-title_2nd">文章分类</h2>
+                    <h2 class="menu-title menu-title_2nd"><i class="fa fa-server"></i> 文章分类</h2>
                     <ul class="menu-dropdown">
                         {% for category in categories %}
                             <li>
-                                {{ category.name }}
+                                <i class="fa fa-map-o fa-fw"></i> {{ category.name }}
                             </li>
                         {% empty %}
                             <li>没有分类</li>
@@ -63,11 +63,11 @@
             </li>
             <li>
                 <a href="#click" class="menu">
-                    <h2 class="menu-title menu-title_3rd">标签分类</h2>
+                    <h2 class="menu-title menu-title_3rd"><i class="fa fa-tags"></i> 标签分类</h2>
                     <ul class="menu-dropdown">
 
                         {% for tag in tags %}
-                            <li>{{ tag.name }}</li>
+                            <li><i class="fa fa-tag"></i> {{ tag.name }}</li>
                         {% empty %}
                             <li>没有标签</li>
                         {% endfor %}
@@ -77,7 +77,7 @@
             </li>
             <li>
                 <a href="#" class="menu">
-                    <h2 class="menu-title menu-title_4th">收藏夹</h2>
+                    <h2 class="menu-title menu-title_4th"><i class="fa fa-folder-open"></i> 收藏夹</h2>
                     <ul class="menu-dropdown">
                         <li id="li-logout"></li>
                         <li>待完成</li>
@@ -100,14 +100,14 @@
         <div id="nav-body" class="clearfix">
 
             <ul class="clearfix">
-                <li><a href="">新建文章</a></li>
-                <li><a href="{% url 'index' %}">首页</a></li>
+                <li><a href=""><i class="fa fa-plus"></i> 新建文章</a></li>
+                <li><a href="{% url 'index' %}"><i class="fa fa-home"></i> 首页</a></li>
                 <li><a href=" {% if user.username %}
                     {% url 'blog:home' user.id %}
                     {% else %}
                     {% url 'user:login' %}
-                {% endif %}">个人主页</a></li>
-                <li><a href="/user_admin">管理</a></li>
+                {% endif %}"><i class="fa fa-paper-plane-o"></i> 个人主页</a></li>
+                <li><a href="/user_admin"><i class="fa fa-cog fa-spin"></i> 管理</a></li>
             </ul>
 
             <div id="blog-status">
@@ -124,7 +124,23 @@
     </div>
 
     <!-- 页面导航结束 -->
+{% if visited_user %}
+    >>{{ visited_user.username }}
+    {% else %}
+    >> Monkey'Blog 首页
+    {% endif %}
+{% if category %}
+    >>{{ category.name }}
+{% endif %}
+    {% if article.category.name %}
+        >>{{ article.category.name }}
+        {% if article.title %}
+            >>{{ article.title }}
+            {% endif %}
 
+    {% endif %}
+
+    <!-- 页面左右分栏容器开始 -->
     <div id="main" class="clearfix">
         <!-- 左侧边栏开始 -->
         <div id="left" class="clearfix">
@@ -132,6 +148,8 @@
 
             {% endblock %}
         </div>
+    <div>
+    </div>
 
         <!-- 左侧边栏结束 -->
 
@@ -140,22 +158,22 @@
 
             {% if visited_user %}
                 <div id="user-info" class="bar-block">
-                    <p class="bar-title">>>博主信息</p>
+                    <p class="bar-title"><i class="fa fa-book fa-fw"></i>博主信息</p>
                     <img id="avatar" src="{{ visited_user.avatar.url }}" alt="头像" title="头像">
-                    <p>昵称: <span>{{ visited_user.nickname }}</span></p>
-                    <p>入坑: <span>{{ visited_user.date_joined | date:'Y-m-d' }}</span></p>
-                    <p id="signature">签名: <span>{{ visited_user.signature }}</span></p>
-                    <p id="profile">自述: <span>{{ visited_user.profile }}</span></p>
+                    <p><i class="fa fa-user-circle-o"></i>昵称: <span>{{ visited_user.nickname }}</span></p>
+                    <p><i class="fa fa-hourglass"></i>入坑: <span>{{ visited_user.date_joined | date:'Y-m-d' }}</span></p>
+                    <p id="signature"><i class="fa fa-pencil-square"></i>签名: <span>{{ visited_user.signature }}</span></p>
+                    <p id="profile"><i class="fa fa-info-circle"></i>自述: <span>{{ visited_user.profile }}</span></p>
                 </div>
             {% endif %}
 
             <!-- sidebar category -->
             <div id="category" class="bar-block">
-                <p class="bar-title">>>分类</p>
+                <p class="bar-title"><i class="fa fa-map-o fa-fw"></i>分类</p>
                 <ul>
                     {% for category in categories %}
                         <li>
-                            <a href="">{{ category.name }}({{ category.post_set.count }})</a>
+                            <a href="{% url 'blog:category_list' category.id %}">{{ category.name }}({{ category.post_set.count }})</a>
                         </li>
                     {% empty %}
                         <li>哎呀！还没有分类！</li>
@@ -166,11 +184,11 @@
             <!-- sidebar tag-->
 
             <div id="tag" class="bar-block">
-                <p class="bar-title">>>标签</p>
+                <p class="bar-title"><i class="fa fa-tags fa-fw"></i>标签</p>
                 <ul>
                     {% for tag in tags %}
                         <li>
-                            <a href="">{{ tag.name }}({{ tag.post_set.count }})</a>
+                            <a href="{% url 'blog:tag_list' tag.id %}">{{ tag.name }}({{ tag.post_set.count }})</a>
                         </li>
                     {% empty %}
                         <li>哎呀！还没有标签！</li>
@@ -181,7 +199,7 @@
             <!-- sidebar article -->
             {% for sidebar in sidebars %}
                 <div class="bar-block">
-                    <p class="bar-title">>>{{ sidebar.title }}</p>
+                    <p class="bar-title"><i class="fa fa-medium fa-fw"></i>{{ sidebar.title }}</p>
 
                     {{ sidebar.html }}
                 </div>
@@ -192,6 +210,7 @@
         <!-- 右侧结束-->
 
     </div>
+    <!-- 页面分栏结束 -->
 
 
     <!-- 底部声明信息开始-->

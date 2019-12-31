@@ -26,8 +26,12 @@ class CommonViewMixmin(object):
         tag_id = self.kwargs.get('tag_id')
         if tag_id:
             return Tag.objects.filter(id=tag_id).first().owner.id
+
+        category_id = self.kwargs.get('category_id')
+        if category_id:
+            return Category.objects.filter(id=category_id).first().owner.id
     # 获取查询集文章
-    queryset = Post.get_latest_article()
+    # queryset = Post.get_latest_article()
 
     def get_queryset(self, **kwargs):
 
@@ -97,6 +101,13 @@ class IndexView(CommonViewMixmin, ListView):
 
 
 class CategoryView(IndexView):
+
+    # def get_queryset(self,**kwargs):
+    #     category_id = self.kwargs.get('category_id')
+    #     query_set= super().get_queryset()
+    #     if category_id:
+    #         return query_set.filter(id=category_id)
+
     def get_context_data(self, **kwargs):
         """ 重写get_context_data 方法 产生期望的数据集 """
         context = super().get_context_data(**kwargs)

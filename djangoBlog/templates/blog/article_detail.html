@@ -7,17 +7,35 @@
 {% block main-page %}
     <div id="detail">
     {% if article %}
-        <p class="detail-title">{{ article.title }}</p>
-        <hr>
-        <div class="detail-cookies">
-            <span>原创{{ article.nv|default:"原创" }}</span>
-            <span>分类:{{ article.category.name }}</span>
-            <span>作者:{{ article.owner.username }}</span>
-            <span>阅览量:{{ article.pv|default:"1000+" }}</span>
-        </div>
-        <p>
-        {{ article.content }}
+        <p class="detail-title">{{ article.title }}
         </p>
+
+        <div class="detail-cookies">
+            {% if article.nv %}
+                <span id="repr">原创</span>
+                {% else %}
+                <span id="copy"><a href="{{ article.nv }}">转载</a></span>
+            {% endif %}
+            <span><i class="fa fa-tags"></i>{{ article.category.name }}</span>
+            <span><i class="fa fa-user-secret"></i>{{ article.owner.username }}</span>
+            <span>阅览量:{{ article.pv|default:"1000+" }}</span>
+            <span>发布于 <i class="fa fa-clock-o"></i>{{ article.created_time|date:'Y-m-d H:m:s' }}</span>
+            <span id="start"><a href=""><i class="fa fa-star fa-spin"></i>收藏</a></span>
+
+        </div>
+        <div class="detail-content">
+            {{ article.content }}
+        </div>
+
+        <div id="thumb">
+            <p>
+               <span class="up"><i class="fa fa-thumbs-up"></i>赞{{ article.nv }}</span>
+                <i></i>
+               <span class="down"><i class="fa fa-thumbs-down"></i>踩{{ article.pv }}</span>
+            </p>
+
+        </div>
+
     {% endif %}
     </div>
 {% endblock %}
