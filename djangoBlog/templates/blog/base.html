@@ -33,7 +33,7 @@
                         <ul class="menu-dropdown">
                             <li id="li-logout">注销登陆</li>
                             <li id="li-resetpwd">修改密码</li>
-                            <li>个人主页</li>
+                            <li onclick="location.href='{% url 'blog:home' user.id %}'">个人主页</li>
                             <li>个人中心</li>
                         </ul>
                     {% else %}
@@ -94,7 +94,7 @@
     <!-- 页面导航导航开始 -->
     <div id="nav">
         <div id="nav-title">
-    <p><a href="{% url 'blog:home' user.id %}"></a>{{ visited_user.username|default:"Monkey'Blog首页" }}</p>
+            <p><a href="{% url 'blog:home' user.id %}"></a>{{ visited_user.nickname|default:"Monkey'Blog首页" }}</p>
 
         </div>
         <div id="nav-body" class="clearfix">
@@ -102,16 +102,20 @@
             <ul class="clearfix">
                 <li><a href="">新建文章</a></li>
                 <li><a href="{% url 'index' %}">首页</a></li>
-               <li><a href=" {% if user.username %}
+                <li><a href=" {% if user.username %}
                     {% url 'blog:home' user.id %}
                     {% else %}
-                    {% url 'user:login'%}
+                    {% url 'user:login' %}
                 {% endif %}">个人主页</a></li>
                 <li><a href="/user_admin">管理</a></li>
             </ul>
 
             <div id="blog-status">
-                <span>文章-{{ visited_user.post_set.count }}</span>
+                {% if visited_user %}
+                    <span>文章-{{ visited_user.post_set.count }}</span>
+                {% else %}
+                    <span>文章-{{ visited_user.post_set.count | default:"N+" }}</span>
+                {% endif %}
                 <span>分类-{{ categories|length }}</span>
                 <span>标签-{{ tags|length }}</span>
             </div>
@@ -121,64 +125,73 @@
 
     <!-- 页面导航结束 -->
 
-    <!-- 左侧边栏开始 -->
-    <div id="left" class="clearfix">
-        <div class="content">
+    <div id="main" class="clearfix">
+        <!-- 左侧边栏开始 -->
+        <div id="left" class="clearfix">
             {% block main-page %}
 
             {% endblock %}
         </div>
-    </div>
-    <!-- 左侧边栏结束 -->
 
-    <!-- 右侧开始-->
-    <div id="right" class="clearfix">
-        <div class="data">
+        <!-- 左侧边栏结束 -->
+
+        <!-- 右侧开始-->
+        <div id="right" class="clearfix">
+
+            {% if visited_user %}
+                <div id="user-info" class="bar-block">
+                    <p class="bar-title">>>博主信息</p>
+                    <img id="avatar" src="{{ visited_user.avatar.url }}" alt="头像" title="头像">
+                    <p>昵称: <span>{{ visited_user.nickname }}</span></p>
+                    <p>入坑: <span>{{ visited_user.date_joined | date:'Y-m-d' }}</span></p>
+                    <p id="signature">签名: <span>{{ visited_user.signature }}</span></p>
+                    <p id="profile">自述: <span>{{ visited_user.profile }}</span></p>
+                </div>
+            {% endif %}
+
+            <!-- sidebar category -->
+            <div id="category" class="bar-block">
+                <p class="bar-title">>>分类</p>
+                <ul>
+                    {% for category in categories %}
+                        <li>
+                            <a href="">{{ category.name }}({{ category.post_set.count }})</a>
+                        </li>
+                    {% empty %}
+                        <li>哎呀！还没有分类！</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <!-- sidebar tag-->
+
+            <div id="tag" class="bar-block">
+                <p class="bar-title">>>标签</p>
+                <ul>
+                    {% for tag in tags %}
+                        <li>
+                            <a href="">{{ tag.name }}({{ tag.post_set.count }})</a>
+                        </li>
+                    {% empty %}
+                        <li>哎呀！还没有标签！</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <!-- sidebar article -->
+            {% for sidebar in sidebars %}
+                <div class="bar-block">
+                    <p class="bar-title">>>{{ sidebar.title }}</p>
+
+                    {{ sidebar.html }}
+                </div>
+            {% endfor %}
+
 
         </div>
-
-        <hr>
-<!-- sidebar category -->
-        <ul>
-            <li class="li-title">>>分类</li>
-            {% for category in categories %}
-                <li>
-                    <a href="">{{ category.name}}({{ category.post_set.count }})</a>
-                </li>
-                {% empty %}
-                <li>哎呀！还没有分类！</li>
-            {% endfor %}
-        </ul>
-
-        <hr>
-
-<!-- sidebar tag-->
-        <ul>
-            <li class="li-title">>>标签</li>
-            {% for tag in tags %}
-                <li>
-                    <a href="">{{ tag.name }}({{ tag.post_set.count }})</a>
-                </li>
-                {% empty %}
-                <li>哎呀！还没有标签！</li>
-            {% endfor %}
-        </ul>
-
-    <hr>
-        <hr>
-
-            {% for sidebar in sidebars %}
-
-            <h4>{{ sidebar.title }}</h4>
-            {{ sidebar.html }}
-
-        {% endfor %}
-
-
-
+        <!-- 右侧结束-->
 
     </div>
-    <!-- 右侧结束-->
 
 
     <!-- 底部声明信息开始-->

@@ -1,6 +1,6 @@
 <ul>
     {% for article in posts %}
-        <li><a href="/blog/post/{{ article.id }}.html">###{{ article.title | truncatechars:"12" }}</a></li>
+        <li><a href="{% url 'blog:article_detail' article.id %}">{{ article.title | truncatechars:"12" }}</a></li>
     {% endfor %}
 
 </ul>

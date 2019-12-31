@@ -13,6 +13,7 @@ class Category(models.Model):
     STATUS_ITEMS = (
         (STATUS_NORMAL, '正常'),
         (STATUS_DELETE, '删除'),
+        (STATUS_DEFAULT, '默认'),
     )
     name = models.CharField(max_length=50, verbose_name="名称")
     status = models.PositiveIntegerField(default=STATUS_NORMAL,
@@ -36,6 +37,7 @@ class Tag(models.Model):
     STATUS_ITEMS = (
         (STATUS_NORMAL, '正常'),
         (STATUS_DELETE, '删除'),
+        (STATUS_DEFAULT, '默认'),
     )
     name = models.CharField(max_length=10, verbose_name="名称")
     status = models.PositiveIntegerField(default=STATUS_NORMAL,

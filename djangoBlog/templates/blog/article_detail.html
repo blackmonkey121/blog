@@ -1,19 +1,23 @@
 {% extends 'blog/base.html' %}
 
 {% block nav-title %}
-{{ article.title }}
+    {{ article.title }}
 {% endblock %}
 
 {% block main-page %}
+    <div id="detail">
     {% if article %}
-        <h1>{{ article.title }}</h1>
-        <div>
-        <span>分类:{{ article.category.name }}</span>
-        <span>作者:{{ article.owner.username }}</span>
-        </div>
+        <p class="detail-title">{{ article.title }}</p>
         <hr>
+        <div class="detail-cookies">
+            <span>原创{{ article.nv|default:"原创" }}</span>
+            <span>分类:{{ article.category.name }}</span>
+            <span>作者:{{ article.owner.username }}</span>
+            <span>阅览量:{{ article.pv|default:"1000+" }}</span>
+        </div>
         <p>
         {{ article.content }}
         </p>
     {% endif %}
+    </div>
 {% endblock %}
