@@ -8,8 +8,8 @@
         {% block title %}
         {% endblock %}
     </title>
-    <link rel="stylesheet" href="{% static 'css/base.css' %}">
-    <link rel="stylesheet" href="{% static 'css/login_regist.css' %}">
+    <link rel="stylesheet" href="{% static 'themes/default/css/reset.min.css' %}">
+    <link rel="stylesheet" href="{% static 'themes/default/css/login_regist.css' %}">
     <link rel="stylesheet" href="{% static 'toastr/toastr.min.css'%}">
 {#    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>#}
     <script src="https://cdn.bootcss.com/limonte-sweetalert2/8.11.8/sweetalert2.all.min.js"></script>
@@ -28,7 +28,7 @@
 
     <!-- left start -->
     <div id="left">
-        <img src="{% static 'img/login.png' %}" alt="">
+        <img src="{% static '/themes/default/img/login.png' %}" alt="">
     </div>
     <!-- left end -->
 
@@ -51,7 +51,7 @@
 </div>
 
 <script src="{% static 'js/jquery3.2.1.js' %}"></script>
-<script src="{% static 'js/log_regist.js' %}"></script>
+<script src="{% static '/themes/default/js/log_regist.js' %}"></script>
 <script src="{% static 'toastr/toastr.min.js' %}"></script>
 <script type="text/javascript">
     toastr.options.positionClass = 'toast-top-right';

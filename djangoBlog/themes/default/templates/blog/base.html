@@ -10,12 +10,12 @@
 
 <body>
 
-<link rel="stylesheet" href="{% static 'css/base.css' %}">
+<link rel="stylesheet" href="{% static 'themes/default/css/reset.min.css' %}">
 <link rel="stylesheet" href="{% static 'fontawesome/css/font-awesome.css' %}">
 <link rel="stylesheet" href="{% static 'toastr/toastr.min.css' %}">
 <link rel="stylesheet" href="{% static 'css/navbar/reset.min.css' %}">
-<link rel="stylesheet" href="{% static 'css/navbar/style.css' %}">
-<link rel="stylesheet" href="{% static 'css/theme/default.css' %}">
+<link rel="stylesheet" href="{% static 'themes/default/css/navbar.css' %}">
+<link rel="stylesheet" href="{% static 'themes/default/css/default.css' %}">
 <script src="{% static 'js/jquery3.2.1.js' %}"></script>
 {% block css %}
 
@@ -125,17 +125,17 @@
 
     <!-- 页面导航结束 -->
 {% if visited_user %}
-    >>{{ visited_user.username }}
+    {{ visited_user.username }}<i class="fa fa-play"></i>
     {% else %}
-    >> Monkey'Blog 首页
+    <span>Monkey'Blog 首页</span>
     {% endif %}
 {% if category %}
-    >>{{ category.name }}
+    <span>{{ category.name }}<i class="fa fa-play"></i></span>
 {% endif %}
     {% if article.category.name %}
-        >>{{ article.category.name }}
+        <span>{{ article.category.name }}<i class="fa fa-play"></i></span>
         {% if article.title %}
-            >>{{ article.title }}
+            <span>{{ article.title }}<i class="fa fa-play"></i></span>
             {% endif %}
 
     {% endif %}
@@ -229,7 +229,7 @@
 
 <!-- 页面js -->
 {% block js %}
-    <script src="{% static 'js/navbar.js' %}"></script>
+    <script src="{% static '/themes/default/js/navbar.js' %}"></script>
     <script src="{% static 'toastr/toastr.min.js' %}"></script>
     <script type="text/javascript">
         toastr.options.positionClass = 'toast-top-right';
