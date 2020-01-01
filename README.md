@@ -1,5 +1,5 @@
 # DjangoBlog
-New technology training ground for Python3.x (Django Blogs)！
+Multiplayer Online Blog System Based on Django Framework!
 
 # 基于 Django 框架实现的多人博客项目
 ### 项目介绍：
