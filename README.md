@@ -2,7 +2,7 @@
 New technology training ground for Python3.x (Django Blogs)！
 
 # 基于 Django 框架实现的多人博客项目
-###项目介绍：
+### 项目介绍：
 
 
 ## 环境：
@@ -36,7 +36,7 @@ New technology training ground for Python3.x (Django Blogs)！
 
 ## 关于主题
 
-###创建新的模版主题
+### 创建新的模版主题
 Themes由前端来构建（HTML、CSS、JavaScript）
 其中 CSS JS 插件等静态文件都放在static目录下
 
