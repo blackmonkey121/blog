@@ -10,8 +10,49 @@
     font-size: 34px;
     font-weight: bold;
     cursor: pointer;
-
+    float: left;
 }
+#nav-title form{
+    margin-top: 3%;
+    float: right;
+    position: relative;
+}
+
+#nav-title form span{
+    /*border: 2px solid #0097b9;*/
+    /*display: inline-block;*/
+    /*border-left: 0;*/
+    /*height: 24px;*/
+    /*background: #f8f8f8;*/
+    /*border-radius: 0 4px 4px 0;*/
+    position: absolute;
+    right: 62px;
+    top:3px;
+}
+#nav-title form input{
+    border: 2px solid #0097b9;
+    height: 24px;
+    width: 150px;
+    outline: none;
+    padding: 0 0 0 4px;
+    background: #f8f8f8;
+    border-radius: 4px;
+}
+
+#nav-title form button{
+    height: 24px;
+    border-radius: 4px;
+    background: #8fcf3e;
+    color: #ebebeb;
+    outline: none;
+    cursor: pointer;
+}
+
+#nav-title form button:hover{
+    background: deepskyblue;
+}
+
+
 #nav-title p:hover{
     color:deepskyblue ;
     border-left: 8px solid #999;
@@ -232,17 +273,13 @@
     color: #919191;
     font-size: 20px;
 }
-
 #detail #thumb i{
     margin-left: 10px;
 }
-
 #detail #thumb .up:hover{
     color: #3e81ee;
 }
-
 #detail #thumb .down:hover{
     color: black;
 }
-
 

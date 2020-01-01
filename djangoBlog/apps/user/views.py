@@ -106,7 +106,7 @@ def login(request):
                 else:
                     auth.login(request, user)
                     ret_msg["status"] = 1
-                    ret_msg["msg"] = reverse('index')
+                    ret_msg["msg"] = reverse('blog:home', kwargs={"user_id": user.id})
             else:
                 ret_msg["msg"]["password"] = "用户名或密码不正确。"
 

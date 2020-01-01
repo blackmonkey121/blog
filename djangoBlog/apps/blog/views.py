@@ -5,6 +5,8 @@ from django.views.generic import DetailView, ListView
 from .models import Post, Tag, Category
 from apps.config.models import SideBar, Link
 from apps.user.models import UserInfo
+from django.db.models import Q
+
 # Create your views here.
 
 
@@ -149,6 +151,28 @@ class ArticleDetailView(CommonViewMixmin, DetailView):
     template_name = 'blog/article_detail.html'
     context_object_name = "article"
     pk_url_kwarg = "post_id"
+
+
+class SearchView(IndexView):
+    """
+    整站搜索
+    FIXME：添加个人站点内搜索 < 只需传入 user_id 结果就是个人站点的搜索结果>
+    #TODO：
+    """
+    def get_queryset(self, **kwargs):
+        query_set = super().get_queryset()
+        keyword = self.request.GET.get('keyword')
+        # keyword = self.args.get('keyword')
+        if keyword:
+            return query_set.filter(Q(title__contains=keyword) | Q(desc__contains=keyword))
+        return query_set
+
+    def get_context_data(self, **kwargs):
+        content = super().get_context_data()
+        content.update({
+            'keyword': self.request.GET.get('keyword', '')
+        })
+        return content
 
 
 @login_required()

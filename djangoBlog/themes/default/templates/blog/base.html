@@ -93,8 +93,19 @@
 
     <!-- 页面导航导航开始 -->
     <div id="nav">
-        <div id="nav-title">
-            <p><a href="{% url 'blog:home' user.id %}"></a>{{ visited_user.nickname|default:"Monkey'Blog首页" }}</p>
+        <div id="nav-title" class="clearfix">
+            <p>
+                <a href="{% url 'blog:home' user.id %}"></a>{{ visited_user.nickname|default:"Monkey'Blog首页" }}
+            </p>
+            <form action="{% url 'blog:search' %}" method="get">
+
+                <input name="keyword" type="text" placeholder="Search Keyword!" value="{{ keyword }}">
+                <span id="search-logo">
+                    <i class="fa fa-search"></i>
+                </span>
+                <button type="submit">Search</button>
+
+            </form>
 
         </div>
         <div id="nav-body" class="clearfix">
