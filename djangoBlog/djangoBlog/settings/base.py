@@ -122,8 +122,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+THEME_STATIC = 'default'
+
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'static', 'themes', THEME_STATIC),
 ]
 
 AUTH_USER_MODEL = 'user.UserInfo'

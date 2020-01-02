@@ -6,36 +6,59 @@
 
 {% block main-page %}
     <div id="detail">
-    {% if article %}
-        <p class="detail-title">{{ article.title }}
-        </p>
-
-        <div class="detail-cookies">
-            {% if article.nv %}
-                <span id="repr">原创</span>
-                {% else %}
-                <span id="copy"><a href="{{ article.nv }}">转载</a></span>
-            {% endif %}
-            <span><i class="fa fa-tags"></i>{{ article.category.name }}</span>
-            <span><i class="fa fa-user-secret"></i>{{ article.owner.username }}</span>
-            <span>阅览量:{{ article.pv|default:"1000+" }}</span>
-            <span>发布于 <i class="fa fa-clock-o"></i>{{ article.created_time|date:'Y-m-d H:m:s' }}</span>
-            <span id="start"><a href=""><i class="fa fa-star fa-spin"></i>收藏</a></span>
-
-        </div>
-        <div class="detail-content">
-            {{ article.content }}
-        </div>
-
-        <div id="thumb">
-            <p>
-               <span class="up"><i class="fa fa-thumbs-up"></i>赞{{ article.nv }}</span>
-                <i></i>
-               <span class="down"><i class="fa fa-thumbs-down"></i>踩{{ article.pv }}</span>
+        {% if article %}
+            <p class="detail-title">{{ article.title }}
             </p>
 
+            <div class="detail-cookies">
+                {% if article.nv %}
+                    <span id="repr">原创</span>
+                {% else %}
+                    <span id="copy"><a href="{{ article.nv }}">转载</a></span>
+                {% endif %}
+                <span><i class="fa fa-tags"></i>{{ article.category.name }}</span>
+                <span><i class="fa fa-user-secret"></i>{{ article.owner.username }}</span>
+                <span>阅览量:{{ article.pv|default:"1000+" }}</span>
+                <span>发布于 <i class="fa fa-clock-o"></i>{{ article.created_time|date:'Y-m-d H:m:s' }}</span>
+                <span id="start"><a href=""><i class="fa fa-star fa-spin"></i>收藏</a></span>
+
+            </div>
+            <div class="detail-content">
+                {{ article.content }}
+            </div>
+
+            <div id="thumb">
+                <p>
+                    <span class="up"><i class="fa fa-thumbs-up"></i>赞{{ article.nv }}</span>
+                    <i></i>
+                    <span class="down"><i class="fa fa-thumbs-down"></i>踩{{ article.pv }}</span>
+                </p>
+
+            </div>
+
+        {% endif %}
+    </div>
+    <hr>
+
+    <div id="comment">
+        <div id="add-comment">
+            <p class="add-comment-head"><em>Comments</em><span><i class="fa fa-plus"></i></span></p>
+            <div class="add-comment-body">
+                <textarea name="comment" id="add-comment-content" rows="2" placeholder="新增评论"></textarea>
+            </div>
+            <p class="add-comment-cookies"><span><i class="fa fa-paper-plane"></i>提交</span><span><i
+                    class="fa fa-ban"></i>取消</span></p>
+
+
         </div>
 
-    {% endif %}
+        <div id="list-comment">
+            {% for comment in comments %}
+                <p><img src="{{ comment.owner.avatar.url }}" alt=""></p><p><span>{{ comment.nickname }}</span>:<span>{{ comment.content }}</span>
+            </p>
+            <p id="comment-cookies"><span><i class="fa fa-clock-o"></i>{{ comment.created_time }}</span></p>
+            {% endfor %}
+        </div>
+
     </div>
 {% endblock %}

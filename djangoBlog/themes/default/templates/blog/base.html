@@ -10,12 +10,12 @@
 
 <body>
 
-<link rel="stylesheet" href="{% static 'themes/default/css/reset.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/reset.min.css' %}">
 <link rel="stylesheet" href="{% static 'fontawesome/css/font-awesome.css' %}">
 <link rel="stylesheet" href="{% static 'toastr/toastr.min.css' %}">
 <link rel="stylesheet" href="{% static 'css/navbar/reset.min.css' %}">
-<link rel="stylesheet" href="{% static 'themes/default/css/navbar.css' %}">
-<link rel="stylesheet" href="{% static 'themes/default/css/default.css' %}">
+<link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+<link rel="stylesheet" href="{% static 'css/default.css' %}">
 <script src="{% static 'js/jquery3.2.1.js' %}"></script>
 {% block css %}
 
@@ -240,7 +240,7 @@
 
 <!-- 页面js -->
 {% block js %}
-    <script src="{% static '/themes/default/js/navbar.js' %}"></script>
+    <script src="{% static 'js/navbar.js' %}"></script>
     <script src="{% static 'toastr/toastr.min.js' %}"></script>
     <script type="text/javascript">
         toastr.options.positionClass = 'toast-top-right';

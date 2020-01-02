@@ -8,8 +8,8 @@ class Link(models.Model):
     STATUS_NORMAL = 1
     STATUS_DELETE = 0
     STATUS_ITEMS = (
-        (STATUS_NORMAL,'正常'),
-        (STATUS_DELETE,'删除'),
+        (STATUS_NORMAL, '正常'),
+        (STATUS_DELETE, '删除'),
     )
     title = models.CharField(max_length=50, verbose_name="标题")
     href = models.URLField(verbose_name="链接")    # default length ：200
@@ -18,7 +18,7 @@ class Link(models.Model):
                                          choices=STATUS_ITEMS,
                                          verbose_name="状态")
     weight = models.PositiveIntegerField(default=1,
-                                         choices=((i,i) for i in range(1,6)),
+                                         choices=((i, i) for i in range(1,6)),
                                          verbose_name="权重",
                                          help_text="权重越高越靠前")
 

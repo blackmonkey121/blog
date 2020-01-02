@@ -85,7 +85,7 @@ class Post(models.Model):
         return cls.objects.filter(status=cls.STATUS_NORMAL).order_by('-pv')
 
     @staticmethod
-    def get_article_tag(tag_id):
+    def get_tag_article(tag_id):
         try:
             tag = Tag.objects.get(id=tag_id)
         except Tag.DoesNotExist:
@@ -97,7 +97,7 @@ class Post(models.Model):
 
     # FIXME：需要过滤当前用户定义的标签 category = Category.objects.filter(id=category_id, owner=user)  user 需要获取
     @staticmethod
-    def get_article_category(category_id):
+    def get_category_article(category_id):
         try:
             category = Category.objects.get(id=category_id)
         except Category.DoesNotExist:

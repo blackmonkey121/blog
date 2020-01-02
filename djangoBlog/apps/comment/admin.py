@@ -9,11 +9,10 @@ from .models import Comment
 
 @admin.register(Comment,site=branch_site)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ('target', 'nickname', 'content', 'website', 'created_time')
+    list_display = ('target', 'nickname', 'content', 'owner', 'created_time')
 
     def operator(self, obj):
         """
-
         :param obj: 当前对象
         """
         from django.urls import reverse

@@ -8,6 +8,7 @@ from apps.user.models import UserInfo
 from django.db.models import Q
 
 # Create your views here.
+from ..comment.models import Comment
 
 
 class CommonViewMixmin(object):
@@ -35,7 +36,7 @@ class CommonViewMixmin(object):
     # 获取查询集文章
     # queryset = Post.get_latest_article()
 
-    def get_queryset(self, **kwargs):
+    def get_queryset(self):
 
         user_id = self.get_current_user_id()
 
@@ -55,7 +56,7 @@ class CommonViewMixmin(object):
 
         # add sidebars data
         context.update({
-            'sidebars':self.get_sidebars(owner_id=user_id)
+            'sidebars': self.get_sidebars(owner_id=user_id)
         })
 
         # add categories
@@ -104,12 +105,6 @@ class IndexView(CommonViewMixmin, ListView):
 
 class CategoryView(IndexView):
 
-    # def get_queryset(self,**kwargs):
-    #     category_id = self.kwargs.get('category_id')
-    #     query_set= super().get_queryset()
-    #     if category_id:
-    #         return query_set.filter(id=category_id)
-
     def get_context_data(self, **kwargs):
         """ 重写get_context_data 方法 产生期望的数据集 """
         context = super().get_context_data(**kwargs)
@@ -135,7 +130,7 @@ class TagView(IndexView):
         tag_id = self.kwargs.get('tag_id')
         tag = get_object_or_404(Tag, pk=tag_id)    #获取一个对象的实例 else rasie 404
         context.update({
-            'tag':tag,
+            'tag': tag,
         })
         return context
 
@@ -146,20 +141,13 @@ class TagView(IndexView):
         return queryset.filter(tag_id=tag_id)
 
 
-class ArticleDetailView(CommonViewMixmin, DetailView):
-
-    template_name = 'blog/article_detail.html'
-    context_object_name = "article"
-    pk_url_kwarg = "post_id"
-
-
 class SearchView(IndexView):
     """
     整站搜索
     FIXME：添加个人站点内搜索 < 只需传入 user_id 结果就是个人站点的搜索结果>
     #TODO：
     """
-    def get_queryset(self, **kwargs):
+    def get_queryset(self):
         query_set = super().get_queryset()
         keyword = self.request.GET.get('keyword')
         # keyword = self.args.get('keyword')
@@ -168,11 +156,26 @@ class SearchView(IndexView):
         return query_set
 
     def get_context_data(self, **kwargs):
-        content = super().get_context_data()
+        content = super().get_context_data(**kwargs)
         content.update({
             'keyword': self.request.GET.get('keyword', '')
         })
         return content
+
+
+class ArticleDetailView(CommonViewMixmin, DetailView):
+
+    template_name = 'blog/article_detail.html'
+    context_object_name = "article"
+    pk_url_kwarg = "post_id"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        article_id = self.kwargs.get("post_id")
+        context.update({
+            'comments': Comment.objects.filter(target=article_id),
+        })
+        return context
 
 
 @login_required()
