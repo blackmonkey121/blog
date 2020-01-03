@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render,redirect,HttpResponse
+from django.shortcuts import render, redirect, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.views.generic import DetailView, ListView
 from .models import Post, Tag, Category
@@ -33,8 +33,8 @@ class CommonViewMixmin(object):
         category_id = self.kwargs.get('category_id')
         if category_id:
             return Category.objects.filter(id=category_id).first().owner.id
+
     # 获取查询集文章
-    # queryset = Post.get_latest_article()
 
     def get_queryset(self):
 
@@ -52,7 +52,7 @@ class CommonViewMixmin(object):
         """
         # get visited user id
         user_id = self.get_current_user_id()
-        context = super().get_context_data(**kwargs)    # 多继承 super 会按照MRO列表执行方法
+        context = super().get_context_data(**kwargs)  # 多继承 super 会按照MRO列表执行方法
 
         # add sidebars data
         context.update({
@@ -81,7 +81,7 @@ class CommonViewMixmin(object):
         sidebars = []
         titles = SideBar.objects.filter(status=SideBar.STATUS_SHOW, owner_id=owner_id)
         for title in titles:
-            sidebars.append({'title': title.title,'html':title.content_html(owner_id)})
+            sidebars.append({'title': title.title, 'html': title.content_html(owner_id)})
         return sidebars
 
     @staticmethod
@@ -109,7 +109,7 @@ class CategoryView(IndexView):
         """ 重写get_context_data 方法 产生期望的数据集 """
         context = super().get_context_data(**kwargs)
         category_id = self.kwargs.get('category_id')
-        category = get_object_or_404(Category, pk=category_id)    #获取一个对象的实例 else rasie 404
+        category = get_object_or_404(Category, pk=category_id)  # 获取一个对象的实例 else rasie 404
         context.update({
             'category': category,
         })
@@ -128,7 +128,7 @@ class TagView(IndexView):
         """ 重写get_context_data 方法 产生期望的数据集 """
         context = super().get_context_data(**kwargs)
         tag_id = self.kwargs.get('tag_id')
-        tag = get_object_or_404(Tag, pk=tag_id)    #获取一个对象的实例 else rasie 404
+        tag = get_object_or_404(Tag, pk=tag_id)  # 获取一个对象的实例 else rasie 404
         context.update({
             'tag': tag,
         })
@@ -147,6 +147,7 @@ class SearchView(IndexView):
     FIXME：添加个人站点内搜索 < 只需传入 user_id 结果就是个人站点的搜索结果>
     #TODO：
     """
+
     def get_queryset(self):
         query_set = super().get_queryset()
         keyword = self.request.GET.get('keyword')
@@ -164,7 +165,6 @@ class SearchView(IndexView):
 
 
 class ArticleDetailView(CommonViewMixmin, DetailView):
-
     template_name = 'blog/article_detail.html'
     context_object_name = "article"
     pk_url_kwarg = "post_id"
@@ -173,7 +173,7 @@ class ArticleDetailView(CommonViewMixmin, DetailView):
         context = super().get_context_data(**kwargs)
         article_id = self.kwargs.get("post_id")
         context.update({
-            'comments': Comment.objects.filter(target=article_id),
+            'comments': Comment.objects.filter(target=article_id).order_by('-id'),
         })
         return context
 

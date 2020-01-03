@@ -24,9 +24,10 @@ from apps.user.views import login
 urlpatterns = [
     url(r'^user/', include('apps.user.urls', namespace='user')),
     url(r'^blog/', include('apps.blog.urls', namespace='blog')),
+    url(r'^config/', include('apps.config.urls', namespace='config')),
+    url(r'^comment/', include('apps.comment.urls', namespace='comment')),
     url(r'^super_admin', admin.site.urls, name='super_admin'),
     url(r'^user_admin', branch_site.urls, name='user_admin'),
-    url(r'^config/', include('apps.config.urls', namespace='config')),
     url(r'^media/(?P<path>.*)', serve, {"document_root": develop.MEDIA_ROOT}),
     url(r'^', IndexView.as_view(), name="index"),
 ]

@@ -3,8 +3,8 @@
 __author__ = "Monkey"
 
 from django.conf.urls import url
-from apps.user import views
+from .views import CommentView
 
 urlpatterns = [
-
+    url(r'^comment/$', CommentView.as_view(), name='comment'),
 ]

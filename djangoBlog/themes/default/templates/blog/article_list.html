@@ -31,6 +31,8 @@
                 <span><a href="#"><i class="fa fa-comments"></i>{{ article.comment_set.count }}</a></span>
                 <i></i>
                 <span>{{ article.category.name }}</span>
+                <span><i class="fa fa-paw"></i>{{ article.comment.count|default:'100' }}</span>
+                <i></i>
             </div>
         </div>
             {% empty %}

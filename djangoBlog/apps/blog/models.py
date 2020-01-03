@@ -1,5 +1,6 @@
 from django.db import models
 from apps.user.models import UserInfo
+import mistune
 
 # Create your models here.
 # 数据处理尽可能的集中在了models层，使得views层逻辑更为简单清晰
@@ -65,6 +66,7 @@ class Post(models.Model):
     title = models.CharField(max_length=255, verbose_name="标题")
     desc = models.CharField(max_length=1024, blank=True, verbose_name="摘要")
     content = models.TextField(verbose_name="正文", help_text="正文必须为MarkDown格式")
+    content_html = models.TextField(verbose_name="正文html", blank=True, editable=False)
     status = models.PositiveIntegerField(default=STATUS_NORMAL,
                                          choices=STATUS_ITEMS,
                                          verbose_name="状态")
@@ -112,6 +114,12 @@ class Post(models.Model):
         if user_id is not None:
             return cls.objects.filter(status=cls.STATUS_NORMAL, owner_id=user_id)
         return cls.objects.filter(status=cls.STATUS_NORMAL)
+
+    def save(self, *args, **kwargs):
+        """ 重写文章主体 """
+        self.content_html = mistune.markdown(self.content)
+        super().save(*args, **kwargs)
+
 
     class Meta:
         verbose_name = verbose_name_plural = "文章"

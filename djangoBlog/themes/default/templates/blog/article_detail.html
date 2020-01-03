@@ -1,5 +1,11 @@
 {% extends 'blog/base.html' %}
 
+{% block css %}
+    <link rel="stylesheet" href="https://cdn.bootcss.com/highlight.js/9.12.0/styles/googlecode.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+{% endblock %}
+
 {% block nav-title %}
     {{ article.title }}
 {% endblock %}
@@ -24,7 +30,7 @@
 
             </div>
             <div class="detail-content">
-                {{ article.content }}
+                {{ article.content_html|safe }}
             </div>
 
             <div id="thumb">
@@ -33,7 +39,6 @@
                     <i></i>
                     <span class="down"><i class="fa fa-thumbs-down"></i>踩{{ article.pv }}</span>
                 </p>
-
             </div>
 
         {% endif %}
@@ -42,23 +47,41 @@
 
     <div id="comment">
         <div id="add-comment">
-            <p class="add-comment-head"><em>Comments</em><span><i class="fa fa-plus"></i></span></p>
-            <div class="add-comment-body">
-                <textarea name="comment" id="add-comment-content" rows="2" placeholder="新增评论"></textarea>
-            </div>
-            <p class="add-comment-cookies"><span><i class="fa fa-paper-plane"></i>提交</span><span><i
-                    class="fa fa-ban"></i>取消</span></p>
-
-
-        </div>
-
-        <div id="list-comment">
-            {% for comment in comments %}
-                <p><img src="{{ comment.owner.avatar.url }}" alt=""></p><p><span>{{ comment.nickname }}</span>:<span>{{ comment.content }}</span>
+            <p class="add-comment-head clearfix">
+                <em>Comments</em>
+                <span id="plus-button"><i class="fa fa-pencil"></i>写评论</span>
             </p>
-            <p id="comment-cookies"><span><i class="fa fa-clock-o"></i>{{ comment.created_time }}</span></p>
-            {% endfor %}
-        </div>
+
+            <div id="comment-body">
+                <textarea name="comment" id="add-comment-content" rows="2" placeholder="新增评论"></textarea>
+                <p class="add-comment-cookies clearfix">
+                    <span class="submit-comment"><i class="fa fa-paper-plane"></i>提交</span>
+                    <span class="cancel-comment"><i class="fa fa-ban"></i>取消</span>
+                </p>
+            </div>
+    </div>
+
+    <div id="list-comment">
+        {% for comment in comments %}
+            <div class="comment-body clearfix">
+                <img src="{{ comment.owner.avatar.url }}">
+                <p>{{ comment.content | truncatechars:80 }}</p>
+            </div>
+
+            <p class="comment-cookies">
+                <span class="list-comment-nickname">{{ comment.nickname }}</span>
+                <span><i class="fa fa-clock-o"></i> {{ comment.created_time }}</span>
+                <span class="up"><i class="fa fa-thumbs-up"></i> 赞{{ comment.nv }}</span>
+                <span class="down"><i class="fa fa-thumbs-down"></i> 踩{{ comment.pv }}</span>
+            </p>
+        {% endfor %}
 
     </div>
+    {% csrf_token %}
+    <span id="extend-data" data-target_id="{{ article.id }}" data-url="{% url 'comment:comment' %}" data-user="{{ user.username }}" data-avatar="{{ user.avatar.url }}" data-nickname="{{ user.nickname }}"></span>
+    </div>
+{% endblock %}
+{% load static %}
+{% block js %}
+    <script src="{% static 'js/detial.js' %}"></script>
 {% endblock %}
