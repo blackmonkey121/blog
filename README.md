@@ -114,8 +114,8 @@ think you should make sure the virtual environment is already running.*
   - [ ] 15.1 TODO:
 - [x] 16 Add comments feature.
 - [x] 17 Add support for markdown.
-- [ ] 17.1 Vivsted count.
-- [ ] 18 Settings sitemap
+- [x] 17.1 Vivsted count.
+- [x] 18 Settings sitemap
 - [ ] 19 Repalce Admin with XAdmin.
 - [ ] 20 Optimizer the search base on Django-autocomplete-light
 - [ ] 21 Add Editor.

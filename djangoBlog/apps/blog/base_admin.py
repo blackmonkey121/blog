@@ -5,7 +5,7 @@ __author__ = "Monkey"
 from django.contrib import admin
 
 
-class BaseAdmin(admin.ModelAdmin):
+class BaseAdmin(object):
     """
     抽取Admin基类
     自动的补充owner字段
