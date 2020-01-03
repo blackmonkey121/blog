@@ -1,6 +1,8 @@
 from django.db import models
-from apps.user.models import UserInfo
+from django.utils.functional import cached_property
 import mistune
+
+from apps.user.models import UserInfo
 
 # Create your models here.
 # 数据处理尽可能的集中在了models层，使得views层逻辑更为简单清晰
@@ -72,12 +74,12 @@ class Post(models.Model):
                                          verbose_name="状态")
     category = models.ForeignKey(Category, verbose_name="文章分类")
     owner = models.ForeignKey('user.UserInfo', verbose_name="作者")
-    tag = models.ForeignKey(Tag, verbose_name='标签')
+    tag = models.ManyToManyField(Tag, verbose_name='标签')
     created_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
 
     # add keys pv nv
     pv = models.PositiveIntegerField(default=1)
-    nv = models.PositiveIntegerField(default=1)
+    uv = models.PositiveIntegerField(default=1)
 
     # FIXME: 可以添加过滤条件
     @classmethod
@@ -119,6 +121,10 @@ class Post(models.Model):
         """ 重写文章主体 """
         self.content_html = mistune.markdown(self.content)
         super().save(*args, **kwargs)
+
+    @cached_property
+    def tags(self):
+        return ','.join(self.tag.values_list('name', flat=True))
 
 
     class Meta:

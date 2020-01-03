@@ -1,7 +1,7 @@
 from django.core.mail import send_mail
 from djangoBlog.settings import develop
+from apps.blog.models import Post
 from celery import Celery
-
 
 # 在任务处理者一端加这几句
 import os
@@ -11,17 +11,17 @@ from django.core.urlresolvers import reverse
 PROFILE_LIST = {1: 'develop',
                 2: 'product'}
 
-profile = os.environ.get('PROJECT_PROFILE', PROFILE_LIST.get(1,2))
-os.environ.setdefault('DJANGO_SETTINGS_MODULE','djangoBlog.settings.{}'.format(profile))
+profile = os.environ.get('PROJECT_PROFILE', PROFILE_LIST.get(1, 2))
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'djangoBlog.settings.{}'.format(profile))
 django.setup()
 
 # 创建一个Celery类的实例对象
 app = Celery('celery_tasks.tasks', broker='redis://127.0.0.1:6379/0')
 
+
 # 定义任务函数
 @app.task
 def send_register_active_email(to_email, username, token):
-
     URL = 'http://127.0.0.1:8000{}'.format(reverse('user:active', kwargs={'token': token}))
     subject = '欢迎注册 Monkey Blog!'
     message = 'join us！'
@@ -35,7 +35,6 @@ def send_register_active_email(to_email, username, token):
 
 @app.task
 def send_getpwd_email(to_email, username, token):
-
     URL = 'http://127.0.0.1:8000{}'.format(reverse('user:pwdreset', kwargs={'token': token}))
     subject = '欢迎注册 Monkey Blog!'
     message = 'join us！'
@@ -45,3 +44,5 @@ def send_getpwd_email(to_email, username, token):
 """.format(username, username, URL, URL)
 
     send_mail(subject, message, sender, receiver, html_message=html_message)
+
+# TODO:实现用户统计。应该异步的来做，以节省开支和每次浏览对数据的写操作。将这些事情交给 celery

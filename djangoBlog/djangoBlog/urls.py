@@ -17,9 +17,12 @@ from djangoBlog.settings import develop
 from django.conf.urls import url,include
 from django.contrib import admin
 from django.views.static import serve
+from django.contrib.sitemaps import views as sitemap_views
+
+from .RSS import LastesPostFeed
+from .sitemap import PostSitemap
 from apps.blog.views import IndexView
 from apps.blog.branch_site import branch_site
-from apps.user.views import login
 
 urlpatterns = [
     url(r'^user/', include('apps.user.urls', namespace='user')),
@@ -28,6 +31,8 @@ urlpatterns = [
     url(r'^comment/', include('apps.comment.urls', namespace='comment')),
     url(r'^super_admin', admin.site.urls, name='super_admin'),
     url(r'^user_admin', branch_site.urls, name='user_admin'),
+    url(r'^RSS|feed/', LastesPostFeed(), name='RSS'),
+    url(r'^sitemap\.xml$', sitemap_views.sitemap, {'sitemaps': {'posts':PostSitemap}}),
     url(r'^media/(?P<path>.*)', serve, {"document_root": develop.MEDIA_ROOT}),
     url(r'^', IndexView.as_view(), name="index"),
 ]

@@ -5,7 +5,9 @@ from django.views.generic import DetailView, ListView
 from .models import Post, Tag, Category
 from apps.config.models import SideBar, Link
 from apps.user.models import UserInfo
-from django.db.models import Q
+from django.db.models import Q, F
+from datetime import date
+from django.core.cache import cache
 
 # Create your views here.
 from ..comment.models import Comment
@@ -168,6 +170,37 @@ class ArticleDetailView(CommonViewMixmin, DetailView):
     template_name = 'blog/article_detail.html'
     context_object_name = "article"
     pk_url_kwarg = "post_id"
+
+    def get(self, request, *args, **kwargs):
+        # FIXME: 内存做缓存，单进程是可以的，但是多进程会使得 进程数据不安全 进程之间内存是相互独立的。
+        # TODO: 改为 Redis 做缓存  使用Celery 来异步的处理访问计数的功能
+
+        response = super().get(request, *args, **kwargs)
+        self.handle_visited(request)
+        return response
+
+    def handle_visited(self, request):
+        increase_pv = False
+        increase_uv = False
+        uid = request.uid
+        pv_key = 'pv:{}:{}'.format(uid, self.request.path)
+        uv_key = 'uv:{}:{}'.format(uid, str(date.today()), self.request.path)
+        if not cache.get(pv_key):
+            increase_pv = True
+            cache.set(pv_key, 1, 1 * 60)  # 60s
+
+        if not cache.get(uv_key):
+            increase_uv = True
+            cache.set(pv_key, 1, 24 * 60 * 60)
+
+        if increase_pv and increase_uv:
+            Post.objects.filter(pk=self.object.id).update(pv=F('pv') + 1, uv=F('uv') + 1)
+        elif increase_pv:
+            Post.objects.filter(pk=self.object.id).update(pv=F('pv') + 1)
+        elif increase_uv:
+            Post.objects.filter(pk=self.object.id).update(uv=F('uv') + 1)
+
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
