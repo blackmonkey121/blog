@@ -140,7 +140,8 @@ class TagView(IndexView):
         """ 重写queryset方法 依据标签来过滤信息 """
         queryset = super().get_queryset()
         tag_id = self.kwargs.get("tag_id")
-        return queryset.filter(tag_id=tag_id)
+        tag = Tag.objects.filter(id=tag_id).first()
+        return queryset.filter(tag=tag)
 
 
 class SearchView(IndexView):
