@@ -218,72 +218,6 @@
     float: right;
 }
 
-/* article detail css start */
-#detail{
-    margin-top: 3.4% ;
-}
-#detail .detail-title{
-    font-size: 32px;
-    font-weight: 800;
-    border-bottom: 1px solid #999999;
-    display: inline-block;
-    padding: 0 40px 10px 0;
-    margin-left: 20px;
-}
-#detail .detail-cookies{
-    margin: 10px 0 0 40px;
-    font-size: 12px;
-    color: #999999;
-}
-#detail .detail-cookies span{
-    margin-right: 10px;
-}
-#detail .detail-cookies #copy{
-    display: inline-block;
-    background: gold;
-    border-radius: 2px;
-    padding: 2px;
-    color: #ebebeb;
-}
-#detail .detail-cookies #repr{
-    display: inline-block;
-    background: yellowgreen;
-    border-radius: 2px;
-    padding: 2px;
-    color: #ebebeb;
-}
-#detail .detail-cookies #start{
-    color: red;
-    font-size: 14px;
-}
-#detail .detail-cookies #start:hover{
-    color: #0093c4;
-}
-#detail .detail-content{
-    margin: 2% 0 20px 20px;
-}
-#extend-data{
-    display: none;
-}
-#detail #thumb{
-    margin-top: 40px;
-    text-align: right;
-    cursor: pointer;
-    color: #919191;
-    font-size: 20px;
-}
-#detail #thumb i{
-    margin-left: 10px;
-}
-#detail #thumb .up:hover{
-    color: #3e81ee;
-}
-#detail #thumb .down:hover{
-    color: black;
-}
-
-
-
 #container{
     margin: 60px 40px 20px;
 }
@@ -545,6 +479,7 @@
 }
 #detail .detail-content{
     margin: 2% 0 20px 20px;
+    word-wrap:break-word;
 }
 #extend-data{
     display: none;

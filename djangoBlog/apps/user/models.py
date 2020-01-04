@@ -14,9 +14,10 @@ class UserInfo(AbstractUser):
     avatar = models.FileField(upload_to="avatars/", default="avatars/default.jpeg", verbose_name="头像")
     nickname = models.CharField(max_length=64, blank=True, default='还没昵称', verbose_name='昵称')
     email = models.EmailField(blank=False,unique=True,db_index=True)
-    signature = models.CharField(max_length=64,blank=True,default="主人有点懒，什么都没有留下！")
-    profile = models.CharField(max_length=255,blank=True,default="生的伟大，死的光荣！")
+    signature = models.CharField(max_length=64,blank=True,default="主人有点懒，什么都没有留下！", verbose_name='签名')
+    profile = models.CharField(max_length=255,blank=True,default="生的伟大，死的光荣！", verbose_name='自述')
     is_check = models.BooleanField(blank=False, default=False, verbose_name="email是否验证")
+
     def __str__(self):
         return self.username
 

@@ -43,6 +43,9 @@ INSTALLED_APPS = [
     'apps.config',
     'apps.comment',
     'apps.blog',
+
+    'ckeditor',
+    'ckeditor_uploader',
 ]
 
 MIDDLEWARE = [
@@ -139,3 +142,42 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 LOGIN_URL = '/user/login/'
+
+XADMIN_TITLE = "Monkey Blog 管理后台"
+
+XADMIN_FOOTER_TITLE = "Power by monkey.com"
+
+# email settings
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+# smtp服务地址
+EMAIL_HOST = 'smtp.qq.com'
+
+# SMTP端口 25 服务器开放
+EMAIL_PORT = 25
+
+# 发送邮件的邮箱
+EMAIL_HOST_USER = '3213322480@qq.com'
+
+# 在邮箱中设置的客户端授权密码
+EMAIL_HOST_PASSWORD = 'yyuylfcxyzjfdgea'
+
+# 收件人看到的发件人
+EMAIL_FROM = 'MonkeyBlog <3213322480@qq.com>'
+
+# ckeditor settings
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        'height': 700,
+        'width': 800,
+        'tabSpaces': 3,
+        'extraPlugins': 'codesnippet',   # 配置代码插件
+    }
+}
+
+# CKeditor static settings
+CKEDITOR_UPLOAD_PATH = 'Article_media'
+
+DEFAULT_FILE_STORAGE = 'djangoBlog.storage.WatermarkStorage'

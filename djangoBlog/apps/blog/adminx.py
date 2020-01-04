@@ -88,7 +88,7 @@ class CategoryAdmin(BaseAdmin):
 
 @xadmin.sites.register(Tag)
 class TagAdmin(BaseAdmin):
-    list_display = ('name', 'status', 'created_time')
+    list_display = ('name', 'status', 'created_time', 'owner')
     fields = ('name', 'status')
 
 
@@ -138,7 +138,10 @@ class PostAdmin(BaseAdmin):
         Fieldset(
             '内容信息',
             'desc',
-            'content'
+            'editor_type',
+            'content',
+            'content_ck',
+            'content_md',
         ),
     )
 

@@ -31,6 +31,7 @@ urlpatterns = [
     url(r'^admin/', xadmin.site.urls, name='xadmin'),
     url(r'^RSS|feed/', LastesPostFeed(), name='RSS'),
     url(r'^sitemap\.xml$', sitemap_views.sitemap, {'sitemaps': {'posts':PostSitemap}}),
+    url(r'^ckeditor/', include('ckeditor_uploader.urls'),),
     url(r'^media/(?P<path>.*)', serve, {"document_root": develop.MEDIA_ROOT}),
     url(r'^', IndexView.as_view(), name="index"),
 ]

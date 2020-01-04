@@ -14,17 +14,14 @@ class BaseAdmin(object):
 
     exclude = ('owner',)
 
-    def save_model(self, request, obj, form, change):
+    def save_models(self):
         """
         指定作者只能是当前登陆用户而不能是其他人
-        :param request: 当前的请求对象
-        :param obj: 当前要保存的对象
-        :param form: 页面提交过来的表单对象
-        :param change: 保存本次的数据是新增的还是更新的
         """
-        obj.owner = request.user
-        return super(BaseAdmin, self).save_model(request, obj, form, change)
+        self.new_obj.owner = self.request.user
+        return super().save_models()
 
-    def get_queryset(self, request):
-        qs = super(BaseAdmin, self).get_queryset(request)
+    def get_list_queryset(self):
+        request = self.request
+        qs = super().get_list_queryset()
         return qs.filter(owner=request.user)

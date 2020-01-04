@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.functional import cached_property
 import mistune
+from django.utils.html import mark_safe
 
 from apps.user.models import UserInfo
 
@@ -30,7 +31,7 @@ class Category(models.Model):
         verbose_name = verbose_name_plural = "分类"
 
     def __str__(self):
-        return '<Category:{}>'.format(self.name)
+        return self.name
 
 
 class Tag(models.Model):
@@ -53,7 +54,7 @@ class Tag(models.Model):
         verbose_name = verbose_name_plural = "标签"
 
     def __str__(self):
-        return '<Tag:{}>'.format(self.name)
+        return self.name
 
 
 class Post(models.Model):
@@ -65,9 +66,17 @@ class Post(models.Model):
         (STATUS_DELETE, '删除'),
         (STATUS_DRAFT, '草稿'),
     )
+
+    TYPE_MARKDOWN = 0
+    TYPE_CKEDITOR = 1
+    EDITOR_TYPE_ITEMS = (
+        (TYPE_MARKDOWN, 'markdown编辑器'),
+        (TYPE_CKEDITOR, '常规编辑器'),
+    )
+
     title = models.CharField(max_length=255, verbose_name="标题")
     desc = models.CharField(max_length=1024, blank=True, verbose_name="摘要")
-    content = models.TextField(verbose_name="正文", help_text="正文必须为MarkDown格式")
+    content = models.TextField(verbose_name="正文", help_text="MarkDown格式")
     content_html = models.TextField(verbose_name="正文html", blank=True, editable=False)
     status = models.PositiveIntegerField(default=STATUS_NORMAL,
                                          choices=STATUS_ITEMS,
@@ -80,6 +89,7 @@ class Post(models.Model):
     # add keys pv nv
     pv = models.PositiveIntegerField(default=1)
     uv = models.PositiveIntegerField(default=1)
+    editor_type = models.PositiveIntegerField(choices=EDITOR_TYPE_ITEMS, default=TYPE_CKEDITOR, verbose_name='编辑器类型')
 
     # FIXME: 可以添加过滤条件
     @classmethod
@@ -119,7 +129,12 @@ class Post(models.Model):
 
     def save(self, *args, **kwargs):
         """ 重写文章主体 """
-        self.content_html = mistune.markdown(self.content)
+        safe_content = mark_safe(self.content)
+        if self.editor_type:
+            # ckeditor 转换出 的就是html格式
+            self.content_html = safe_content
+        else:
+            self.content_html = mistune.markdown(safe_content)
         super().save(*args, **kwargs)
 
     @cached_property
@@ -132,5 +147,5 @@ class Post(models.Model):
         ordering = ["-id"]   # 按照id降序排列
 
     def __str__(self):
-        return '<Post:{}>'.format(self.title)
+        return self.title
 
