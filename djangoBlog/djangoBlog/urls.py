@@ -21,6 +21,7 @@ from django.contrib.sitemaps import views as sitemap_views
 from .RSS import LastesPostFeed
 from .sitemap import PostSitemap
 from apps.blog.views import IndexView
+from apps.blog.apis import ArticleList
 import xadmin
 
 urlpatterns = [
@@ -29,6 +30,7 @@ urlpatterns = [
     url(r'^config/', include('apps.config.urls', namespace='config')),
     url(r'^comment/', include('apps.comment.urls', namespace='comment')),
     url(r'^admin/', xadmin.site.urls, name='xadmin'),
+    url(r'^api/post/', ArticleList.as_view(), name='article_list'),
     url(r'^RSS|feed/', LastesPostFeed(), name='RSS'),
     url(r'^sitemap\.xml$', sitemap_views.sitemap, {'sitemaps': {'posts':PostSitemap}}),
     url(r'^ckeditor/', include('ckeditor_uploader.urls'),),
