@@ -182,3 +182,11 @@ CKEDITOR_CONFIGS = {
 CKEDITOR_UPLOAD_PATH = 'Article_media'
 
 DEFAULT_FILE_STORAGE = 'djangoBlog.storage.WatermarkStorage'
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',   #
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',   # 分页
+    'PAGE_SIZE': 5
+}
+
