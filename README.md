@@ -25,15 +25,9 @@
 ##### &emsp;&emsp;2 Redis
 
 ### 4. themes
-##### &emsp;&emsp;eg:default :
->&emsp;&emsp;Templates:`/blog/themes/default`  
->&emsp;&emsp;STATIC:`/static/themes/default`
-
-##### &emsp;&emsp;eg:milk :
->&emsp;&emsp;Templates:`/blog/themes/milk`  
->&emsp;&emsp;STATIC:`/static/themes/milk`
-
-
+>static : `theme/default/static`
+>
+>templates: `theme/default/templates`
 
 ## Part 2 Setting
 
@@ -47,18 +41,19 @@
 
 ## Part 3 THEMES
 
+#### Default theme files PATH
+
+`/theme`
+
 #### 1 Default theme files
 
-&emsp;&emsp;*static path : /static/themes/default*  
-&emsp;&emsp;*templates path : /themes/default/*
+`/theme/default`
 
 #### 2 Add New Theme
 
-**eg: milk**  
-&emsp;&emsp;/static/themes/milk  
-&emsp;&emsp;/themes/milk
-
-
+- Create a new theme directory under the `/theme/`   eg:_`/theme/milk`_
+- There should be template directory and static files directory in the new directory `/theme/milk/` eg:`/theme/milk/static/` & `/theme/milk/templates/`
+- Use newly created theme in settings  eg:`settings.develop.THEME_NAME = 'milk'`
 
 ## Part 4 Environment and installation and deployment
 
@@ -76,6 +71,13 @@
 * django-redis~=3.8.4
 * django-redis-sessions~=0.5.6
 * redis~=2.10.6
+* itsdangerous==1.1.0 
+* xadmin==0.6.1
+* Pillow==7.0.0
+* django-rest-framework==0.1.0 
+* coreapi==2.3.3  
+* django-ckeditor==5.4.0 
+* mistune==0.8.4
 
 ### 3. Install & running
 *Make sure MySQL Redis and Python3.6.x are installed.*
@@ -91,39 +93,3 @@ think you should make sure the virtual environment is already running.*
 
 >5. In the same directory as the manage.py file  
 `./manage.py runserver 127.0.0.1:8000`
-
-
-
-## Part 5 Development  Plan & Log.
-
-- [x] 1 Create project.
-- [x] 2 Init project configuration.
-- [x] 3 Create Model Class.
-- [x] 4 Init admin views for apps.
-- [x] 5 Init user module.
-- [x] 6 Finish blog views based on functions views FIXME: based on class views.
-- [x] 7 User email registration with Celery redis.
-- [x] 8 Submit FormData using AJAX.
-- [x] 9 Complete base demands.
-- [x] 10 Optimize the code structure and overwrite blog views based on class views.
-- [x] 11 Optimize the registration.
-- [x] 12 Complete private visitor public view and data separation.
-- [x] 13 Complete the default theme!
-- [x] 14 Adjust project structure and separate topics and optimize code.
-- [x] 15 Add article search for person site and all site.
-  - [ ] 15.1 TODO:
-- [x] 16 Add comments feature.
-- [x] 17 Add support for markdown.
-- [x] 17.1 Vivsted count.
-- [x] 18 Settings sitemap
-- [x] 19 Repalce Admin with XAdmin.
-- [ ] X 20 Optimizer the search base on Django-autocomplete-light
-  - [ ] FIXME:haystack 
-- [x] 21 Add Editor.
-  - [x] HTML + CKeditor + Markdown
-- [x] 22 RESTful
-  - [x] Rewrite user app with class view and recode static files
-- [ ] 23 All functions  finished start  overwrite all 'FIXME' and 'TODO'.
-- [ ] 24 Test the project for running on the Internet.
-- [ ] 25 anything is OK!
-
