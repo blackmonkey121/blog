@@ -1,58 +1,34 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <title>{% block title %}
 
-    <title>
-        {% block title %}
-        {% endblock %}
-    </title>
-    <link rel="stylesheet" href="{% static 'css/reset.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/login_regist.css' %}">
-    <link rel="stylesheet" href="{% static 'toastr/toastr.min.css'%}">
-{#    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>#}
+    {% endblock %}</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/user.css'%}">
     <script src="https://cdn.bootcss.com/limonte-sweetalert2/8.11.8/sweetalert2.all.min.js"></script>
     <link rel="stylesheet" href="https://cdn.bootcss.com/limonte-sweetalert2/8.11.8/sweetalert2.min.css">
+
+    {% block css %}
+    {% endblock %}
 </head>
 <body>
-<div id="container">
-    <!-- top start -->
-    <div id="top">
-        <div class="title">
-            <span><i>Monkey Blog</i></span>
-        </div>
-    </div>
-    <!-- top end -->
 
+<div id="home">
+        {% csrf_token %}
+        {% block main %}
 
-    <!-- left start -->
-    <div id="left">
-        <img src="{% static 'img/login.png' %}" alt="">
-    </div>
-    <!-- left end -->
-
-    {% block right %}
-
-    {% endblock %}
-
-    <!-- bottom start -->
-    <div id="bottom" class="clearfix">
-        <div class="text">
-            Copyright&copy; 2019-10-01 by Author:Monkey All Rights Reserved
-        </div>
-    </div>
-    <!-- bottom end -->
-
+        {% endblock %}
 </div>
 
-<script src="{% static 'js/jquery3.2.1.js' %}"></script>
-<script src="{% static 'js/log_regist.js' %}"></script>
-<script src="{% static 'toastr/toastr.min.js' %}"></script>
-<script type="text/javascript">
-    toastr.options.positionClass = 'toast-top-right';
-</script>
+    <script src="{% static 'js/jquery3.2.1.js' %}"></script>
+    <script src="{% static 'js/user.js' %}"></script>
+
 {% block js %}
 {% endblock %}
+<span id="app-data" style="display: none" data-url="{{ url }}"></span>
+
 </body>
 </html>

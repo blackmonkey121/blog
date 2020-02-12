@@ -120,8 +120,9 @@ think you should make sure the virtual environment is already running.*
 - [ ] X 20 Optimizer the search base on Django-autocomplete-light
   - [ ] FIXME:haystack 
 - [x] 21 Add Editor.
-  - [ ] HTML + CKeditor + Markdown
+  - [x] HTML + CKeditor + Markdown
 - [x] 22 RESTful
+  - [x] Rewrite user app with class view and recode static files
 - [ ] 23 All functions  finished start  overwrite all 'FIXME' and 'TODO'.
 - [ ] 24 Test the project for running on the Internet.
 - [ ] 25 anything is OK!

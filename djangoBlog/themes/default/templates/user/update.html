@@ -1,0 +1,41 @@
+{% extends 'user/base.html' %}
+
+{% block title %}
+    {{ key }}
+{% endblock %}
+
+{% block main %}
+    <div id="left">
+
+    <div id="container-img">
+        {% load static %}
+        <img src="{% static 'user/img/test-img.jpg' %}" alt="">
+    </div>
+
+    </div>
+
+    <div id="right" class="clearfix">
+        <div class="input-line">
+            {{ form.email }}<span></span>
+        </div>
+
+        <div class="input-line">
+            {{ form.new_password }}<span></span>
+        </div>
+
+        <div class="input-line">
+            {{ form.new_re_password }}<span></span>
+        </div>
+
+    <div class="input-line">
+        <div class="clearfix cookies">
+            <a href="{% url 'user:login' %}">登陆</a>
+        </div>
+    </div>
+
+    <div class="input-line button">
+        <input type="button" value="{{ key }}"><span></span>
+    </div>
+</div>
+
+{% endblock %}

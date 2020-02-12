@@ -3,14 +3,16 @@
 __author__ = "Monkey"
 
 from django.conf.urls import url
-from apps.user import views
+from .views import LoginView, RegistView,index, UpdatePassWordView,LogoutView, ActiveView, ResetView
+
 
 urlpatterns = [
-    url(r'^login', views.login,name='login'),
-    url(r'^regist', views.regist,name='regist'),
-    url(r'^active/(?P<token>.*)$', views.active, name='active'),
-    url(r'^resetpwd', views.resetpwd, name='resetpwd'),
-    url(r'^logout', views.logout, name='logout'),
-    url(r'^forgetpwd', views.forgetpwd, name='forgetpwd'),
-    url(r'^pwdreset/(?P<token>.*)$', views.pwdreset, name='pwdreset')
+    url(r'^login/', LoginView.as_view(), name='login'),
+    url(r'^regist/', RegistView.as_view(), name='regist'),
+    url(r'^logout/',LogoutView.as_view(), name='logout'),
+    url(r'^home/', index, name='home'),
+
+    url(r'^update/', UpdatePassWordView.as_view(), name='update'),
+    url(r'^reset/(?P<token>.*)$', ResetView.as_view(), name='reset'),
+    url(r'^active/(?P<token>.*)$', ActiveView.as_view(), name='active'),
 ]

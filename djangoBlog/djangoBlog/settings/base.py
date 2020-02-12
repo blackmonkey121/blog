@@ -62,12 +62,19 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'djangoBlog.urls'
 
-THEME = 'default'
+##########################################################
+# 主题名
+# 只需修改这个变量 就会整体应用整个样式
+THEME_NAME = 'default'   # milk / black
 
+# 主题文件路径
+THEME_URL = os.path.join(BASE_DIR, 'themes', THEME_NAME)
+
+##########################################################
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'themes', THEME, 'templates')],
+        'DIRS': [os.path.join(THEME_URL, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -133,7 +140,7 @@ STATIC_URL = '/static/'
 THEME_STATIC = 'default'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static', 'themes', THEME_STATIC),
+    os.path.join(THEME_URL, 'static'),
 ]
 
 AUTH_USER_MODEL = 'user.UserInfo'
