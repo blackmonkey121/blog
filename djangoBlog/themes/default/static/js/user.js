@@ -9,7 +9,6 @@ $("#id_avatar").on("change", function () {
     fileReader.readAsDataURL(this.files[0]);
     fileReader.onload = function () {
         $(".input-line img").attr("src", fileReader.result);
-        // console.log(fileReader.result)
     }
 });
 
@@ -137,8 +136,8 @@ $('input[value="登陆"]').on('click', function () {
         beforeSend: function (xmlHttpRequest) {
           if (sendFlag) {
                 swal.fire(
-                    '账号或密码不正确',
-                    '注意区分大小写哦！',
+                    '账号或密码格式不正确',
+                    '按照提示更正后再试！',
                     'error'
                 );
                 sendFlag = 0;
@@ -153,18 +152,19 @@ $('input[value="登陆"]').on('click', function () {
                 location.href = data.msg;
             }
             // 失败 填充错误信息 修改样式
-            else {
+            else if(data.check) {
+                }else {
                 swal.fire(
                     '账号或密码不正确',
                     '注意区分大小写哦！',
                     'error'
                 );
-
-                $.each(data.msg, function (k, v) {
+            }
+                   $.each(data.msg, function (k, v) {
                     $('#id_' + k).next().text(v)
                 })
             }
-        },
+        ,
 
     });
 
@@ -218,7 +218,7 @@ $('input[value="注册"]').on('click', function () {
                     confirmButtonText: 'Go Login'
                 }).then(function (isConfirm) {
                     if (isConfirm.value) {
-                        location.href = '/user/login';
+                        location.href = data.msg["url"];
                     }
                 });
             } else {

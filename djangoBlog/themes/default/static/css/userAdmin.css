@@ -1,0 +1,84 @@
+/* main part for base page */
+#main{
+    width: 100%;
+
+}
+
+/* right part for base page  */
+#right{
+    float: right;
+    margin:  0 0 0 2%;
+    width: 76%;
+    height: 100%;
+}
+
+/* left part for base page  */
+#left{
+
+    float: left;
+    margin: 0 0 0 2%;
+    width: 20%;
+}
+
+/* bottom part for base page */
+#bottom {
+    float: bottom;
+    clear: both;
+    border-top:1px solid #ccc;
+    padding: 60px;
+
+}
+#bottom .text{
+    text-align: center;
+}
+
+/* left part content for base page */
+#left .bar-block{
+    background: #ffffff;
+    width: 100%;
+    margin-top: 12%;
+    border-radius: 5px;
+    padding-bottom: 8px;
+}
+#left #user-info #avatar{
+    height: 120px;
+    width: 120px;
+    margin: 6% 20%;
+    border-radius: 50%;
+}
+#left #user-info p:not(.bar-title){
+    margin-right: 4px;
+    font-family: '华文楷体','华文仿宋', '宋体', '楷体', 'Verdana', sans-serif;
+}
+#left #user-info p:not(.bar-title) span{
+    color: #8db842;
+}
+#left .bar-title{
+    color: #2F96B4;
+    font-size: 20px;
+    font-family: "华文仿宋";
+    background: #ebebeb;
+    border-radius: 5px 5px 0 0 ;
+    padding: 8px;
+}
+#left .bar-title:hover{
+    color: #63d7eb;
+    cursor: pointer;
+
+}
+#left .bar-title~ul{
+    color: #999999;
+    margin: 6px 0 3px 20px;
+}
+#left .bar-title~ul>li{
+    margin-top: 4px;
+    cursor: pointer;
+}
+#left .bar-title~ul>li:hover{
+    color: #000;
+}
+
+
+#container{
+    margin: 60px 40px 20px;
+}

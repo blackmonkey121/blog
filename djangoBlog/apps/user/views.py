@@ -1,10 +1,10 @@
 from django.http import JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.contrib import auth
 from django.views import View
 from django.views.generic.edit import CreateView, FormView, UpdateView
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy as _
 from django.conf import settings
 
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
@@ -13,6 +13,7 @@ from itsdangerous import SignatureExpired
 from celery_task.tasks import send_register_active_email, send_update_pwd_email
 from .user_forms import LoginForm, RegistForm, UpdateForm, ResetForm
 from .models import UserInfo
+
 
 class Token(object):
     serializer = Serializer(settings.SECRET_KEY, 3600)
@@ -27,13 +28,11 @@ class Token(object):
         :return: token
         """
         if isinstance(user, UserInfo):
-
             info = {'user_id': user.id}
-            print(info)
             token = self.serializer.dumps(info)  # bytes
             token = token.decode()
             return token
-        raise (ValueError, "user is not exists!")
+        raise (ValueError, _("user is not exists!"))
 
     def load_token(self, token):
         """
@@ -41,33 +40,40 @@ class Token(object):
         :return: 返回用户对象
         """
         info = self.serializer.loads(token)
-        print(info)
+
         # 获取改密用户对象
         user_id = info['user_id']
         user = UserInfo.objects.filter(id=user_id).first()
         return user
 
-    def get_user(self,email):
+    def get_user(self, email):
         user = UserInfo.objects.filter(email=email).first()
         return user
 
 
-def index(request):
-    return render(request, 'user/index.html')
+class SendEmailMixin(Token):
+
+    def send_active(self, user):
+        token = self.dump_token(user=user)
+        email = user.email
+        send_register_active_email(to_email=email, username=user.username, token=token)
+
+    def send_update(self):
+        pass
 
 
 class LoginView(FormView):
-    ret = {'status': True, 'msg': None}
+    def __init__(self):
+        self.ret = {'status': None, 'msg': None}
+        super(LoginView, self).__init__()
 
     template_name = 'user/login.html'
 
     form_class = LoginForm
 
-    success_url = reverse_lazy('user:home')  # 因为在文件导入时不加载 urls 必须使用lazy
-
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated and request.user.is_check:
-            return redirect(reverse('user:home'))
+            return redirect(reverse('index'))
         response = super().dispatch(request, *args, **kwargs)
         return response
 
@@ -78,18 +84,17 @@ class LoginView(FormView):
             if user.is_check:
 
                 auth.login(self.request, user)
-                self.ret['msg'] = reverse('user:home')
+                self.ret['status'] = True
+                self.ret['msg'] = reverse('index')
             else:
-                self.ret['status'] = None
-                self.ret['msg'] = {"username": "账号尚未激活,"}
+                self.ret['msg'] = {"username": "账号尚未激活"}
+                self.ret["check"] = True
         else:
-            self.ret['status'] = None
-            self.ret['msg'] = {'password': '账号或密码不正确！'}
+            self.ret['msg'] = {'password': '账号或密码不正确'}
 
         return JsonResponse(self.ret)
 
     def form_invalid(self, form):
-        self.ret['status'] = None
         self.ret['msg'] = form.errors
         return JsonResponse(self.ret)
 
@@ -107,9 +112,9 @@ class LogoutView(View):
         return redirect(reverse('user:login'))
 
 
-class RegistView(CreateView, Token):
+class RegistView(CreateView, SendEmailMixin):
     def __init__(self):
-        self.ret = {"status": True, "msg": None}
+        self.ret = {"status": None, "msg": None}
         super(RegistView, self).__init__()
 
     model = UserInfo
@@ -118,24 +123,22 @@ class RegistView(CreateView, Token):
 
     template_name = 'user/regist.html'
 
-    success_url = reverse_lazy('user:login')
-
     def form_valid(self, form):
         form.cleaned_data.pop("repassword")
-        self.ret["msg"] = reverse('user:login')
         # 发送邮件
-        # user = self.get_user(email)
-        user = User(**form.cleaned_data)
-        email = user.email
-        token = self.dump_token(user=user)
-        send_register_active_email(to_email=email, username=user.username, token=token)
-        self.ret["msg"] = {"email": email}
-        user.save()
+
+        user = UserInfo.objects.create_user(**form.cleaned_data)
+        # email = user.email
+        # token = self.dump_token(user=user)
+        # send_register_active_email(to_email=email, username=user.username, token=token)
+        self.send_active(user=user)
+        self.ret["status"] = True
+        self.ret["msg"] = {"email": user.email, 'url': reverse('user:login')}
+
         return JsonResponse(self.ret)
 
     def form_invalid(self, form):
         self.ret["msg"] = form.errors
-        self.ret["status"] = 0
         return JsonResponse(self.ret)
 
     def get_context_data(self, **kwargs):
@@ -146,7 +149,7 @@ class RegistView(CreateView, Token):
 
 class UpdatePassWordView(FormView, Token):
     def __init__(self):
-        self.ret = {'status': True, 'msg': {}}
+        self.ret = {'status': None, 'msg': {}}
         super(UpdatePassWordView, self).__init__()
 
     template_name = 'user/update.html'
@@ -165,18 +168,17 @@ class UpdatePassWordView(FormView, Token):
         # 发邮件
         email = form.cleaned_data.get('email')
         user = self.get_user(email)
-        self.ret['msg'].update({'email': email,})
+        self.ret['msg'].update({'email': email, })
         if user:
             token = self.dump_token(user=user)
             send_update_pwd_email.delay(email, user.username, token)
+            self.ret["status"] = True
             self.ret["msg"].update({'url': reverse('user:login')})
         else:
-            self.ret["status"] = None
             self.ret['msg'].update({'url': reverse('user:regist'), })
         return JsonResponse(self.ret)
 
     def form_invalid(self, form):
-        self.ret['status'] = None
         self.ret['msg'] = form.errors
         return JsonResponse(self.ret)
 
@@ -187,7 +189,7 @@ class UpdatePassWordView(FormView, Token):
 
 class ResetView(UpdateView, Token):
     def __init__(self):
-        self.ret = {"status": True, "msg": {}}
+        self.ret = {"status": None, "msg": {}}
         super().__init__()
 
     model = UserInfo
@@ -203,8 +205,7 @@ class ResetView(UpdateView, Token):
             return user
 
         except SignatureExpired as e:
-            self.ret['status'] = None
-            self.ret['msg'] = {"new_re_password":"激活链接已过期"}
+            self.ret['msg'] = {"new_re_password": "激活链接已过期"}
             # 激活链接已过期
             return JsonResponse(self.ret)
 
@@ -212,11 +213,11 @@ class ResetView(UpdateView, Token):
         new_password = form.cleaned_data.get('new_re_password')
         self.object.set_password(new_password)
         self.object.save()
+        self.ret["status"] = True
         self.ret['msg'].update({'url': reverse("user:login")})
         return JsonResponse(self.ret)
 
     def form_invalid(self, form):
-        self.ret["status"] = None
         self.ret["msg"] = form.errors
         return JsonResponse(self.ret)
 
@@ -226,14 +227,20 @@ class ResetView(UpdateView, Token):
         return content
 
 
-class ActiveView(View, Token):
-    ret = {"status": True, 'msg':None}
+class ActiveView(FormView, Token):
+
     def dispatch(self, request, *args, **kwargs):
         token = self.kwargs.get('token')
         try:
             user = self.load_token(token=token)
             user.is_check = True
             user.save()
+            return HttpResponse("您的账户已激活,<a href='{}'>Go Login</a>".format(reverse('user:login')))
+
         except Exception as e:
-            self.ret['status'] = False
-        return JsonResponse(self.ret)
+            return HttpResponse("除了一些状况，稍后再试！")
+
+    def get_form(self, form_class=None):
+        pass
+
+

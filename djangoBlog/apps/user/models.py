@@ -1,6 +1,5 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.contrib.auth.hashers import make_password
 
 # Create your models here.
 
@@ -10,9 +9,9 @@ class UserInfo(AbstractUser):
     """
     用户信息表
     """
-    phone = models.CharField(max_length=11, blank=True, unique=True, verbose_name='手机号',db_index=True,default=00000000000)
+    phone = models.CharField(max_length=11, blank=True, verbose_name='手机号',db_index=True)
     avatar = models.FileField(upload_to="avatars/", default="avatars/default.jpeg", verbose_name="头像")
-    nickname = models.CharField(max_length=64, blank=True, default='还没昵称', verbose_name='昵称')
+    nickname = models.CharField(max_length=64, blank=True, verbose_name='昵称')
     email = models.EmailField(blank=False,unique=True,db_index=True)
     signature = models.CharField(max_length=64,blank=True,default="主人有点懒，什么都没有留下！", verbose_name='签名')
     profile = models.CharField(max_length=255,blank=True,default="生的伟大，死的光荣！", verbose_name='自述')

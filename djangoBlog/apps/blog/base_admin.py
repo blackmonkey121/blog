@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 __author__ = "Monkey"
 
-from django.contrib import admin
-
 
 class BaseAdmin(object):
     """

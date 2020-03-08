@@ -7,11 +7,13 @@ from django.utils.html import format_html
 from django.urls import reverse
 
 from .models import Category, Post, Tag
+from apps.user.models import  UserInfo
 from .base_admin import BaseAdmin
 from .adminforms import PostAdminForm
 
-admin.AdminSite.site_header = 'djangoBlog(管理员:{})'.format(admin.AdminSite.urls)
-admin.AdminSite.site_title = 'djangoBlog(管理员:{})'
+
+admin.AdminSite.site_header = 'MonkeyBlog(管理员:{})'.format(admin.AdminSite.urls)
+admin.AdminSite.site_title = 'MonkeyBlog(管理员:{})'
 admin.AdminSite.index_title = '管理员首页'
 
 
@@ -66,7 +68,6 @@ class CategoryOwnerFilter(RelatedFieldListFilter):
 manager.register(CategoryOwnerFilter, take_priority=True)
 
 
-# site = branch_site 分支站点展示用来分割权限
 @xadmin.sites.register(Category)
 class CategoryAdmin(BaseAdmin):
     # 定义在详细信息中显示的字段 可以是列表 元组
@@ -170,6 +171,22 @@ class PostAdmin(BaseAdmin):
         )
 
     operator.short_description = '操作'
+
+    def queryset(self):
+        """ 函数作用：使当前登录的用户只能看到自己的文章和分类等 """
+        qs = super().queryset()
+        if self.request.user.is_superuser:
+            return qs
+        return qs.filter(area_company=PostAdmin.objects.get(user=self.request.user))
+
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        """ 过滤外键 """
+        if self.request.user.is_superuser:
+            if db_field.name == "category":
+                kwargs["queryset"] = Category.objects.filter(owner=self.request.user)
+            if db_field.name == 'tag':
+                kwargs['queryset'] = Tag.objects.filter(owner=self.request.user)
+        return super().formfield_for_dbfield(db_field, **kwargs)
 
     # 添加自定义的js 和 CSS
     # class Media:

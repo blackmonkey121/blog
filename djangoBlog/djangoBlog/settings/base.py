@@ -39,10 +39,10 @@ INSTALLED_APPS = [
     'xadmin',
     'crispy_forms',
 
-    'apps.user',
-    'apps.config',
-    'apps.comment',
-    'apps.blog',
+    'apps.blog.apps.BlogConfig',
+    'apps.user.apps.UserConfig',
+    'apps.config.apps.ConfigConfig',
+    'apps.comment.apps.CommentConfig',
 
     'ckeditor',
     'ckeditor_uploader',

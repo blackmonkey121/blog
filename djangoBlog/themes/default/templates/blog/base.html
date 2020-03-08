@@ -1,11 +1,10 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}
     {% endblock %}MonkeyBlog</title>
+    {% load static %}
 </head>
 
 <body>
@@ -32,9 +31,9 @@
                     {% if user.username %}
                         <p class="menu-title"><i class="fa fa-user-circle"></i> {{ user.username | truncatechars:9 }}</p>
                         <ul class="menu-dropdown">
-                            <li id="li-logout"><i class="fa fa-power-off"></i> 注销登陆</li>
-                            <li id="li-resetpwd"><i class="fa fa-pencil-square-o"></i> 修改密码</li>
-                            <li onclick="location.href='{% url 'blog:home' user.id %}'"><i class="fa fa-home"></i> 个人主页</li>
+                            <li onclick="location.href='{% url 'user:logout' %}'"><i class="fa fa-power-off"></i> 注销登陆</li>
+                            <li onclick="location.href='{% url 'user:update' %}'"><i class="fa fa-pencil-square-o"></i> 修改密码</li>
+                            <li onclick="location.href='{%url 'blog:home' user.id %}'"><i class="fa fa-home"></i> 个人主页</li>
                             <li><i class="fa fa-street-view"></i> 个人中心</li>
                         </ul>
                     {% else %}
@@ -119,7 +118,7 @@
                     {% else %}
                     {% url 'user:login' %}
                 {% endif %}"><i class="fa fa-paper-plane-o"></i> 个人主页</a></li>
-                <li><a href="/admin/"><i class="fa fa-cog fa-spin"></i> 管理</a></li>
+                <li><a href="/userAdmin/blog/post/{{user.id}}"><i class="fa fa-cog fa-spin"></i> 管理</a></li>
             </ul>
 
             <div id="blog-status">

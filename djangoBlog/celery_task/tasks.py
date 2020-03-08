@@ -11,7 +11,7 @@ PROFILE_LIST = {1: 'develop',
                 2: 'product'}
 
 profile = os.environ.get('PROJECT_PROFILE', PROFILE_LIST.get(1, 2))
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'SiteTemplate.settings.{}'.format(profile))
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'djangoBlog.settings.{}'.format(profile))
 django.setup()
 
 # 创建一个Celery类的实例对象
