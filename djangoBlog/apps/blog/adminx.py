@@ -177,7 +177,7 @@ class PostAdmin(BaseAdmin):
         qs = super().queryset()
         if self.request.user.is_superuser:
             return qs
-        return qs.filter(area_company=PostAdmin.objects.get(user=self.request.user))
+        return qs.filter(owner=self.request.user)
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         """ 过滤外键 """
