@@ -29,7 +29,7 @@
             <li>
                 <a href="#click" class="menu">
                     {% if user.username %}
-                        <p class="menu-title"><i class="fa fa-user-circle"></i> {{ user.username | truncatechars:9 }}</p>
+                        <p class="menu-title"><i class="fa fa-user-circle"></i> {{ user.nickname | truncatechars:9 }}</p>
                         <ul class="menu-dropdown">
                             <li onclick="location.href='{% url 'user:logout' %}'"><i class="fa fa-power-off"></i> 注销登陆</li>
                             <li onclick="location.href='{% url 'user:update' %}'"><i class="fa fa-pencil-square-o"></i> 修改密码</li>
@@ -111,7 +111,7 @@
         <div id="nav-body" class="clearfix">
 
             <ul class="clearfix">
-                <li><a href=""><i class="fa fa-plus"></i> 新建文章</a></li>
+                <li><a href="{% url 'xadmin:blog_post_add' %}"><i class="fa fa-plus"></i> 新建文章</a></li>
                 <li><a href="{% url 'index' %}"><i class="fa fa-home"></i> 首页</a></li>
                 <li><a href=" {% if user.username %}
                     {% url 'blog:home' user.id %}
@@ -136,7 +136,7 @@
 
     <!-- 页面导航结束 -->
 {% if visited_user %}
-    {{ visited_user.username }}<i class="fa fa-play"></i>
+    {{ visited_user.nickname }}<i class="fa fa-play"></i>
     {% else %}
     <span>Monkey'Blog 首页</span>
     {% endif %}
@@ -170,7 +170,8 @@
             {% if visited_user %}
                 <div id="user-info" class="bar-block">
                     <p class="bar-title"><i class="fa fa-book fa-fw"></i>博主信息</p>
-                    <img id="avatar" src="{{ visited_user.avatar.url }}" alt="头像" title="头像">
+                    <a href="{% url 'blog:home' user.id %}">
+                    <img id="avatar" src="{{ visited_user.avatar.url }}" alt="头像" title="头像"></a>
                     <p><i class="fa fa-user-circle-o"></i>昵称: <span>{{ visited_user.nickname }}</span></p>
                     <p><i class="fa fa-hourglass"></i>入坑: <span>{{ visited_user.date_joined | date:'Y-m-d' }}</span></p>
                     <p id="signature"><i class="fa fa-pencil-square"></i>签名: <span>{{ visited_user.signature }}</span></p>

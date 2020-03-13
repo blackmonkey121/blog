@@ -2,9 +2,11 @@
 # -*- coding: utf-8 -*-
 __author__ = "Monkey"
 
+from dal import autocomplete
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from django import forms
-from .models import Post
+from .models import Post, Category, Tag
+
 
 
 class PostAdminForm(forms.ModelForm):
@@ -12,6 +14,19 @@ class PostAdminForm(forms.ModelForm):
     content_ck = forms.CharField(widget=CKEditorUploadingWidget(), label='正文', required=False)
     content_md = forms.CharField(widget=forms.Textarea(), label='正文', required=False)
     content = forms.CharField(widget=forms.HiddenInput(), required=False)
+
+    category = forms.ModelChoiceField(
+        queryset=Category.objects.all(),
+        widget=autocomplete.ModelSelect2(url='category-autocomplete'),
+        label='分类',
+    )
+
+    tag = forms.ModelMultipleChoiceField(
+        queryset=Tag.objects.all(),
+        widget=autocomplete.ModelSelect2Multiple(url='tag-autocomplete'),
+        label='标签'
+
+    )
 
     class Meta:
         model = Post

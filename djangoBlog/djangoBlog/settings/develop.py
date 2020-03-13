@@ -13,6 +13,18 @@ DATABASES = {
 }
 
 
+INSTALLED_APPS += [
+    'debug_toolbar',
+]
+
+MIDDLEWARE += [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+
+]
+
+INTERNAL_IPS = ['127.0.0.1']
+
+
 # SESSION_ENGINE = 'redis_sessions.session'
 # SESSION_REDIS_HOST = 'localhost'
 # SESSION_REDIS_PORT = 6379

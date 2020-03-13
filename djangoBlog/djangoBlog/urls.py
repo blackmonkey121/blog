@@ -11,6 +11,7 @@ from .sitemap import PostSitemap
 from apps.blog.views import IndexView
 from apps.blog.apis import ArticleViewSet, CategoryViewSet
 import xadmin
+from .autocomplete import CategoryAutoComplete, TagAutoComplete
 
 router = DefaultRouter()
 router.register(r'post',ArticleViewSet, basename='api_article')
@@ -27,6 +28,10 @@ urlpatterns = [
     url(r'^comment/', include('apps.comment.urls', namespace='comment')),
 
     url(r'^ckeditor/', include('ckeditor_uploader.urls'),),
+
+    url(r'^category-autocomplete/$', CategoryAutoComplete.as_view(), name='category-autocomplete'),
+    url(r'^tag-autocomplete/$', TagAutoComplete.as_view(), name='tag-autocomplete'),
+
     url(r'^media/(?P<path>.*)', serve, {"document_root": develop.MEDIA_ROOT}),
 
     url(r'^admin/', xadmin.site.urls, name='xadmin'),
@@ -36,3 +41,11 @@ urlpatterns = [
 
     url(r'^', IndexView.as_view(), name="index"),
 ]
+
+from djangoBlog.settings import develop
+
+if develop.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    ] + urlpatterns

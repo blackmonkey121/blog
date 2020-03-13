@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect, HttpResponse
+from django.shortcuts import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.views.generic import DetailView, ListView
 from .models import Post, Tag, Category
@@ -101,8 +101,15 @@ class CommonViewMixmin(object):
 
 class IndexView(CommonViewMixmin, ListView):
     paginate_by = 5
+
     context_object_name = "article_list"
+
     template_name = "blog/article_list.html"
+
+    def get_context_data(self, **kwargs):
+        con = super().get_context_data()
+        print(self)
+        return con
 
 
 class CategoryView(IndexView):
@@ -115,6 +122,7 @@ class CategoryView(IndexView):
         context.update({
             'category': category,
         })
+        print(context)
         return context
 
     def get_queryset(self):
@@ -147,8 +155,7 @@ class TagView(IndexView):
 class SearchView(IndexView):
     """
     整站搜索
-    FIXME：添加个人站点内搜索 < 只需传入 user_id 结果就是个人站点的搜索结果>
-    #TODO：
+    #TODO：使用全文检索框架 haystack
     """
 
     def get_queryset(self):

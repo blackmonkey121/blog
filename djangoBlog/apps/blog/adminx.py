@@ -7,7 +7,7 @@ from django.utils.html import format_html
 from django.urls import reverse
 
 from .models import Category, Post, Tag
-from apps.user.models import  UserInfo
+from apps.user.models import UserInfo
 from .base_admin import BaseAdmin
 from .adminforms import PostAdminForm
 
@@ -40,30 +40,6 @@ class CategoryOwnerFilter(RelatedFieldListFilter):
         super().__init__(field, request, params, model, model_admin, field_path)
         self.lookup_choices = Category.objects.filter(owner=request.user).values_list('id', 'name')
 
-    # title: str = '分类过滤器'
-    # parameter_name: str = 'id'
-    #
-    # def lookups(self, request, model_admin):
-    #     return Category.objects.filter(owner=request.user).values_list('id', 'name')
-    #
-    # def queryset(self, request, queryset):
-    #     category_id = self.value()
-    #     if category_id:
-    #         return queryset.filter(category_id=self.value())
-    #     return queryset
-
-    # admin  <flag:note>
-    # 定义过滤器只展示当前用户的分类
-    # 提供了两个属性
-    #     :param title : 用来展示标题
-    #     :param queryset :查询时URL的参数名字
-    #     eg: 当查询为id为1的分类时URL为 ?owner_category = 1
-    # 方法:
-    #     lookups:
-    #     返回要查询的内容和用到的ID
-    #     queryset:
-    #     根据 URL Query的内容返回数据 例如 URL Query为 ?owner_category = 1
-    #     那么 self.value() 拿到的就是 1
 
 manager.register(CategoryOwnerFilter, take_priority=True)
 
@@ -112,22 +88,6 @@ class PostAdmin(BaseAdmin):
     actions_on_top = True  # 动作相关是否在顶部展示
     actions_on_bottom = True  # 动作相关是否在底部展示
 
-    # 编辑页面
-    # save_on_top = True      # 保存、编辑、编辑并新建 按钮是否在顶部展示
-
-    # fields： 限制新建 时需要写入的字段  配置真是字段的顺序
-    # fields = (
-    #     ('category', 'title'),   # 括号括起来 表示在一行展示
-    #     'desc',
-    #     'content',
-    #     ('tag', 'status')
-    # )
-
-    # 用来控制 详细的布局：
-    # fieldsets = (
-    # (名称, {内容}),
-    # (名称, {内容}),
-    # )
 
     form_layout = (
         Fieldset(

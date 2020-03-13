@@ -45,8 +45,10 @@ INSTALLED_APPS = [
     'apps.comment.apps.CommentConfig',
 
     'ckeditor',
-    'ckeditor_uploader',
-    'rest_framework'
+    'ckeditor_uploader',   # 添加文件支持
+    'rest_framework',
+    'dal',
+    'dal_select2',  # autocomplete
 ]
 
 MIDDLEWARE = [

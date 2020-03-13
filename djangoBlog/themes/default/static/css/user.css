@@ -6,11 +6,11 @@
 
 a{
     text-decoration: none;
-    color: dodgerblue;
+    color: #fdfdff;
 }
 
 html{
-    background: -webkit-gradient(linear, 100% 100%,0 0, from(lightcyan), to(darkgray));
+    background: -webkit-gradient(linear, 100% 100%,0 0, from(#3ae6ff), to(#207cff));
     height: 100%;
 }
 

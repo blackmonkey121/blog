@@ -6,6 +6,7 @@ from django.views import View
 from django.views.generic.edit import CreateView, FormView, UpdateView
 from django.urls import reverse_lazy as _
 from django.conf import settings
+from django.contrib.auth.models import Group
 
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from itsdangerous import SignatureExpired
@@ -127,10 +128,9 @@ class RegistView(CreateView, SendEmailMixin):
         form.cleaned_data.pop("repassword")
         # 发送邮件
 
-        user = UserInfo.objects.create_user(**form.cleaned_data)
-        # email = user.email
-        # token = self.dump_token(user=user)
-        # send_register_active_email(to_email=email, username=user.username, token=token)
+        user = UserInfo.objects.create_user(**form.cleaned_data, is_staff=True)
+        user.groups.add(1)
+
         self.send_active(user=user)
         self.ret["status"] = True
         self.ret["msg"] = {"email": user.email, 'url': reverse('user:login')}

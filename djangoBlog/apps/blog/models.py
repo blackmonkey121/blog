@@ -7,8 +7,6 @@ from apps.user.models import UserInfo
 
 # Create your models here.
 # 数据处理尽可能的集中在了models层，使得views层逻辑更为简单清晰
-# FIXME: 虽然应该将数据处理层独立出来，方便后期的扩展和维护,我觉得就Blog而言 集中在Models这样就够了
-
 
 class Category(models.Model):
     STATUS_DEFAULT = 2
@@ -29,6 +27,7 @@ class Category(models.Model):
 
     class Meta:
         verbose_name = verbose_name_plural = "分类"
+        ordering=['-id']
 
     def __str__(self):
         return self.name
@@ -52,6 +51,7 @@ class Tag(models.Model):
 
     class Meta:
         verbose_name = verbose_name_plural = "标签"
+        ordering = ['-id']
 
     def __str__(self):
         return self.name
@@ -91,12 +91,18 @@ class Post(models.Model):
     uv = models.PositiveIntegerField(default=1)
     editor_type = models.PositiveIntegerField(choices=EDITOR_TYPE_ITEMS, default=TYPE_CKEDITOR, verbose_name='编辑器类型')
 
-    # FIXME: 可以添加过滤条件
     @classmethod
-    def get_hot_articles(cls, user_id=None):
+    def get_hot_articles(cls, user_id=None, related=True):
+        qs = cls.objects.filter(status=cls.STATUS_NORMAL).order_by('-pv')
+
         if user_id is not None:
-            return cls.objects.filter(status=cls.STATUS_NORMAL, owner_id=user_id).order_by('-pv')
-        return cls.objects.filter(status=cls.STATUS_NORMAL).order_by('-pv')
+            qs = qs.filter(owner=user_id)
+            # qs = cls.objects.filter(status=cls.STATUS_NORMAL).order_by('-pv')
+        if related:
+            qs = qs.select_related('owner', 'category')
+            # return cls.objects.filter(status=cls.STATUS_NORMAL, owner_id=user_id).order_by('-pv')
+        # return cls.objects.filter(status=cls.STATUS_NORMAL).order_by('-pv')
+        return qs
 
     @staticmethod
     def get_tag_article(tag_id):
@@ -109,7 +115,6 @@ class Post(models.Model):
             article_list = tag.post_set.filter(status=Post.STATUS_NORMAL).select_related('owner', 'category')
         return article_list, tag
 
-    # FIXME：需要过滤当前用户定义的标签 category = Category.objects.filter(id=category_id, owner=user)  user 需要获取
     @staticmethod
     def get_category_article(category_id):
         try:
@@ -122,10 +127,15 @@ class Post(models.Model):
         return article_list, category
 
     @classmethod
-    def get_latest_article(cls, user_id=None):
+    def get_latest_article(cls, user_id=None, related=True):
         if user_id is not None:
             return cls.objects.filter(status=cls.STATUS_NORMAL, owner_id=user_id)
-        return cls.objects.filter(status=cls.STATUS_NORMAL)
+        qs = cls.objects.filter(status=cls.STATUS_NORMAL)
+
+        if related:
+            qs.select_related('owner', 'category')
+
+        return qs
 
     def save(self, *args, **kwargs):
         """ 重写文章主体 """
