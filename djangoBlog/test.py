@@ -20,15 +20,4 @@ if __name__ == "__main__":
 
 
 
-class Test(object):
-
-    def __call__(self, *args, **kwargs):
-        print('ok')
-
-
-t = Test()
-
-t()
-
-
 

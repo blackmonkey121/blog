@@ -72,19 +72,17 @@ class SideBar(models.Model):
             result = self.content[:5]
         elif self.display_type == self.DISPLAY_LATEST:
             context = {
-                # 'posts': Post.get_latest_article(user_id=user_id, related=False)[:5]
                 'posts': Post.get_latest_article(user_id=user_id)[:5]
             }
             result = render_to_string('config/blocks/sidebar_posts.html', context)
         elif self.display_type == self.DISPLAY_HOT:
             context = {
-                # 'posts': Post.get_hot_articles(user_id=user_id, related=False)[:5]
                 'posts': Post.get_hot_articles(user_id=user_id)[:5]
             }
             result = render_to_string('config/blocks/sidebar_posts.html', context)
         elif self.display_type == self.DISPLAY_COMMIT:
             context = {
-                'comments': Comment.objects.filter(status=Comment.STATUS_NORMAL, target__owner_id=user_id )[:5]
+                'comments': Comment.objects.filter(status=Comment.STATUS_NORMAL, target__owner_id=user_id).select_related('owner', 'target')[:5]
             }
             result = render_to_string('config/blocks/sidebar_comments.html',context)
         return result

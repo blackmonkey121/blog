@@ -81,7 +81,7 @@ class CommonViewMixmin(object):
     @staticmethod
     def get_sidebars(owner_id: int = None):
         sidebars = []
-        titles = SideBar.objects.filter(status=SideBar.STATUS_SHOW, owner_id=owner_id)
+        titles = SideBar.objects.filter(status=SideBar.STATUS_SHOW, owner_id=owner_id).select_related('owner')
         for title in titles:
             sidebars.append({'title': title.title, 'html': title.content_html(owner_id)})
         return sidebars
@@ -89,13 +89,13 @@ class CommonViewMixmin(object):
     @staticmethod
     def get_categories(owner_id: int = None):
         if owner_id is not None:
-            return Category.objects.filter(status=Category.STATUS_NORMAL, owner_id=owner_id)
+            return Category.objects.filter(status=Category.STATUS_NORMAL, owner_id=owner_id).select_related('owner')
         return Category.objects.filter(status=Category.STATUS_DEFAULT)
 
     @staticmethod
     def get_tags(owner_id: int = None):
         if owner_id is not None:
-            return Tag.objects.filter(status=Tag.STATUS_NORMAL, owner_id=owner_id)
+            return Tag.objects.filter(status=Tag.STATUS_NORMAL, owner_id=owner_id).select_related('owner')
         return Tag.objects.filter(status=Tag.STATUS_DEFAULT)
 
 
@@ -179,6 +179,12 @@ class ArticleDetailView(CommonViewMixmin, DetailView):
     context_object_name = "article"
     pk_url_kwarg = "post_id"
 
+    def get_object(self, queryset=None):
+        """ 优化查询 加载外键字段 """
+        post_id = self.kwargs.get('post_id')
+        obj = Post.objects.filter(pk=post_id).select_related('category', 'owner').get()
+        return obj
+
     def get(self, request, *args, **kwargs):
         # FIXME: 内存做缓存，单进程是可以的，但是多进程会使得 进程数据不安全 进程之间内存是相互独立的。
         # TODO: 改为 Redis 做缓存  使用Celery 来异步的处理访问计数的功能
@@ -200,6 +206,7 @@ class ArticleDetailView(CommonViewMixmin, DetailView):
         if not cache.get(uv_key):
             increase_uv = True
             cache.set(pv_key, 1, 24 * 60 * 60)
+        print(self.object)
 
         if increase_pv and increase_uv:
             Post.objects.filter(pk=self.object.id).update(pv=F('pv') + 1, uv=F('uv') + 1)
@@ -214,8 +221,9 @@ class ArticleDetailView(CommonViewMixmin, DetailView):
         context = super().get_context_data(**kwargs)
         article_id = self.kwargs.get("post_id")
         context.update({
-            'comments': Comment.objects.filter(target=article_id).order_by('-id'),
+            'comments': Comment.objects.filter(target=article_id).order_by('-id').select_related('owner'),
         })
+        print(context)
         return context
 
 

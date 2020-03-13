@@ -129,7 +129,7 @@ class Post(models.Model):
     @classmethod
     def get_latest_article(cls, user_id=None, related=True):
         if user_id is not None:
-            return cls.objects.filter(status=cls.STATUS_NORMAL, owner_id=user_id)
+            return cls.objects.filter(status=cls.STATUS_NORMAL, owner_id=user_id).select_related('owner', 'category')
         qs = cls.objects.filter(status=cls.STATUS_NORMAL)
 
         if related:
@@ -150,7 +150,6 @@ class Post(models.Model):
     @cached_property
     def tags(self):
         return ','.join(self.tag.values_list('name', flat=True))
-
 
     class Meta:
         verbose_name = verbose_name_plural = "文章"
