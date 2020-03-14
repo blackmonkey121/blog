@@ -2,6 +2,7 @@ from django.db import models
 
 # Create your models here.
 from django.template.loader import render_to_string
+from libs.warps import cache, cache_warp
 
 
 class Link(models.Model):
@@ -59,10 +60,9 @@ class SideBar(models.Model):
     owner = models.ForeignKey('user.UserInfo', verbose_name="作者")
     created_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
 
-    def content_html(self,user_id):
+    @cache_warp()
+    def content_html(self, user_id):
         """ 直接在models层 渲染模版 """
-        # FIXME: 每次查询只需要获取前n条记录！！！ 改写逻辑层切片操作
-        # TODO: 直接写SQL查询 需要注意线上数据库的兼容
 
         from apps.blog.models import Post    # 避免循环引用
         from apps.comment.models import Comment

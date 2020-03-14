@@ -3,8 +3,7 @@ from django.utils.functional import cached_property
 import mistune
 from django.utils.html import mark_safe
 
-from apps.user.models import UserInfo
-
+from libs.warps import cache_warp
 # Create your models here.
 # 数据处理尽可能的集中在了models层，使得views层逻辑更为简单清晰
 
@@ -92,19 +91,19 @@ class Post(models.Model):
     editor_type = models.PositiveIntegerField(choices=EDITOR_TYPE_ITEMS, default=TYPE_CKEDITOR, verbose_name='编辑器类型')
 
     @classmethod
+    @cache_warp()
     def get_hot_articles(cls, user_id=None, related=True):
-        qs = cls.objects.filter(status=cls.STATUS_NORMAL).order_by('-pv')
 
-        if user_id is not None:
+        qs = cls.objects.filter(status=cls.STATUS_NORMAL)
+        if user_id:
             qs = qs.filter(owner=user_id)
-            # qs = cls.objects.filter(status=cls.STATUS_NORMAL).order_by('-pv')
         if related:
             qs = qs.select_related('owner', 'category')
-            # return cls.objects.filter(status=cls.STATUS_NORMAL, owner_id=user_id).order_by('-pv')
-        # return cls.objects.filter(status=cls.STATUS_NORMAL).order_by('-pv')
-        return qs
+
+        return qs.order_by('-pv')
 
     @staticmethod
+    @cache_warp()
     def get_tag_article(tag_id):
         try:
             tag = Tag.objects.get(id=tag_id)
@@ -116,6 +115,7 @@ class Post(models.Model):
         return article_list, tag
 
     @staticmethod
+    @cache_warp()
     def get_category_article(category_id):
         try:
             category = Category.objects.get(id=category_id)

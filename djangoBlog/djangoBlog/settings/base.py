@@ -190,7 +190,7 @@ CKEDITOR_CONFIGS = {
 # CKeditor static settings
 CKEDITOR_UPLOAD_PATH = 'Article_media'
 
-DEFAULT_FILE_STORAGE = 'djangoBlog.storage.WatermarkStorage'
+DEFAULT_FILE_STORAGE = 'libs.storage.WatermarkStorage'
 
 
 REST_FRAMEWORK = {

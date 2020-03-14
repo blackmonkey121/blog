@@ -11,16 +11,20 @@ MAX_AGE = 60 * 60 * 24 * 365 * 10
 
 class UserIDMiddleware(object):
     """
-
+    标记用户
     """
     def __init__(self, get_response):
         self.get_response = get_response
 
     def __call__(self, request, *args, **kwargs):
-        uid = self.generate_uid(request)
-        request.uid = uid
-        response = self.get_response(request)
-        response.set_cookie(USER_KEY, uid, max_age=MAX_AGE, httponly=True)
+
+        if request.path.startswith('/blog/post/'):
+            uid = self.generate_uid(request)
+            request.uid = uid
+            response = self.get_response(request)
+            response.set_cookie(USER_KEY, uid, max_age=MAX_AGE, httponly=True)
+        else:
+            response = self.get_response(request)
         return response
 
     def generate_uid(self, request):

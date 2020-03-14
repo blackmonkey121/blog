@@ -26,7 +26,7 @@
             <div class="cookies">
                 <span><i class="fa fa-clock-o"></i>{{ article.created_time }}</span>
                 <i></i>
-                <span><a href="{% url 'blog:home' article.owner.id %}"><i class="fa fa-user"></i>{{ article.owner }}</a></span>
+                <span><a href="{% url 'blog:home' article.owner.id %}"><i class="fa fa-user"></i>{{ article.owner.nickname }}</a></span>
                 <i></i>
                 <span><a href="#"><i class="fa fa-comments"></i>{{ article.comment_set.count }}</a></span>
                 <i></i>
