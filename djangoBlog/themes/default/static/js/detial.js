@@ -5,6 +5,7 @@ $(function () {
     // show comment area
     $("#plus-button").on('click', function () {
         $comment.slideDown(300);
+        $('#add-comment-content').focus()
     });
 
 // get datatime
@@ -77,10 +78,7 @@ $(function () {
                 if (ret_data) {
                     // 隐藏添加评论区
                     $comment.slideUp(300);
-                    // TODO:动态插入，不能刷新页面。每次都多请求一次页面
-                    // 收集新评论数据
-
-
+                    // 收集新评论数据 生成标签
                     var $avatar = $('<img>').attr('src', extendData.data('avatar'));    // url
                     var $commentContext = $('<p></p>').text($("textarea").val());
                     var $lineDiv = $('<div class="comment-body clearfix">').append($avatar, $commentContext);
@@ -93,11 +91,9 @@ $(function () {
 
                     var $line = $('<div class="comment-line">').append($lineDiv, $lineP).hide();
 
-
-                    // 生成标签
+                    // 新评论添加到最顶部
                     $('#list-comment').prepend($line);
                     $line.slideDown(300)
-                    // 新评论添加到最顶部
 
                 } else {
                     swal.fire(
