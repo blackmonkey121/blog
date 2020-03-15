@@ -1,5 +1,3 @@
-
-
 #container{
     margin: 60px 40px 20px;
 }
@@ -473,6 +471,7 @@
 #detail .detail-cookies #start{
     color: red;
     font-size: 14px;
+    cursor: pointer;
 }
 #detail .detail-cookies #start:hover{
     color: #0093c4;
@@ -508,12 +507,24 @@
 #comment-body{
     display: none;
 }
+
+.add-comment-head{
+    padding-bottom: 5px;
+    border-bottom: 2px dashed #2aabd2 ;
+}
+
 .add-comment-head #plus-button{
+    margin-top: 10px;
     float: right;
+    color: #f8f8f8;
+    background: #0093c4;
+    border-radius: 3px;
     cursor: pointer;
+    padding: 3px;
 }
 .add-comment-head #plus-button:hover{
     color: #0093c4;
+    background: #f8f8f8;
 }
 #add-comment textarea{
     margin:10px 0;
@@ -523,10 +534,11 @@
     border-radius: 5px;
     background: #FFFFFF;
     font-size: 16px;
+    height: 80px;
 }
 #add-comment .add-comment-cookies{
     position: absolute;
-    top: 48px;
+    top: 100px;
     right: 12px;
 }
 .add-comment-cookies .submit-comment{
@@ -542,13 +554,15 @@
     cursor: pointer;
 }
 
-#list-comment .comment-body{
-    margin-bottom: 10px;
-
+.comment-line{
+    margin-top: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px dashed #2aabd2;
 }
+
 #list-comment .comment-body img{
-    height: 8%;
-    width: 8%;
+    height: 60px;
+    width: 60px;
     vertical-align: top;
 }
 #comment .comment-body p{
@@ -557,6 +571,11 @@
     vertical-align: top;
     float: right;
 }
+
+.comment-cookies {
+    margin-top: 10px;
+}
+
 
 .comment-cookies span{
     display: inline-block;
@@ -572,4 +591,3 @@
     color: black;
     cursor: pointer;
 }
-

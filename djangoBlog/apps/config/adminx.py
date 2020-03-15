@@ -1,6 +1,6 @@
 # Register your models here.
 import xadmin
-from .models import SideBar, Link
+from .models import SideBar, Link, Favorite
 from apps.blog.base_admin import BaseAdmin
 
 
@@ -14,3 +14,9 @@ class SideBarAdmin(BaseAdmin):
 class LinkAdmin(BaseAdmin):
     list_display = ('title', 'href', 'status', 'weight', 'created_time')
     fields = ('title', 'href', 'status', 'weight')
+
+
+@xadmin.sites.register(Favorite)
+class FavoriteAdmin(BaseAdmin):
+    list_display = ('title', 'href', 'status', 'created_time', 'owner')
+    fields = ('title', 'href', 'status')

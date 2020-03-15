@@ -92,3 +92,36 @@ class SideBar(models.Model):
 
     def __repr__(self):
         return '<SideBar:{}>'.format(self.title)
+
+
+class Favorite(models.Model):
+    """
+    收藏表
+    """
+    STATUS_NORMAL = 1
+    STATUS_DELETE = 0
+    STATUS_ITEMS = (
+        (STATUS_NORMAL, '正常'),
+        (STATUS_DELETE, '删除'),
+    )
+    title = models.CharField(max_length=50, verbose_name="标题")
+    href = models.URLField(verbose_name="链接")    # default length ：200
+
+    status = models.PositiveIntegerField(default=STATUS_NORMAL,
+                                         choices=STATUS_ITEMS,
+                                         verbose_name="状态")
+    created_time = models.DateTimeField(auto_now_add=True, verbose_name="收藏日期")
+    owner = models.ForeignKey(to='user.UserInfo', verbose_name="用户")
+
+    @classmethod
+    @cache_warp()
+    def get_favorite(cls):
+        ret = cls.objects.filter().select_related('owner').order_by('id')
+        return ret
+
+
+    class Meta:
+        verbose_name = verbose_name_plural = "收藏表"
+
+    def __repr__(self):
+        return 'Favorite:{}'.format(self.title)

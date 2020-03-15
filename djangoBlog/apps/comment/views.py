@@ -11,7 +11,7 @@ class CommentView(View):
     """
     ret_msg = {"status": 0, "msg": {}}
 
-    def post(self,request,*args, **kwargs):
+    def post(self, request, *args, **kwargs):
         if not request.user.username:
             self.ret_msg['msg']['href'] = reverse('user:login')
             return JsonResponse(self.ret_msg)
@@ -22,6 +22,8 @@ class CommentView(View):
             self.ret_msg['status'] = 1
         else:
             self.ret_msg['msg']['msg'] = "数据不完整"
+        self.ret_msg['msg']= request.user.avatar.url
+
         return JsonResponse(self.ret_msg)
 
 
