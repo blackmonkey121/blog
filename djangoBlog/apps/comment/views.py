@@ -2,7 +2,16 @@ from django.http import JsonResponse
 from django.views.generic import View
 from .models import Comment
 from django.core.urlresolvers import reverse
+
+
 # Create your views here.
+
+
+class CommentMixin(object):
+
+    def __init__(self):
+        self.ret = {"status": None, "msg": None}
+        super().__init__()
 
 
 class CommentView(View):
@@ -12,7 +21,7 @@ class CommentView(View):
     ret_msg = {"status": 0, "msg": {}}
 
     def post(self, request, *args, **kwargs):
-        if not request.user.username:
+        if not request.user.is_authenticated():
             self.ret_msg['msg']['href'] = reverse('user:login')
             return JsonResponse(self.ret_msg)
 
@@ -22,10 +31,9 @@ class CommentView(View):
             self.ret_msg['status'] = 1
         else:
             self.ret_msg['msg']['msg'] = "数据不完整"
-        self.ret_msg['msg']= request.user.avatar.url
+        self.ret_msg['msg'] = request.user.avatar.url
 
         return JsonResponse(self.ret_msg)
-
 
     @staticmethod
     def create_comment(data: dict):
@@ -44,10 +52,31 @@ class CommentView(View):
         owner = request.user
 
         if all((content, target_id, owner,)) and owner.username:
-
             return {
                 'content': content,
                 'target_id': target_id,
                 'owner': owner,
                 'nickname': request.user.nickname,
             }
+
+
+class UpCommentView(View):
+
+    def __init__(self):
+        self.ret = {"status": None, "msg": None}
+        super().__init__()
+
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated():
+            self.ret['msg']['href'] = reverse('user:login')
+            return JsonResponse(self.ret)
+
+        comment_id = request.POST.get('cid', None)
+        operate = request.POST.get('type', None)
+        user = request.user.id
+
+        ret = Comment.handle_point(user=user, operate=operate, model=Comment, obj=comment_id)
+
+        self.ret['status'], self.ret['msg'] = ret
+
+        return JsonResponse(self.ret)

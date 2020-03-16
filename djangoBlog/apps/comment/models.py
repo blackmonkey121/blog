@@ -1,11 +1,12 @@
 from django.db import models
+from libs.BaseModel import BasePoint
 from ..blog.models import Post
 
 
 # Create your models here.
 
 
-class Comment(models.Model):
+class Comment(BasePoint):
     """
     评论表
     """
@@ -22,8 +23,6 @@ class Comment(models.Model):
     status = models.PositiveIntegerField(default=STATUS_NORMAL,
                                          choices=STATUS_ITEMS,
                                          verbose_name="状态")
-    pv = models.IntegerField(default=0, verbose_name='支持')
-    nv = models.IntegerField(default=0, verbose_name='反对')
 
     created_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
 

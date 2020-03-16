@@ -18,7 +18,7 @@ $("input").on('focus', function () {
 });
 
 // 获取数据提交的url
-var url = $("#app-data").data('url');
+var $url = $("#app-data").data('url');
 
 // 是否发送表单数据 数据验证通过，为0 失败 为1
 var sendFlag = 0;
@@ -129,7 +129,7 @@ $('input[value="登陆"]').on('click', function () {
 
     // 发送登陆数据 post
     $.post({
-        url: url,
+        url: $url,
         data: data,
 
         // 检查表单数据是否通过验证

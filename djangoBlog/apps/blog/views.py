@@ -1,6 +1,9 @@
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from django.shortcuts import HttpResponse
-from django.views.generic import DetailView, ListView
+from django.views.generic import DetailView, ListView, View
+from django.core.urlresolvers import reverse
+
 from .models import Post, Tag, Category
 from apps.config.models import SideBar
 from apps.user.models import UserInfo
@@ -189,6 +192,27 @@ class ArticleDetailView(CommonViewMixmin, DetailView):
         })
         return context
 
+
+class UpArticleView(View):
+
+    def __init__(self):
+        self.ret = {"status": None, "msg": None}
+        super().__init__()
+
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated():
+            self.ret['msg']['href'] = reverse('user:login')
+            return JsonResponse(self.ret)
+
+        start_obj = request.POST.get('cid', None)
+        operate = request.POST.get('type', None)
+        user = request.user.id
+
+        ret = Post.handle_point(user=user, operate=operate, model=Post, obj=start_obj)
+
+        self.ret['status'], self.ret['msg'] = ret
+
+        return JsonResponse(self.ret)
 
 @login_required()
 def links(request):

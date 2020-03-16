@@ -35,9 +35,9 @@
 
             <div id="thumb" class="clearfix">
                 <p>
-                    <span class="up"><i class="fa fa-thumbs-up"></i>赞{{ article.nv }}</span>
+                    <span class="up" cid="{{ article.id }}"><i class="fa fa-thumbs-up"></i>赞 <span> {{ article.up }}</span></span>
                     <i></i>
-                    <span class="down"><i class="fa fa-thumbs-down"></i>踩{{ article.pv }}</span>
+                    <span class="down" cid="{{ article.id }}"><i class="fa fa-thumbs-down"></i> 踩 <span> {{ article.down }}</span></span>
                 </p>
             </div>
 
@@ -72,15 +72,15 @@
             <p class="comment-cookies">
                 <span class="list-comment-nickname">{{ comment.nickname }}</span>
                 <span><i class="fa fa-clock-o"></i> {{ comment.created_time }}</span>
-                <span class="up"><i class="fa fa-thumbs-up"></i> 赞{{ comment.nv }}</span>
-                <span class="down"><i class="fa fa-thumbs-down"></i> 踩{{ comment.pv }}</span>
+                <span class="up" cid="{{ comment.id }}"><i class="fa fa-thumbs-up"></i> 赞 <span>{{ comment.up }}</span></span>
+                <span class="down" cid="{{ comment.id }}"><i class="fa fa-thumbs-down"></i> 踩 <span>{{ comment.down }}</span></span>
             </p>
         </div>
         {% endfor %}
 
     </div>
     {% csrf_token %}
-    <span id="extend-data" data-target_id="{{ article.id }}" data-url="{% url 'comment:comment' %}" data-user="{{ user.name }}" data-avatar="{{ user.avatar.url }}" data-nickname="{{ user.nickname }}"></span>
+    <span id="extend-data" data-target_id="{{ article.id }}" data-url="{% url 'comment:comment' %}" data-avatar="{{ user.avatar.url }}" data-nickname="{{ user.nickname }}" data-point="{% url 'comment:comment_point' %}"></span>
     </div>
 {% endblock %}
 {% load static %}

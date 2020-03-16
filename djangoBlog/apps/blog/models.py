@@ -4,6 +4,7 @@ import mistune
 from django.utils.html import mark_safe
 
 from libs.warps import cache_warp
+from libs.BaseModel import BasePoint
 # Create your models here.
 # 数据处理尽可能的集中在了models层，使得views层逻辑更为简单清晰
 
@@ -56,7 +57,7 @@ class Tag(models.Model):
         return self.name
 
 
-class Post(models.Model):
+class Post(BasePoint):
     STATUS_NORMAL = 1
     STATUS_DELETE = 0
     STATUS_DRAFT = 2

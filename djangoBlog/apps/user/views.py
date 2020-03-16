@@ -93,7 +93,11 @@ class LoginView(FormView):
         else:
             self.ret['msg'] = {'password': '账号或密码不正确'}
 
-        return JsonResponse(self.ret)
+        ret = JsonResponse(self.ret)
+        if self.request.user.username:
+            ret.set_cookie('user', hash(user.id), max_age=60 * 5 * 24)
+
+        return ret
 
     def form_invalid(self, form):
         self.ret['msg'] = form.errors
@@ -110,7 +114,9 @@ class LogoutView(View):
     def dispatch(self, request, *args, **kwargs):
         auth.logout(request)
         request.session.flush()
-        return redirect(reverse('user:login'))
+        ret = redirect(reverse('user:login'))
+        ret.delete_cookie('user')
+        return ret
 
 
 class RegistView(CreateView, SendEmailMixin):

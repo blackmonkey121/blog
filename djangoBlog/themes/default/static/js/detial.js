@@ -1,4 +1,5 @@
 $(function () {
+    var $extendData = $("#extend-data");
 
     var $comment = $('#comment-body');
 
@@ -20,7 +21,6 @@ $(function () {
         return str;
     }
 
-
 // make comment area disappear
     $("#add-comment-content").on('blur', function () {
         $comment.slideUp(300)
@@ -33,17 +33,16 @@ $(function () {
 // submit
     $(".submit-comment").on('click', function () {
 
-        var extendData = $("#extend-data");
         // get data
         var data = {
             "content": $("textarea").val(),
-            "target_id": extendData.data('target_id'),
+            "target_id": $extendData.data('target_id'),
             "csrfmiddlewaretoken": $("[name='csrfmiddlewaretoken']").val()
         };
 
         // post submit data
         $.post({
-            url: extendData.data('url'),
+            url: $extendData.data('url'),
             data: data,
 
             // check data for post
@@ -55,7 +54,8 @@ $(function () {
                         "error"
                     )
                 }
-                if ($("#extend-data").data('user') === '') {
+                if ($.cookie('user')===undefined) {
+                    xmlHttpRequest.abort();
                     swal.fire({
                         title: '还没登陆吧！',
                         text: '是否去登陆页面呢？亲！',
@@ -79,11 +79,11 @@ $(function () {
                     // 隐藏添加评论区
                     $comment.slideUp(300);
                     // 收集新评论数据 生成标签
-                    var $avatar = $('<img>').attr('src', extendData.data('avatar'));    // url
+                    var $avatar = $('<img>').attr('src', $extendData.data('avatar'));    // url
                     var $commentContext = $('<p></p>').text($("textarea").val());
                     var $lineDiv = $('<div class="comment-body clearfix">').append($avatar, $commentContext);
 
-                    var $span1 = $('<span class="list-comment-nickname"></span>').text(extendData.data('nickname'));
+                    var $span1 = $('<span class="list-comment-nickname"></span>').text($extendData.data('nickname'));
                     var $span2 = $('<span><i class="fa fa-clock-o"></i></span>').text(getCurrentDate(new Date()));
                     var $span3 = $('<span class="up"><i class="fa fa-thumbs-up"></i> 赞 0 </span>');
                     var $span4 = $('<span class="down"><i class="fa fa-thumbs-down"></i> 踩 0 </span>');
@@ -106,5 +106,114 @@ $(function () {
         })
 
     });
+
+// comment click start
+    $(".comment-cookies [cid]").click(function () {
+
+        var data = {
+            "cid": $(this).attr('cid'),
+            "type":$(this).attr('class'),
+            "csrfmiddlewaretoken": $("[name='csrfmiddlewaretoken']").val()
+        };
+
+        var $this = $(this);
+
+        $.post({
+            url:$extendData.data('point'),
+            data:data,
+
+            // check data for post
+            beforeSend: function (xmlHttpRequest) {
+                if ($.cookie('user')===undefined) {
+                    xmlHttpRequest.abort();
+                    swal.fire({
+                        title: '还没登陆吧！',
+                        text: '是否去登陆页面呢？亲！',
+                        type: 'info',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: '确定！',
+                        cancelButtonText: "取消"
+                    }).then(function (reject) {
+                        if (reject.value) {
+                            location.href = '/user/login/'
+                        }
+                    })
+                }
+            },
+
+            success: function (data) {
+                if (data.status) {
+                    // 修改点赞数
+                    let num = parseInt($this.find('span').text()) + 1;
+                    $this.find('span').text(num)
+                } else {
+                    swal.fire(
+                        data.msg,
+                        "哎呀 失败了！"
+                    )
+                }
+            }
+
+        })
+
+    });
+
+// article click start
+    $("#thumb [cid]").click(function () {
+
+        var data = {
+            "cid": $(this).attr('cid'),
+            "type":$(this).attr('class'),
+            "csrfmiddlewaretoken": $("[name='csrfmiddlewaretoken']").val()
+        };
+
+        var $this = $(this);
+
+        $.post({
+            url:$extendData.data('point'),
+            data:data,
+
+            // check data for post
+            beforeSend: function (xmlHttpRequest) {
+                if ($.cookie('user')===undefined) {
+                    xmlHttpRequest.abort();
+                    swal.fire({
+                        title: '还没登陆吧！',
+                        text: '是否去登陆页面呢？亲！',
+                        type: 'info',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: '确定！',
+                        cancelButtonText: "取消"
+                    }).then(function (reject) {
+                        if (reject.value) {
+                            location.href = '/user/login/'
+                        }
+                    })
+                }
+            },
+
+            success: function (data) {
+                if (data.status) {
+                    // 修改点赞数
+                    let num = parseInt($this.find('span').text()) + 1;
+                    $this.find('span').text(num)
+                } else {
+                    swal.fire(
+                        data.msg,
+                        "哎呀 失败了！"
+                    )
+                }
+            }
+
+        })
+
+    });
+
+
+
 
 });
