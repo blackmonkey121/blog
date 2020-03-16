@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block main-page %}
-    <div id="detail">
+    <div id="detail" href="{% url 'blog:article_point' %}">
         {% if article %}
             <p class="detail-title">{{ article.title }}
             </p>

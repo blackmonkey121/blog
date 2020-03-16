@@ -172,7 +172,7 @@ $(function () {
         var $this = $(this);
 
         $.post({
-            url:$extendData.data('point'),
+            url:$("#detail").attr('href'),
             data:data,
 
             // check data for post
@@ -212,8 +212,5 @@ $(function () {
         })
 
     });
-
-
-
 
 });
