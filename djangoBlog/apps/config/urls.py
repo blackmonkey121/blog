@@ -3,8 +3,8 @@
 __author__ = "Monkey"
 
 from django.conf.urls import url
-from ..config.views import *
+from ..config.views import FavoriteView
 
 urlpatterns = [
-    url('^links/$', links),
+    url('^favorite/$', FavoriteView.as_view(), name='favorite'),
 ]

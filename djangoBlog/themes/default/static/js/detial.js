@@ -54,7 +54,7 @@ $(function () {
                         "error"
                     )
                 }
-                if ($.cookie('user')===undefined) {
+                if ($.cookie('user') === undefined) {
                     xmlHttpRequest.abort();
                     swal.fire({
                         title: '还没登陆吧！',
@@ -112,19 +112,19 @@ $(function () {
 
         var data = {
             "cid": $(this).attr('cid'),
-            "type":$(this).attr('class'),
+            "type": $(this).attr('class'),
             "csrfmiddlewaretoken": $("[name='csrfmiddlewaretoken']").val()
         };
 
         var $this = $(this);
 
         $.post({
-            url:$extendData.data('point'),
-            data:data,
+            url: $extendData.data('point'),
+            data: data,
 
             // check data for post
             beforeSend: function (xmlHttpRequest) {
-                if ($.cookie('user')===undefined) {
+                if ($.cookie('user') === undefined) {
                     xmlHttpRequest.abort();
                     swal.fire({
                         title: '还没登陆吧！',
@@ -165,19 +165,19 @@ $(function () {
 
         var data = {
             "cid": $(this).attr('cid'),
-            "type":$(this).attr('class'),
+            "type": $(this).attr('class'),
             "csrfmiddlewaretoken": $("[name='csrfmiddlewaretoken']").val()
         };
 
         var $this = $(this);
 
         $.post({
-            url:$("#detail").attr('href'),
-            data:data,
+            url: $("#detail").attr('href'),
+            data: data,
 
             // check data for post
             beforeSend: function (xmlHttpRequest) {
-                if ($.cookie('user')===undefined) {
+                if ($.cookie('user') === undefined) {
                     xmlHttpRequest.abort();
                     swal.fire({
                         title: '还没登陆吧！',
@@ -213,4 +213,71 @@ $(function () {
 
     });
 
+// add favorite
+    $("#start").click(function () {
+        if ($.cookie('user')) {
+            let $title = $("#detail-title").text().replace(/\s+/g, "");
+            let $href = location.href;
+            swal.fire({
+                title: '收藏信息',
+                html:
+                    '<input id="swal-input1" class="swal2-input" placeholder="名称" autofocus value=' + $title + ' >' +
+                    '<input id="swal-input2" class="swal2-input" placeholder="akshdskadskfnds" disabled value=' + $href + '>',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '确定！',
+                cancelButtonText: "取消",
+            }).then(function (result) {
+                if (result.value) {
+                    let data = {
+                        "title": $title,
+                        "href": $href,
+                        "csrfmiddlewaretoken": $("[name='csrfmiddlewaretoken']").val()
+
+                    };
+
+                    $.post({
+                        url: $extendData.data('favorite'),
+                        data: data,
+
+                        success: function (ret_data) {
+                            if (ret_data) {
+                                swal.fire({
+                                    showConfirmButton: false,
+                                    timer: 1000,
+                                    type: 'success',
+                                    title: '收藏成功'
+                                })
+
+                            } else {
+                                swal.fire(
+                                    "提交失败了",
+                                    "哎呀 失败了！"
+                                )
+                            }
+                        }
+
+                    })
+
+                }
+            })
+        } else {
+            swal.fire({
+                title: '还没登陆吧！',
+                text: '是否去登陆页面呢？亲！',
+                type: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '确定！',
+                cancelButtonText: "取消"
+            }).then(function (reject) {
+                if (reject.value) {
+                    location.href = '/user/login/'
+                }
+            })
+
+        }
+    })
 });

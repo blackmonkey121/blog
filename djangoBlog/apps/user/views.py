@@ -1,12 +1,13 @@
 from django.http import JsonResponse
-from django.shortcuts import render, redirect, HttpResponse
+from django.shortcuts import redirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.contrib import auth
 from django.views import View
 from django.views.generic.edit import CreateView, FormView, UpdateView
 from django.urls import reverse_lazy as _
 from django.conf import settings
-from django.contrib.auth.models import Group
+from django.contrib.auth.decorators import login_required
+# from django.contrib.auth.models import Group  # 权限分类注册
 
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from itsdangerous import SignatureExpired
@@ -14,6 +15,7 @@ from itsdangerous import SignatureExpired
 from celery_task.tasks import send_register_active_email, send_update_pwd_email
 from .user_forms import LoginForm, RegistForm, UpdateForm, ResetForm
 from .models import UserInfo
+from libs.login_tools import authenticate
 
 
 class Token(object):
@@ -73,14 +75,16 @@ class LoginView(FormView):
     form_class = LoginForm
 
     def dispatch(self, request, *args, **kwargs):
+
         if request.user.is_authenticated and request.user.is_check:
             return redirect(reverse('index'))
         response = super().dispatch(request, *args, **kwargs)
         return response
 
     def form_valid(self, form):
-        user = auth.authenticate(username=form.cleaned_data.get('username'),
-                                 password=form.cleaned_data.get('password'))
+        # 自定义的 authenticate
+        user = authenticate(self.request, username=form.cleaned_data.get('username'),
+                            password=form.cleaned_data.get('password'))
         if user:
             if user.is_check:
 
@@ -95,7 +99,7 @@ class LoginView(FormView):
 
         ret = JsonResponse(self.ret)
         if self.request.user.username:
-            ret.set_cookie('user', hash(user.id), max_age=60 * 5 * 24)
+            ret.set_cookie('user', hash(user.id), max_age=60 * 60 * 24 * 7)
 
         return ret
 
@@ -244,7 +248,7 @@ class ActiveView(FormView, Token):
             return HttpResponse("您的账户已激活,<a href='{}'>Go Login</a>".format(reverse('user:login')))
 
         except Exception as e:
-            return HttpResponse("除了一些状况，稍后再试！")
+            return HttpResponse("出了一些状况，稍后再试！")
 
     def get_form(self, form_class=None):
         pass

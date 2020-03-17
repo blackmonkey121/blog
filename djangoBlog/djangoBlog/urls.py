@@ -36,8 +36,8 @@ urlpatterns = [
 
     url(r'^admin/', xadmin.site.urls, name='xadmin'),
 
-    url(r'^RSS|feed/', LastesPostFeed(), name='RSS'),
-    url(r'^sitemap\.xml$', sitemap_views.sitemap, {'sitemaps': {'posts':PostSitemap}}),
+    url(r'^RSS', LastesPostFeed(), name='rss'),
+    url(r'^sitemap\.xml', sitemap_views.sitemap, {'sitemaps': {'posts':PostSitemap}}),
 
     url(r'^', IndexView.as_view(), name="index"),
 ]

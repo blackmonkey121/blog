@@ -6,7 +6,7 @@ from django.core.cache import cache
 from functools import wraps
 
 
-def cache_warp(instance=cache, timeout=60):
+def cache_wrap(instance=cache, timeout=60):
     """
     函数级 缓存装饰器
     params instance: 缓存实例， 需要提供get set 方法，默认为 django.core.cache.cache

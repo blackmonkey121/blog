@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 from django.template.loader import render_to_string
-from libs.warps import cache, cache_warp
+from libs.warps import cache_wrap
 
 
 class Link(models.Model):
@@ -28,9 +28,10 @@ class Link(models.Model):
 
     class Meta:
         verbose_name = verbose_name_plural = "友链"
+        ordering = ['-weight']
 
     def __repr__(self):
-        return 'Link:{}'.format(self.title)
+        return 'Link({})'.format(self.title)
 
 
 class SideBar(models.Model):
@@ -60,7 +61,7 @@ class SideBar(models.Model):
     owner = models.ForeignKey('user.UserInfo', verbose_name="作者")
     created_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
 
-    @cache_warp()
+    @cache_wrap()
     def content_html(self, user_id):
         """ 直接在models层 渲染模版 """
 
@@ -91,7 +92,7 @@ class SideBar(models.Model):
         verbose_name = verbose_name_plural = "侧边栏"
 
     def __repr__(self):
-        return '<SideBar:{}>'.format(self.title)
+        return 'SideBar({})'.format(self.title)
 
 
 class Favorite(models.Model):
@@ -113,15 +114,8 @@ class Favorite(models.Model):
     created_time = models.DateTimeField(auto_now_add=True, verbose_name="收藏日期")
     owner = models.ForeignKey(to='user.UserInfo', verbose_name="用户")
 
-    @classmethod
-    @cache_warp()
-    def get_favorite(cls):
-        ret = cls.objects.filter().select_related('owner').order_by('id')
-        return ret
-
-
     class Meta:
         verbose_name = verbose_name_plural = "收藏表"
 
     def __repr__(self):
-        return 'Favorite:{}'.format(self.title)
+        return 'Favorite({}})'.format(self.title)

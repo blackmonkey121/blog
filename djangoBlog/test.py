@@ -18,7 +18,6 @@ if __name__ == "__main__":
 
     django.setup()
 
-import time
 from functools import wraps
 
 
@@ -66,29 +65,3 @@ for i in range(10):
     test(i,i)
 
 print(cache.con)
-
-
-class A(object):
-    """ 继承object """
-    name = 'A'
-
-
-class B(A):
-    """ 继承A """
-    name = 'B'
-
-
-class C(A):
-    """ 继承A """
-    name = 'C'
-
-
-class D(B, C):
-    """ 继承B C """
-    def func(self):
-        print(self.name)
-
-
-d = D()
-d.func()
-#  分别注释掉 name = 'A'、name = 'B'、name = 'C'、 看看理不理解为什么

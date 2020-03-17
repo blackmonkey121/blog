@@ -185,7 +185,7 @@ $('input[value="注册"]').on('click', function () {
     data.append("csrfmiddlewaretoken", $("[name='csrfmiddlewaretoken']").val());
 
     $.post({
-        url: url,
+        url: '/user/regist/',
         data: data,
         processData: false,   // jQuery不处理数据
         contentType: false,  // jQuery不要设置MIME

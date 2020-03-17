@@ -37,11 +37,11 @@ class CommentView(View):
 
     @staticmethod
     def create_comment(data: dict):
-        print(data)
         try:
             obj = Comment.objects.create(**data)
             obj.save()
         except Exception as e:
+            # TODO: log
             print(e)
 
     @staticmethod

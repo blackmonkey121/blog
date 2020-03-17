@@ -1,18 +1,17 @@
-from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from django.shortcuts import HttpResponse
 from django.views.generic import DetailView, ListView, View
 from django.core.urlresolvers import reverse
-
-from .models import Post, Tag, Category
-from apps.config.models import SideBar
-from apps.user.models import UserInfo
 from django.db.models import Q, F
 from datetime import date
 
+from .models import Post, Tag, Category
+from apps.config.models import SideBar, Link, Favorite
+from apps.user.models import UserInfo
+from libs.login_tools import required_login
+
 # Create your views here.
 from ..comment.models import Comment
-from libs.warps import cache, cache_warp
+from libs.warps import cache, cache_wrap
 
 
 class CommonViewMixmin(object):
@@ -20,7 +19,15 @@ class CommonViewMixmin(object):
     为IndexView 添加通用数据
     """
     # 获取文章的查询集
-    @cache_warp()
+    # key: 需要传入右边栏信息的模型名, value: 在上下文中的名字，如果为空 则 为模型名小写+s
+    update_context_dict = {
+        Category: 'categories',
+        Tag: 'tags',
+        Link: 'links',
+        Favorite: 'favorites'
+    }
+
+    @cache_wrap()
     def get_queryset(self, **kwargs):
         return Post.get_latest_article(**kwargs)
 
@@ -36,19 +43,20 @@ class CommonViewMixmin(object):
 
         context = super().get_context_data(**kwargs)  # 多继承 super 会按照MRO列表执行方法
 
+        for model, context_name in self.update_context_dict.items():
+            if context_name is None:
+                raise KeyError('context_name.values() 中不能存在元素为 None')
+
+            context_name = context_name.strip() or model.__name__.lower() + 's'
+            context.update({
+                context_name: self.get_update(model=model, owner=owner)
+            })
+        for i,j in context.items():
+            print(i,j)
+
         # add sidebars data
         context.update({
             'sidebars': self.get_sidebars(owner=owner)
-        })
-
-        # add categories
-        context.update({
-            'categories': self.get_categories(owner=owner)
-        })
-
-        # add tags
-        context.update({
-            'tags': self.get_tags(owner=owner)
         })
 
         # current visited user id
@@ -59,7 +67,7 @@ class CommonViewMixmin(object):
         return context
 
     @staticmethod
-    @cache_warp()
+    @cache_wrap()
     def get_sidebars(owner):
         sidebars = []
         titles = SideBar.objects.filter(status=SideBar.STATUS_SHOW, owner=owner).select_related('owner')
@@ -67,19 +75,20 @@ class CommonViewMixmin(object):
             sidebars.append({'title': title.title, 'html': title.content_html(owner)})
         return sidebars
 
-    @staticmethod
-    @cache_warp()
-    def get_categories(owner):
-        if owner is not None:
-            return Category.objects.filter(status=Category.STATUS_NORMAL, owner=owner).select_related('owner')
-        return Category.objects.filter(status=Category.STATUS_DEFAULT)
+    @cache_wrap()
+    def get_update(self, model, owner=None, relate=True):
+        qs = model.objects.filter(status=model.STATUS_NORMAL)
+        # TODO:依赖 STATUS.NORMAL 属性, 在模型中做约束，必须提供该属性。
 
-    @staticmethod
-    @cache_warp()
-    def get_tags(owner):
         if owner is not None:
-            return Tag.objects.filter(status=Tag.STATUS_NORMAL, owner=owner).select_related('owner')
-        return Tag.objects.filter(status=Tag.STATUS_DEFAULT)
+            qs = qs.filter(owner=owner)
+        else:
+            qs = qs.none()
+            return qs
+
+        if relate:
+            qs = qs.select_related('owner')
+        return qs
 
 
 class IndexView(CommonViewMixmin, ListView):
@@ -89,7 +98,7 @@ class IndexView(CommonViewMixmin, ListView):
 
     template_name = "blog/article_list.html"
 
-    @cache_warp()
+    @cache_wrap()
     def get_queryset(self, **kwargs):
         user_id = self.kwargs.get('user_id', None)
         if user_id is not None:
@@ -101,23 +110,27 @@ class CategoryView(IndexView):
     """
     分类视图
     """
-    @cache_warp()
     def get_queryset(self):
         """ 重写queryset方法 依据分类来过滤信息 """
         category_id = self.kwargs.get("category_id")
         qs = super().get_queryset()
-        self.owner = qs.first().owner
+        try:
+            self.owner = qs.first().owner
+        except AttributeError:
+            self.owner = Category.objects.filter(pk=category_id).first().owner
         return qs.filter(category=category_id)
 
 
 class TagView(IndexView):
     """"""
-    @cache_warp()
     def get_queryset(self):
         """ 重写queryset方法 依据分类来过滤信息 """
         tag_id = self.kwargs.get("tag_id")
         qs = super().get_queryset()
-        self.owner = qs.first().owner
+        try:
+            self.owner = qs.first().owner
+        except AttributeError:
+            self.owner = Tag.objects.filter(pk=tag_id).first().owner
 
         return qs.filter(tag=tag_id)
 
@@ -148,7 +161,7 @@ class ArticleDetailView(CommonViewMixmin, DetailView):
     context_object_name = "article"
     pk_url_kwarg = "post_id"
 
-    @cache_warp()
+    @cache_wrap()
     def get_object(self, queryset=None):
         """ 优化查询 加载外键字段 """
         post_id = self.kwargs.get('post_id')
@@ -199,6 +212,7 @@ class UpArticleView(View):
         self.ret = {"status": None, "msg": None}
         super().__init__()
 
+    @required_login
     def post(self, request, *args, **kwargs):
         if not request.user.is_authenticated():
             self.ret['msg']['href'] = reverse('user:login')
@@ -213,7 +227,3 @@ class UpArticleView(View):
         self.ret['status'], self.ret['msg'] = ret
 
         return JsonResponse(self.ret)
-
-@login_required()
-def links(request):
-    return HttpResponse('links:Anything is OK!')

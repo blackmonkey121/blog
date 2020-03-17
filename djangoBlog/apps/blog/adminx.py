@@ -7,7 +7,6 @@ from django.utils.html import format_html
 from django.urls import reverse
 
 from .models import Category, Post, Tag
-from apps.user.models import UserInfo
 from .base_admin import BaseAdmin
 from .adminforms import PostAdminForm
 
@@ -17,14 +16,14 @@ admin.AdminSite.site_title = 'MonkeyBlog(管理员:{})'
 admin.AdminSite.index_title = '管理员首页'
 
 
-class PostInline(object):
-    form_layout = (
-        Container(
-            Row("title", "desc"),
-        )
-    )
-    extra = 1  # 控制额外多几个
-    model = Post
+# class PostInline(object):
+#     form_layout = (
+#         Container(
+#             Row("title", "desc"),
+#         )
+#     )
+#     extra = 1  # 控制额外多几个
+#     model = Post
 
 # 自定义过滤器
 class CategoryOwnerFilter(RelatedFieldListFilter):
@@ -53,7 +52,7 @@ class CategoryAdmin(BaseAdmin):
     fields = ('name', 'status')
 
     # 在 分类页面展示 行内编辑区 PostInline 在上方定义
-    inlines = (PostInline,)
+    # inlines = (PostInline,)
 
     def post_count(self, obj):
         """ 文章数目的统计 """

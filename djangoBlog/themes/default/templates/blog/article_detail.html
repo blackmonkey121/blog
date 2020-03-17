@@ -13,20 +13,16 @@
 {% block main-page %}
     <div id="detail" href="{% url 'blog:article_point' %}">
         {% if article %}
-            <p class="detail-title">{{ article.title }}
+            <p id="detail-title">{{ article.title }}
             </p>
 
             <div class="detail-cookies">
-                {% if article.nv %}
-                    <span id="repr">原创</span>
-                {% else %}
-                    <span id="copy"><a href="{{ article.nv }}">转载</a></span>
-                {% endif %}
-                <span><i class="fa fa-tags"></i>{{ article.category.name }}</span>
-                <span><i class="fa fa-user-secret"></i>{{ article.owner.username }}</span>
-                <span>阅览量:{{ article.pv|default:"1000+" }}</span>
-                <span>发布于 <i class="fa fa-clock-o"></i>{{ article.created_time|date:'Y-m-d H:m:s' }}</span>
-                <span id="start"><i class="fa fa-star fa-spin"></i>收藏</span>
+
+                <span class="deep"><i class="fa fa-tags"></i>{{ article.category.name }}</span>
+                <span class="suit"><i class="fa fa-user-secret"></i>{{ article.owner.nickname }}</span>
+                <span class="little">阅览量:{{ article.pv|default:"1000+" }}</span>
+                <span class="any">发布于 <i class="fa fa-clock-o"></i>{{ article.created_time|date:'Y-m-d H:m:s' }}</span>
+                <span id="start"><i class="fa fa-star"></i>收藏</span>
 
             </div>
             <div class="detail-content">
@@ -65,7 +61,7 @@
         {% for comment in comments %}
         <div class="comment-line">
             <div class="comment-body clearfix">
-                <img src="{{ comment.owner.avatar.url }}">
+                    <img src="{{ comment.owner.avatar.url }}">
                 <p>{{ comment.content | truncatechars:200 }}</p>
             </div>
 
@@ -80,7 +76,7 @@
 
     </div>
     {% csrf_token %}
-    <span id="extend-data" data-target_id="{{ article.id }}" data-url="{% url 'comment:comment' %}" data-avatar="{{ user.avatar.url }}" data-nickname="{{ user.nickname }}" data-point="{% url 'comment:comment_point' %}"></span>
+    <span id="extend-data" data-target_id="{{ article.id }}" data-url="{% url 'comment:comment' %}" data-avatar="{{ user.avatar.url }}" data-nickname="{{ user.nickname }}" data-point="{% url 'comment:comment_point' %}" data-favorite="{% url 'config:favorite' %}"></span>
     </div>
 {% endblock %}
 {% load static %}

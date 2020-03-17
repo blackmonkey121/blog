@@ -3,7 +3,7 @@ from django.utils.functional import cached_property
 import mistune
 from django.utils.html import mark_safe
 
-from libs.warps import cache_warp
+from libs.warps import cache_wrap
 from libs.BaseModel import BasePoint
 # Create your models here.
 # 数据处理尽可能的集中在了models层，使得views层逻辑更为简单清晰
@@ -92,7 +92,7 @@ class Post(BasePoint):
     editor_type = models.PositiveIntegerField(choices=EDITOR_TYPE_ITEMS, default=TYPE_CKEDITOR, verbose_name='编辑器类型')
 
     @classmethod
-    @cache_warp()
+    @cache_wrap()
     def get_hot_articles(cls, user_id=None, related=True):
 
         qs = cls.objects.filter(status=cls.STATUS_NORMAL)
@@ -104,7 +104,7 @@ class Post(BasePoint):
         return qs.order_by('-pv')
 
     @staticmethod
-    @cache_warp()
+    @cache_wrap()
     def get_tag_article(tag_id):
         try:
             tag = Tag.objects.get(id=tag_id)
@@ -116,7 +116,7 @@ class Post(BasePoint):
         return article_list, tag
 
     @staticmethod
-    @cache_warp()
+    @cache_wrap()
     def get_category_article(category_id):
         try:
             category = Category.objects.get(id=category_id)

@@ -18,7 +18,7 @@ class LastesPostFeed(Feed):
     feed_type = ExtendedRSSFeed
     title = 'Monkey Blog System'
     link = '/rss/'
-    description = "Monkey is a blog system power by django"
+    description = "Monkey Blog"
 
     def items(self):
         return Post.objects.filter(status=Post.STATUS_NORMAL)[:10]

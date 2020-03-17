@@ -76,17 +76,6 @@
                     </ul>
                 </a>
             </li>
-            <li>
-                <a href="#" class="menu">
-                    <p class="menu-title menu-title_4th"><i class="fa fa-folder-open"></i> 收藏夹</p>
-                    <ul class="menu-dropdown">
-                        <li id="li-logout"></li>
-                        <li>待完成</li>
-                        <li>待完成</li>
-                        <li>待完成</li>
-                    </ul>
-                </a>
-            </li>
         </ul>
 
     </div>
@@ -119,7 +108,8 @@
                     {% else %}
                     {% url 'user:login' %}
                 {% endif %}"><i class="fa fa-paper-plane-o"></i> 个人主页</a></li>
-                <li><a href="/admin/"><i class="fa fa-cog fa-spin"></i> 管理</a></li>
+                <li><a href="/admin/"><i class="fa fa-cog"></i> 管理</a></li>
+                <li><a href="{% url 'rss' %}"><i class="fa fa-rss"></i> RSS </a></li>
             </ul>
 
             <div id="blog-status">
@@ -160,9 +150,6 @@
 
             {% endblock %}
         </div>
-    <div>
-    </div>
-
         <!-- 左侧边栏结束 -->
 
         <!-- 右侧开始-->
@@ -217,6 +204,35 @@
                     {{ sidebar.html }}
                 </div>
             {% endfor %}
+
+            <!-- links -->
+            <div id="links" class="bar-block">
+                <p class="bar-title"><i class="fa fa-tags fa-fw"></i>友链</p>
+                <ul>
+                    {% for link in links %}
+                        <li>
+                            <a href="{{ link.href }}">{{ link.title }}</a>
+                        </li>
+                    {% empty %}
+                        <li>还没有添加友链！<br>
+                            <a class="go-add" href="{% url 'xadmin:config_link_add' %}">去添加</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div id="favorites" class="bar-block">
+                <p class="bar-title"><i class="fa fa-tags fa-fw"></i>收藏</p>
+                <ul>
+                    {% for favorite in favorites %}
+                        <li>
+                            <a href="{{ link.href }}">{{ favorite.title }}</a>
+                        </li>
+                    {% empty %}
+                        <li>还没有添加友链！<br>
+                            <a class="go-add" href="{% url 'xadmin:config_favorite_add' %}">去添加</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
 
 
         </div>
