@@ -173,7 +173,7 @@
                 <ul>
                     {% for category in categories %}
                         <li>
-                            <a href="{% url 'blog:category_list' category.id %}">{{ category.name }}({{ category.post_set.count }})</a>
+                            <a href="{% url 'blog:category_list' category.id %}">{{ category.name }}</a>
                         </li>
                     {% empty %}
                         <li>哎呀！还没有分类！</li>
@@ -188,7 +188,7 @@
                 <ul>
                     {% for tag in tags %}
                         <li>
-                            <a href="{% url 'blog:tag_list' tag.id %}">{{ tag.name }}({{ tag.post_set.count }})</a>
+                            <a href="{% url 'blog:tag_list' tag.id %}">{{ tag.name }}</a>
                         </li>
                     {% empty %}
                         <li>哎呀！还没有标签！</li>

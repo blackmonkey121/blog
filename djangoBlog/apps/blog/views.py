@@ -30,7 +30,7 @@ class CommonViewMixmin(object):
     @cache_wrap()
     def get_queryset(self, **kwargs):
         return Post.get_latest_article(**kwargs)
-
+    # @cache_wrap()
     def get_context_data(self, **kwargs):
         """
         重写get_context_data 方法 （这个方法属于ListView的父类 MultipleObjectMixin）
@@ -110,6 +110,7 @@ class CategoryView(IndexView):
     """
     分类视图
     """
+    @cache_wrap()
     def get_queryset(self):
         """ 重写queryset方法 依据分类来过滤信息 """
         category_id = self.kwargs.get("category_id")
@@ -123,6 +124,7 @@ class CategoryView(IndexView):
 
 class TagView(IndexView):
     """"""
+    @cache_wrap()
     def get_queryset(self):
         """ 重写queryset方法 依据分类来过滤信息 """
         tag_id = self.kwargs.get("tag_id")

@@ -128,6 +128,7 @@ class Post(BasePoint):
         return article_list, category
 
     @classmethod
+    @cache_wrap()
     def get_latest_article(cls, user_id=None, related=True):
         if user_id is not None:
             return cls.objects.filter(status=cls.STATUS_NORMAL, owner_id=user_id).select_related('owner', 'category')
