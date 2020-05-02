@@ -5,7 +5,7 @@ from celery import Celery
 # 在任务处理者一端加这几句
 import os
 import django
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 PROFILE_LIST = {1: 'develop',
                 2: 'product'}

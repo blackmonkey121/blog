@@ -2,16 +2,18 @@
 # -*- coding: utf-8 -*-
 __author__ = "Monkey"
 
-from django.conf.urls import url
+from django.urls import path
 from .views import *
+
+# app_name = 'blog'
 
 urlpatterns = [
 
-    url(r'^category/(?P<category_id>\d+)/$', CategoryView.as_view(), name='category_list'),
-    url(r'^tag/(?P<tag_id>\d+)/$', TagView.as_view(), name='tag_list'),
-    url(r'^post/(?P<post_id>\d+).html$', ArticleDetailView.as_view(), name='article_detail'),
-    url(r'^search/$', SearchView.as_view(), name='search'),
-    url(r'^post_point/$', UpArticleView.as_view(), name='article_point'),
-    url(r'^(?P<user_id>.*)$', IndexView.as_view(), name='home'),
+    path('category/<int:category_id>)/', CategoryView.as_view(), name='category_list'),
+    path('tag/<int:tag_id>)/', TagView.as_view(), name='tag_list'),
+    path('post/<int:post_id>).html', ArticleDetailView.as_view(), name='article_detail'),
+    path('search/', SearchView.as_view(), name='search'),
+    path('post_point/', UpArticleView.as_view(), name='article_point'),
+    path('<int:user_id>', IndexView.as_view(), name='home'),
 
 ]

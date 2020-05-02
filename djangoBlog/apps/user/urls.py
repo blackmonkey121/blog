@@ -7,11 +7,11 @@ from .views import LoginView, RegistView, UpdatePassWordView,LogoutView, ActiveV
 
 
 urlpatterns = [
-    url(r'^login/', LoginView.as_view(), name='login'),
-    url(r'^regist/', RegistView.as_view(), name='regist'),
-    url(r'^logout/',LogoutView.as_view(), name='logout'),
+    url(r'login/', LoginView.as_view(), name='login'),
+    url(r'regist/', RegistView.as_view(), name='regist'),
+    url(r'logout/', LogoutView.as_view(), name='logout'),
 
-    url(r'^update/', UpdatePassWordView.as_view(), name='update'),
-    url(r'^reset/(?P<token>.*)$', ResetView.as_view(), name='reset'),
-    url(r'^active/(?P<token>.*)$', ActiveView.as_view(), name='active'),
+    url(r'update/', UpdatePassWordView.as_view(), name='update'),
+    url(r'reset/<str:token>/', ResetView.as_view(), name='reset'),
+    url(r'active/<str:token>/', ActiveView.as_view(), name='active'),
 ]

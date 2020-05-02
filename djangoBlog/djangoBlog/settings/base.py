@@ -199,7 +199,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 5
 }
 
-AUTHENTICATION_BACKENDS = (
+AUTHENTICATION_BACKENDS = [
     'libs.login_tools.CustomBackend',
-)
+]
 

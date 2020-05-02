@@ -23,7 +23,7 @@ class Link(models.Model):
                                          verbose_name="权重",
                                          help_text="权重越高越靠前")
 
-    owner = models.ForeignKey('user.UserInfo', verbose_name="作者")
+    owner = models.ForeignKey('user.UserInfo', verbose_name="作者", on_delete=models.DO_NOTHING)
     created_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
 
     class Meta:
@@ -58,7 +58,7 @@ class SideBar(models.Model):
     display_type = models.PositiveIntegerField(default=1, choices=SIDE_TYPE, verbose_name="展示类型")
     content = models.CharField(max_length=500, blank=True, verbose_name="内容", help_text="如果不是HTML 可设置为空")
     status = models.PositiveIntegerField(default=STATUS_SHOW, choices=STATUS_ITEMS, verbose_name="状态" ,help_text="展示或隐藏")
-    owner = models.ForeignKey('user.UserInfo', verbose_name="作者")
+    owner = models.ForeignKey('user.UserInfo', verbose_name="作者", on_delete=models.DO_NOTHING)
     created_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
 
     @cache_wrap()
@@ -112,7 +112,7 @@ class Favorite(models.Model):
                                          choices=STATUS_ITEMS,
                                          verbose_name="状态")
     created_time = models.DateTimeField(auto_now_add=True, verbose_name="收藏日期")
-    owner = models.ForeignKey(to='user.UserInfo', verbose_name="用户")
+    owner = models.ForeignKey(to='user.UserInfo', verbose_name="用户", on_delete=models.DO_NOTHING)
 
     class Meta:
         verbose_name = verbose_name_plural = "收藏表"

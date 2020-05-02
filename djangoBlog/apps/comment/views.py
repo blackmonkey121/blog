@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.views.generic import View
 from .models import Comment
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 
 # Create your views here.

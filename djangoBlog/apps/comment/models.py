@@ -16,10 +16,10 @@ class Comment(BasePoint):
         (STATUS_NORMAL, '正常'),
         (STATUS_DELETE, '删除'),
     )
-    target = models.ForeignKey(Post, verbose_name='评论对象')
+    target = models.ForeignKey(Post, verbose_name='评论对象', on_delete=models.DO_NOTHING)
     content = models.CharField(max_length=200, verbose_name="内容")
     nickname = models.CharField(max_length=32, verbose_name="用户名")
-    owner = models.ForeignKey('user.UserInfo', verbose_name="作者")
+    owner = models.ForeignKey('user.UserInfo', verbose_name="作者", on_delete=models.DO_NOTHING)
     status = models.PositiveIntegerField(default=STATUS_NORMAL,
                                          choices=STATUS_ITEMS,
                                          verbose_name="状态")

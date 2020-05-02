@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 __author__ = "Monkey"
 
-from django.conf.urls import url
+from django.urls import path
 from ..config.views import FavoriteView
 
 urlpatterns = [
-    url('^favorite/$', FavoriteView.as_view(), name='favorite'),
+    path('favorite/', FavoriteView.as_view(), name='favorite'),
 ]

@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from django.shortcuts import redirect, HttpResponse
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.contrib import auth
 from django.views import View
 from django.views.generic.edit import CreateView, FormView, UpdateView

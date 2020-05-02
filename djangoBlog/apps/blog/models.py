@@ -22,7 +22,7 @@ class Category(models.Model):
                                          choices=STATUS_ITEMS,
                                          verbose_name="正常")
 
-    owner = models.ForeignKey('user.UserInfo', verbose_name="作者")
+    owner = models.ForeignKey('user.UserInfo', verbose_name="作者", on_delete=models.DO_NOTHING)
     created_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
 
     class Meta:
@@ -46,7 +46,7 @@ class Tag(models.Model):
     status = models.PositiveIntegerField(default=STATUS_NORMAL,
                                          choices=STATUS_ITEMS,
                                          verbose_name="状态")
-    owner = models.ForeignKey('user.UserInfo', verbose_name="作者")
+    owner = models.ForeignKey('user.UserInfo', verbose_name="作者", on_delete=models.DO_NOTHING)
     created_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
 
     class Meta:
@@ -81,8 +81,8 @@ class Post(BasePoint):
     status = models.PositiveIntegerField(default=STATUS_NORMAL,
                                          choices=STATUS_ITEMS,
                                          verbose_name="状态")
-    category = models.ForeignKey(Category, verbose_name="文章分类")
-    owner = models.ForeignKey('user.UserInfo', verbose_name="作者")
+    category = models.ForeignKey(Category, verbose_name="文章分类", on_delete=models.DO_NOTHING)
+    owner = models.ForeignKey('user.UserInfo', verbose_name="作者", on_delete=models.DO_NOTHING)
     tag = models.ManyToManyField(Tag, verbose_name='标签')
     created_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
 

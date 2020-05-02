@@ -2,7 +2,7 @@
 # _*_ coding: utf-8 _*_
 __author__ = "monkey"
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.contrib.auth.backends import ModelBackend
 from django.db.models import Q
 from django.http import JsonResponse
