@@ -27,8 +27,7 @@ urlpatterns = [
     path('config/', include(('apps.config.urls', 'config'), namespace='config')),
     path('comment/', include(('apps.comment.urls', 'comment'), namespace='comment')),
 
-    path('ckeditor/', include(('ckeditor_uploader.urls', 'ckeditor')),),
-
+    path('ckeditor/', include(('ckeditor_uploader.urls'))),
     path('category-autocomplete/', CategoryAutoComplete.as_view(), name='category-autocomplete'),
     path('tag-autocomplete/', TagAutoComplete.as_view(), name='tag-autocomplete'),
 

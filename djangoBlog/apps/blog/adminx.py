@@ -105,21 +105,6 @@ class PostAdmin(BaseAdmin):
         ),
     )
 
-    def get_media(self):
-        """
-        引入静态资源，这种写法和 改写元类Media的效果是一样的，最终都会转化为 forms.widgets.Media 对象
-        :return:
-        """
-        media = super().get_media()
-        media.add_js([
-            # 'https://cdn.bootcss.com/bootstrap/4.0.0-beta.2/js/bootstrap.bundle.js'
-        ])
-        media.add_css(
-            {
-                # 'all': ('https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap-grid.css',),
-            })
-        return media
-
     def operator(self, obj):
         """
         :param obj: 当前对象

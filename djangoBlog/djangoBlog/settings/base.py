@@ -188,11 +188,11 @@ CKEDITOR_CONFIGS = {
 }
 
 # CKeditor static settings
-CKEDITOR_UPLOAD_PATH = 'Article_media'
+CKEDITOR_UPLOAD_PATH = 'article_upload/'
 
 DEFAULT_FILE_STORAGE = 'libs.storage.WatermarkStorage'
 
-
+# rest-framework
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',   #
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',   # 分页
