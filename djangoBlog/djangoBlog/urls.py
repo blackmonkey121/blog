@@ -1,6 +1,6 @@
 
 from djangoBlog.settings import develop
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.views.static import serve
 from django.contrib.sitemaps import views as sitemap_views
 from rest_framework.routers import DefaultRouter
@@ -31,7 +31,8 @@ urlpatterns = [
     path('category-autocomplete/', CategoryAutoComplete.as_view(), name='category-autocomplete'),
     path('tag-autocomplete/', TagAutoComplete.as_view(), name='tag-autocomplete'),
 
-    path('media/<str:path>', serve, {"document_root": develop.MEDIA_ROOT}),
+    # path('media/<str:path>', serve, {"document_root": develop.MEDIA_ROOT}),
+    re_path(r'^media/(?P<path>.*)$', serve, {'document_root': develop.MEDIA_ROOT}),
 
     path('admin/', xadmin.site.urls, name='xadmin'),
 

@@ -24,7 +24,7 @@ MIDDLEWARE += [
 
 INTERNAL_IPS = ['127.0.0.1']
 
-REDIS_URL = '127.0.0.1:6379:1'
+REDIS_URL = "redis://127.0.0.1:6379/1"
 
 CACHES = {
     'default': {

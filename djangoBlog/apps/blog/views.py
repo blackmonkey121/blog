@@ -51,8 +51,6 @@ class CommonViewMixmin(object):
             context.update({
                 context_name: self.get_update(model=model, owner=owner)
             })
-        for i,j in context.items():
-            print(i,j)
 
         # add sidebars data
         context.update({
@@ -216,7 +214,7 @@ class UpArticleView(View):
 
     @required_login
     def post(self, request, *args, **kwargs):
-        if not request.user.is_authenticated():
+        if not request.user.is_authenticated:
             self.ret['msg']['href'] = reverse('user:login')
             return JsonResponse(self.ret)
 

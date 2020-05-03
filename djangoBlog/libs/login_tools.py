@@ -34,7 +34,7 @@ def required_login(func):
     @wraps(func)
     def inner(self, request, *args, **kwargs):
         """  """
-        if not request.user.is_authenticated():
+        if not request.user.is_authenticated:
             self.ret['href'] = reverse('user:login')
             return JsonResponse(self.ret)
         ret = func(self, request, *args, **kwargs)

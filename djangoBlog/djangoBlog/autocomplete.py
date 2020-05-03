@@ -9,7 +9,7 @@ from apps.blog.models import Category, Tag
 class CategoryAutoComplete(autocomplete.Select2QuerySetView):
 
     def get_queryset(self):
-        if not self.request.user.is_authenticated():
+        if not self.request.user.is_authenticated:
             return Category.objects.none()
 
         qs = Category.objects.filter(owner=self.request.user)
@@ -21,7 +21,7 @@ class CategoryAutoComplete(autocomplete.Select2QuerySetView):
 class TagAutoComplete(autocomplete.Select2QuerySetView):
 
     def get_queryset(self):
-        if not self.request.user.is_authenticated():
+        if not self.request.user.is_authenticated:
             return Tag.objects.none()
 
         qs = Tag.objects.filter(owner=self.request.user)
