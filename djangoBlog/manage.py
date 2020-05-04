@@ -2,13 +2,11 @@
 import os
 import sys
 
-PROFILE_LIST = {1: 'develop',
-                2: 'product'}
+
 
 if __name__ == "__main__":
-    profile = os.environ.get('PROJECT_PROFILE', PROFILE_LIST.get(1,2))
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE','djangoBlog.settings.{}'.format(profile))
-    # os.environ.setdefault("DJANGO_SETTINGS_MODULE", "djangoBlog.settings")
+
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE','djangoBlog.settings.setting')
     try:
         from django.core.management import execute_from_command_line
     except ImportError:

@@ -1,5 +1,5 @@
 
-from djangoBlog.settings import develop
+from djangoBlog.settings import setting
 from django.urls import path, include, re_path
 from django.views.static import serve
 from django.contrib.sitemaps import views as sitemap_views
@@ -32,7 +32,7 @@ urlpatterns = [
     path('tag-autocomplete/', TagAutoComplete.as_view(), name='tag-autocomplete'),
 
     # path('media/<str:path>', serve, {"document_root": develop.MEDIA_ROOT}),
-    re_path(r'^media/(?P<path>.*)$', serve, {'document_root': develop.MEDIA_ROOT}),
+    re_path(r'^media/(?P<path>.*)$', serve, {'document_root': setting.MEDIA_ROOT}),
 
     path('admin/', xadmin.site.urls, name='xadmin'),
 
@@ -42,9 +42,7 @@ urlpatterns = [
     path('', IndexView.as_view(), name="index"),
 ]
 
-from djangoBlog.settings import develop
-
-if develop.DEBUG:
+if setting.DEBUG:
     import debug_toolbar
     urlpatterns = [
         path(r'__debug__', include(debug_toolbar.urls)),

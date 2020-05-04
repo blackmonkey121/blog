@@ -171,7 +171,7 @@ EMAIL_PORT = 25
 EMAIL_HOST_USER = '3213322480@qq.com'
 
 # 在邮箱中设置的客户端授权密码
-EMAIL_HOST_PASSWORD = 'yyuylfcxyzjfdgea'
+EMAIL_HOST_PASSWORD = 'ewlksnfhdetuddii'
 
 # 收件人看到的发件人
 EMAIL_FROM = 'MonkeyBlog <3213322480@qq.com>'
@@ -202,4 +202,9 @@ REST_FRAMEWORK = {
 AUTHENTICATION_BACKENDS = [
     'libs.login_tools.CustomBackend',
 ]
+
+if DEBUG:
+    from .develop import *
+else:
+    from .product import *
 

@@ -59,7 +59,7 @@ class SendEmailMixin(Token):
     def send_active(self, user):
         token = self.dump_token(user=user)
         email = user.email
-        send_register_active_email(to_email=email, username=user.username, token=token)
+        send_register_active_email.delay(to_email=email, username=user.username, token=token)
 
     def send_update(self):
         pass
@@ -83,6 +83,8 @@ class LoginView(FormView):
 
     def form_valid(self, form):
         # 自定义的 authenticate
+        print('username',form.cleaned_data.get('username'))
+        print('password',form.cleaned_data.get('password'))
         user = authenticate(self.request, username=form.cleaned_data.get('username'),
                             password=form.cleaned_data.get('password'))
         if user:
@@ -91,11 +93,14 @@ class LoginView(FormView):
                 auth.login(self.request, user)
                 self.ret['status'] = True
                 self.ret['msg'] = reverse('index')
+                print('ok')
             else:
                 self.ret['msg'] = {"username": "账号尚未激活"}
                 self.ret["check"] = True
+                print('no login')
         else:
             self.ret['msg'] = {'password': '账号或密码不正确'}
+            print('msg error')
 
         ret = JsonResponse(self.ret)
         if self.request.user.username:

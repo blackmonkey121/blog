@@ -1,4 +1,3 @@
-
 const $speCharReg = new RegExp("[`~!@#$^&*()=|{}':;',\\[\\].<>《》/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？ ]");
 const $emailReg = /^\w+@[a-z0-9]+\.[a-z]+$/i;
 const $phoneReh = /^1(3[0-9]|4[5,7]|5[0,1,2,3,5,6,7,8,9]|6[2,5,6,7]|7[0,1,7,8]|8[0-9]|9[1,8,9])\d{8}$/;
@@ -23,6 +22,7 @@ var $url = $("#app-data").data('url');
 // 是否发送表单数据 数据验证通过，为0 失败 为1
 var sendFlag = 0;
 var passWordStr = '';
+
 // 获取表单数据并验证是否规范，规范则返回数据源，不规范则写入错误信息 并将sendFlag 设为 真
 function get_username(obj) {
     let $userName = $(obj);
@@ -121,20 +121,22 @@ $btn.mouseup(function () {
 
 // 登陆
 $('input[value="登陆"]').on('click', function () {
-    var data = {
-        "username": get_username("#id_username"),
-        "password": get_password("#id_password"),
-        "csrfmiddlewaretoken": $("[name='csrfmiddlewaretoken']").val(),
-    };
+
+    var data = new FormData();
+    data.append("username", get_username("#id_username"));
+    data.append("password", get_password("#id_password"));
+    data.append("csrfmiddlewaretoken", $("[name='csrfmiddlewaretoken']").val());
 
     // 发送登陆数据 post
     $.post({
-        url: $url,
+        url: '/user/login/',
         data: data,
+        processData: false,   // jQuery不处理数据
+        contentType: false,  // jQuery不要设置MIME
 
         // 检查表单数据是否通过验证
         beforeSend: function (xmlHttpRequest) {
-          if (sendFlag) {
+            if (sendFlag) {
                 swal.fire(
                     '账号或密码格式不正确',
                     '按照提示更正后再试！',
@@ -152,18 +154,18 @@ $('input[value="登陆"]').on('click', function () {
                 location.href = data.msg;
             }
             // 失败 填充错误信息 修改样式
-            else if(data.check) {
-                }else {
+            else if (data.check) {
+            } else {
                 swal.fire(
                     '账号或密码不正确',
                     '注意区分大小写哦！',
                     'error'
                 );
             }
-                   $.each(data.msg, function (k, v) {
-                    $('#id_' + k).next().text(v)
-                })
-            }
+            $.each(data.msg, function (k, v) {
+                $('#id_' + k).next().text(v)
+            })
+        }
         ,
 
     });
@@ -247,7 +249,7 @@ $('input[value="提交修改"]').on('click', function () {
 
     // 发送登陆数据 post
     $.post({
-        url: url,
+        url: '/user/update/',
         data: data,
 
         beforeSend: function (xmlHttpRequest) {

@@ -84,8 +84,11 @@
     <!-- 页面导航导航开始 -->
     <div id="nav">
         <div id="nav-title" class="clearfix">
-            <p>
+            <p>{% if user.is_authenticated %}
                 <a href="{% url 'blog:home' user.id %}"></a>{{ visited_user.nickname|default:"Monkey'Blog首页" }}
+                {% else %}
+                <a href="{% url 'index' %}"></a>{{ visited_user.nickname|default:"Monkey'Blog首页" }}
+                {% endif %}
             </p>
             <form action="{% url 'blog:search' %}" method="get">
 
