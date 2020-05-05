@@ -29,8 +29,8 @@
         <ul class="hList">
             <li>
                 <a href="#click" class="menu">
-                    {% if user.username %}
-                        <p class="menu-title"><i class="fa fa-user-circle"></i> {{ user.nickname | truncatechars:9 }}</p>
+                    {% if user.is_authenticated %}
+                        <p class="menu-title"><i class="fa fa-user-circle"></i> {{ user.nickname |default:"没有昵称" | truncatechars:9 }}</p>
                         <ul class="menu-dropdown">
                             <li onclick="location.href='{% url 'user:logout' %}'"><i class="fa fa-power-off"></i> 注销登陆</li>
                             <li onclick="location.href='{% url 'user:update' %}'"><i class="fa fa-pencil-square-o"></i> 修改密码</li>
@@ -106,7 +106,7 @@
             <ul class="clearfix">
                 <li><a href="{% url 'xadmin:blog_post_add' %}"><i class="fa fa-plus"></i> 新建文章</a></li>
                 <li><a href="{% url 'index' %}"><i class="fa fa-home"></i> 首页</a></li>
-                <li><a href=" {% if user.username %}
+                <li><a href=" {% if user.is_authenticated %}
                     {% url 'blog:home' user.id %}
                     {% else %}
                     {% url 'user:login' %}
@@ -137,13 +137,13 @@
 {% if category %}
     <span>{{ category.name }}<i class="fa fa-play"></i></span>
 {% endif %}
-    {% if article.category.name %}
-        <span>{{ article.category.name }}<i class="fa fa-play"></i></span>
-        {% if article.title %}
-            <span>{{ article.title }}<i class="fa fa-play"></i></span>
-            {% endif %}
+{% if article.category.name %}
+    <span>{{ article.category.name }}<i class="fa fa-play"></i></span>
+    {% if article.title %}
+        <span>{{ article.title }}<i class="fa fa-play"></i></span>
+        {% endif %}
 
-    {% endif %}
+{% endif %}
 
     <!-- 页面左右分栏容器开始 -->
     <div id="main" class="clearfix">
@@ -161,7 +161,7 @@
             {% if visited_user %}
                 <div id="user-info" class="bar-block">
                     <p class="bar-title"><i class="fa fa-book fa-fw"></i>博主信息</p>
-                    <a href="{% url 'blog:home' user.id %}">
+                    <a href="{% url 'blog:home' visited_user.id %}">
                     <img id="avatar" src="{{ visited_user.avatar.url }}" alt="头像" title="头像"></a>
                     <p><i class="fa fa-user-circle-o"></i>昵称: <span>{{ visited_user.nickname }}</span></p>
                     <p><i class="fa fa-hourglass"></i>入坑: <span>{{ visited_user.date_joined | date:'Y-m-d' }}</span></p>
@@ -169,6 +169,34 @@
                     <p id="profile"><i class="fa fa-info-circle"></i>自述: <span>{{ visited_user.profile }}</span></p>
                 </div>
             {% endif %}
+
+            {% if index %}
+                <div id="category" class="bar-block">
+                    <p class="bar-title"><i class="fa fa-map-o fa-fw"></i>最热文章</p>
+                    <ul>
+                        {% for article in hot_articles %}
+                            <li>
+                                <a href="{% url 'blog:article_detail' article.id %}">{{ article.title}}</a>
+                            </li>
+                        {% empty %}
+                            <li>一个文章都没有</li>
+                        {% endfor %}
+                    </ul>
+                <div id="category" class="bar-block">
+                    <p class="bar-title"><i class="fa fa-map-o fa-fw"></i>最新文章</p>
+                    <ul>
+                        {% for article in article_list %}
+                            <li>
+                                <a href="{% url 'blog:article_detail' article.id %}">{{ article.title}}</a>
+                            </li>
+                        {% empty %}
+                            <li>一个文章都没有</li>
+                        {% endfor %}
+                    </ul>
+            </div>
+
+
+            {% else %}
 
             <!-- sidebar category -->
             <div id="category" class="bar-block">
@@ -236,6 +264,8 @@
                     {% endfor %}
                 </ul>
             </div>
+            {% endif %}
+
 
 
         </div>
@@ -268,11 +298,6 @@
     <script type="text/javascript">
         toastr.options.positionClass = 'toast-top-right';
     </script>
-
-
-
-
-
 </body>
 
 </html>

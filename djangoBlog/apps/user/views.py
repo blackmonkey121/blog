@@ -83,8 +83,7 @@ class LoginView(FormView):
 
     def form_valid(self, form):
         # 自定义的 authenticate
-        print('username',form.cleaned_data.get('username'))
-        print('password',form.cleaned_data.get('password'))
+
         user = authenticate(self.request, username=form.cleaned_data.get('username'),
                             password=form.cleaned_data.get('password'))
         if user:

@@ -1,0 +1,128 @@
+* {
+    margin: 0;
+    border: 0;
+    outline: none;
+}
+
+a{
+    text-decoration: none;
+    color: #fdfdff;
+}
+
+html{
+    background: -webkit-gradient(linear, 100% 100%,0 0, from(#3ae6ff), to(#207cff));
+    height: 100%;
+}
+
+
+/* 清除浮动 */
+.clearfix:after,.clearfix:before
+    {
+        content: "";
+        display: table;
+    }
+.clearfix:after
+    {
+        clear: both;
+    }
+
+#form{
+    margin-top:18%;
+    margin-left:40%;
+}
+
+.input-line{
+    float: left;
+    width: 500px;
+    margin-top: 15px;
+    clear: both;
+    position: relative;
+    right: 400px;
+    opacity:0;
+}
+
+input{
+    outline: none;
+    border: none;
+    border-bottom: 1px solid #888888;
+    width: 250px;
+    font-size: 20px;
+    line-height: 30px;
+    border-radius: 4px;
+    padding:0 10px ;
+    box-sizing:border-box;
+}
+
+.button input{
+    padding-left: 10px;
+    margin-top: 12px;
+    border: 1px solid #888888;
+    border-radius: 5px;
+}
+
+/*.button input:hover{*/
+/*    color: #FFFFFF;*/
+/*    background: #888888;*/
+/*    cursor: pointer;*/
+/*}*/
+
+
+.input-line span{
+    color: red;
+    font-size: 10px;
+}
+
+.has-error{
+    color: red;
+    border: red;
+}
+
+.cookies{
+    width: 50%;
+    line-height: 30px;
+}
+
+.cookies *{
+    padding:2px;
+    float: right;
+}
+
+#right{
+    margin-top: 10%;
+    float: right;
+    width: 40%;
+}
+#left{
+    margin-top: 10%;
+    float: left;
+    width: 60%;
+    position: relative;
+    opacity: 0;
+}
+
+#container-img{
+    height: 400px;
+    width: 400px;
+    margin: auto;
+}
+
+#container-img img{
+    height: 400px;
+    width: 400px;
+}
+
+.mousedown{
+    background: #555;
+}
+
+/* 头像 */
+.input-line img{
+    height: 50px;
+    width: 50px;
+    clear: both;
+    border-radius: 3px;
+}
+
+#id_avatar {
+    display: none;
+}

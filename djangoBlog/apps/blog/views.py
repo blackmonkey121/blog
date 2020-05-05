@@ -30,6 +30,31 @@ class CommonViewMixmin(object):
     @cache_wrap()
     def get_queryset(self, **kwargs):
         return Post.get_latest_article(**kwargs)
+
+    @staticmethod
+    @cache_wrap()
+    def get_sidebars(owner):
+        sidebars = []
+        titles = SideBar.objects.filter(status=SideBar.STATUS_SHOW, owner=owner).select_related('owner')
+        for title in titles:
+            sidebars.append({'title': title.title, 'html': title.content_html(owner)})
+        return sidebars
+
+    @cache_wrap()
+    def get_update(self, model, owner=None, relate=True):
+        qs = model.objects.filter(status=model.STATUS_NORMAL)
+        # TODO:依赖 STATUS.NORMAL 属性, 在模型中做约束，必须提供该属性。
+
+        if owner is not None:
+            qs = qs.filter(owner=owner)
+        else:
+            qs = qs.none()
+            return qs
+
+        if relate:
+            qs = qs.select_related('owner')
+        return qs
+
     # @cache_wrap()
     def get_context_data(self, **kwargs):
         """
@@ -64,33 +89,12 @@ class CommonViewMixmin(object):
 
         return context
 
-    @staticmethod
-    @cache_wrap()
-    def get_sidebars(owner):
-        sidebars = []
-        titles = SideBar.objects.filter(status=SideBar.STATUS_SHOW, owner=owner).select_related('owner')
-        for title in titles:
-            sidebars.append({'title': title.title, 'html': title.content_html(owner)})
-        return sidebars
-
-    @cache_wrap()
-    def get_update(self, model, owner=None, relate=True):
-        qs = model.objects.filter(status=model.STATUS_NORMAL)
-        # TODO:依赖 STATUS.NORMAL 属性, 在模型中做约束，必须提供该属性。
-
-        if owner is not None:
-            qs = qs.filter(owner=owner)
-        else:
-            qs = qs.none()
-            return qs
-
-        if relate:
-            qs = qs.select_related('owner')
-        return qs
-
 
 class IndexView(CommonViewMixmin, ListView):
+
     paginate_by = 5
+
+    index = False
 
     context_object_name = "article_list"
 
@@ -101,7 +105,26 @@ class IndexView(CommonViewMixmin, ListView):
         user_id = self.kwargs.get('user_id', None)
         if user_id is not None:
             self.owner = UserInfo.objects.filter(pk=user_id).get()
+        else:
+            self.index = True
         return super().get_queryset()
+
+    def get_context_data(self, **kwargs):
+
+        if self.index:
+            article_list = Post.get_latest_article()
+            context = {
+                'hot_articles': Post.get_hot_articles(),
+                'article_list': article_list,
+                'index': self.index
+            }
+        else:
+            context = super().get_context_data(**kwargs)
+            context.update({
+                'index': self.index
+            })
+
+        return context
 
 
 class CategoryView(IndexView):
@@ -117,6 +140,7 @@ class CategoryView(IndexView):
             self.owner = qs.first().owner
         except AttributeError:
             self.owner = Category.objects.filter(pk=category_id).first().owner
+        self.index = False
         return qs.filter(category=category_id)
 
 
@@ -131,7 +155,7 @@ class TagView(IndexView):
             self.owner = qs.first().owner
         except AttributeError:
             self.owner = Tag.objects.filter(pk=tag_id).first().owner
-
+        self.index = False
         return qs.filter(tag=tag_id)
 
 

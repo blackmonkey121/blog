@@ -1,0 +1,372 @@
+#container{
+    margin: 60px 40px 20px;
+}
+/* inner navbar for base page */
+#nav-title p{
+    margin: 20px 0;
+    border-left: 8px solid deepskyblue;
+    padding-left: 6px;
+    font-size: 34px;
+    font-weight: bold;
+    cursor: pointer;
+    float: left;
+}
+#nav-title form{
+    margin-top: 3%;
+    float: right;
+    position: relative;
+}
+#nav-title form span{
+    /*border: 2px solid #0097b9;*/
+    /*display: inline-block;*/
+    /*border-left: 0;*/
+    /*height: 24px;*/
+    /*background: #f8f8f8;*/
+    /*border-radius: 0 4px 4px 0;*/
+    position: absolute;
+    right: 62px;
+    top:3px;
+}
+#nav-title form input{
+    border: 2px solid #0097b9;
+    height: 24px;
+    width: 150px;
+    outline: none;
+    padding: 0 0 0 4px;
+    background: #f8f8f8;
+    border-radius: 4px;
+}
+#nav-title form button{
+    height: 24px;
+    border-radius: 4px;
+    background: #8fcf3e;
+    color: #ebebeb;
+    outline: none;
+    cursor: pointer;
+}
+#nav-title form button:hover{
+    background: deepskyblue;
+}
+#nav-title p:hover{
+    color:deepskyblue ;
+    border-left: 8px solid #999;
+}
+#nav-body{
+    border: 1px solid #ccc;
+    border-left:none;
+    border-right:none;
+
+}
+#nav-body ul{
+    float: left;
+}
+#nav-body ul>li{
+    float: left;
+    margin: 18px 40px;
+    font-weight: bold;
+}
+#nav-body ul>li:hover{
+    color: deepskyblue;
+}
+#nav-body #blog-status{
+    float: right;
+}
+#nav-body #blog-status span{
+    display: inline-block;
+    margin: 18px 10px;
+    font-size: small;
+    color: #999999;
+    cursor: pointer;
+}
+#nav-body #blog-status span:hover{
+    color: #666;
+
+}
+/* main part for base page */
+#main{
+    width: 100%;
+
+}
+/* left part for base page  */
+#left{
+    float: left;
+    margin:  0 0 0 2%;
+    width: 76%;
+    height: 100%;
+}
+/* right part for base page  */
+#right{
+
+    float: right;
+    margin: 0 0 0 2%;
+    width: 20%;
+}
+/* bottom part for base page */
+#bottom {
+    float: bottom;
+    clear: both;
+    border-top:1px solid #ccc;
+    padding: 60px;
+
+}
+#bottom .text{
+    text-align: center;
+}
+/* right part content for base page */
+#right .bar-block{
+    background: #ffffff;
+    width: 100%;
+    margin-top: 12%;
+    border-radius: 5px;
+    padding-bottom: 8px;
+}
+#right #user-info #avatar{
+    height: 120px;
+    width: 120px;
+    margin: 6% 20%;
+    border-radius: 50%;
+}
+#right #user-info p:not(.bar-title){
+    margin-left: 4px;
+    font-family: '华文楷体','华文仿宋', '宋体', '楷体', 'Verdana', sans-serif;
+}
+#right #user-info p:not(.bar-title) span{
+    color: #8db842;
+}
+#right .bar-title{
+    color: #2F96B4;
+    font-size: 20px;
+    font-family: "华文仿宋";
+    background: #ebebeb;
+    border-radius: 5px 5px 0 0 ;
+    padding: 8px;
+}
+#right .bar-title:hover{
+    color: #63d7eb;
+    cursor: pointer;
+
+}
+#right .bar-title~ul{
+    color: #999999;
+    margin: 6px 0 3px 20px;
+}
+#right .bar-title~ul>li{
+    margin-top: 4px;
+    cursor: pointer;
+}
+#right .bar-title~ul>li:hover{
+    color: #000;
+}
+/* article list page */
+#article-list .article{
+    margin: 30px 0;
+    background: #ffffff;
+    box-shadow: -3px -3px 9px 3px #0093c4bf;
+}
+#article-list .article .article-title{
+    margin: 20px 4px;
+    border-left: 4px solid #0093c4;
+    padding: 10px;
+    font-size: 24px;
+    font-weight: lighter;
+    cursor: pointer;
+    color: #0093c4;
+    transition: padding-left 0.4s;
+}
+#article-list .article .article-title:hover{
+    padding-left: 40px;
+    color: deepskyblue;
+}
+#article-list .article-summary{
+    margin: 0 20px;
+    font-size: 16px;
+    font-weight: 300;
+
+}
+#article-list .article-summary:hover{
+    font-weight: 500;
+    color: #000;
+}
+#article-list .article .article-content{
+    font-weight: bolder;
+    cursor: pointer;
+    text-decoration: underline;
+}
+#article-list .article .article-content:hover{
+    color: #0093c4;
+}
+#article-list .article .cookies{
+    margin: 20px;
+    padding-bottom: 20px;
+}
+#article-list .article .cookies a:hover{
+    color: #0093c4;
+}
+#article-list .article .cookies i{
+    margin: 0 5px;
+}
+#article-list #page{
+    margin: 10px;
+    float: right;
+}
+/* article detail css start */
+#detail{
+    margin-top: 3.4% ;
+}
+#detail #detail-title{
+    font-size: 32px;
+    font-weight: 800;
+    border-bottom: 1px solid #999999;
+    display: inline-block;
+    padding: 0 40px 10px 0;
+    margin-left: 20px;
+}
+#detail .detail-cookies{
+    margin: 10px 0 0 40px;
+    font-size: 14px;
+    color: #999999;
+}
+#detail .detail-cookies span{
+    margin-right: 10px;
+}
+#detail .detail-cookies .deep{
+    display: inline-block;
+    background: #8059ff;
+    border-radius: 2px;
+    padding: 2px;
+    color: #ebebeb;
+}
+#detail .detail-cookies .suit{
+    display: inline-block;
+    background: #2fa1ff;
+    border-radius: 2px;
+    padding: 2px;
+    color: #ebebeb;
+}
+#detail .detail-cookies .little{
+    display: inline-block;
+    background: #39a39e;
+    border-radius: 2px;
+    padding: 2px;
+    color: #ebebeb;
+}
+#detail .detail-cookies .any{
+    display: inline-block;
+    background: #20dcbf;
+    border-radius: 2px;
+    padding: 2px;
+    color: #ebebeb;
+}
+#detail .detail-cookies #start{
+    color: #ff8800;
+    font-size: 14px;
+    cursor: pointer;
+}
+#detail .detail-cookies #start:hover{
+    color: #0093c4;
+}
+#detail .detail-content{
+    margin: 2% 0 20px 20px;
+    word-wrap:break-word;
+}
+#extend-data{
+    display: none;
+}
+#detail #thumb{
+    margin-top: 40px;
+    text-align: right;
+    cursor: pointer;
+    color: #919191;
+    font-size: 20px;
+}
+#detail #thumb i{
+    margin-left: 10px;
+}
+#detail #thumb .up:hover{
+    color: #3e81ee;
+}
+#detail #thumb .down:hover{
+    color: black;
+}
+/* comment css */
+#add-comment{
+    position: relative;
+}
+#comment-body{
+    display: none;
+}
+.add-comment-head{
+    padding-bottom: 5px;
+    border-bottom: 2px dashed #2aabd2 ;
+}
+.add-comment-head #plus-button{
+    margin-top: 10px;
+    float: right;
+    color: #f8f8f8;
+    background: #0093c4;
+    border-radius: 3px;
+    cursor: pointer;
+    padding: 3px;
+}
+.add-comment-head #plus-button:hover{
+    color: #0093c4;
+    background: #f8f8f8;
+}
+#add-comment textarea{
+    margin:10px 0;
+    width: 100%;
+    outline:none;
+    border: 1px solid #0093c4;
+    border-radius: 5px;
+    background: #FFFFFF;
+    font-size: 16px;
+    height: 80px;
+}
+#add-comment .add-comment-cookies{
+    position: absolute;
+    top: 100px;
+    right: 12px;
+}
+.add-comment-cookies .submit-comment{
+    display: inline-block;
+    margin-right: 10px;
+}
+.add-comment-cookies .submit-comment:hover{
+    color: #3e86a3;
+    cursor: pointer;
+}
+.add-comment-cookies .cancel-comment:hover{
+    color: black;
+    cursor: pointer;
+}
+.comment-line{
+    margin-top: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px dashed #2aabd2;
+}
+.comment-body img{
+    height: 60px;
+    width: 60px;
+    vertical-align: top;
+}
+.comment-body p{
+    width: 91%;
+    display: inline-block;
+    vertical-align: top;
+    float: right;
+}
+.comment-cookies {
+    margin-top: 10px;
+}
+.comment-cookies span{
+    display: inline-block;
+    margin-right: 10px;
+}
+.comment-cookies .up:hover{
+    color: #0093c4;
+    cursor: pointer;
+}
+.comment-cookies .down:hover{
+    color: black;
+    cursor: pointer;
+}
