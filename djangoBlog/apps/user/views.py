@@ -143,6 +143,7 @@ class RegistView(CreateView, SendEmailMixin):
         # 发送邮件
 
         user = UserInfo.objects.create_user(**form.cleaned_data, is_staff=True)
+        print(form.cleaned_data)
         user.groups.add(1)
 
         self.send_active(user=user)
@@ -256,5 +257,3 @@ class ActiveView(FormView, Token):
 
     def get_form(self, form_class=None):
         pass
-
-

@@ -1,0 +1,57 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}
+{{ page_title | default:'Monkey Blog 首页' }}
+{% endblock %}
+
+{% block main-page %}
+    <div id="article-list">
+
+
+        {% for article in article_list %}
+
+        <div class="article">
+            <p class="article-title">{{ article.title }}</p>
+            <div class="article-summary">摘要:{{ article.desc | truncatechars:80 }}
+                <span class="article-content"><a href="{% url 'blog:article_detail' article.id %}">  阅读全文 <i class="fa fa-file-text"></i></a></span>
+            </div>
+            <div class="cookies">
+                <span><i class="fa fa-clock-o"></i>{{ article.created_time }}</span>
+                <i></i>
+                <span><a href="{% url 'blog:home' article.owner.id %}"><i class="fa fa-user"></i>{{ article.owner.nickname|default:article.owner.username  }}</a></span>
+                <i></i>
+                <span><a href="#"><i class="fa fa-comments"></i>{{ article.comment_set.count }}</a></span>
+                <i></i>
+                <span>{{ article.category.name }}</span>
+                <span><i class="fa fa-paw"></i>{{ article.pv|default:'100' }}</span>
+                <i></i>
+            </div>
+        </div>
+            {% empty %}
+            <div class="article">
+            <p class="article-title">
+                空空如也！
+            </p>
+            </div>
+    {% endfor %}
+
+    <!-- 分页逻辑 -->
+        <div id="page">
+        {% if page_obj %}
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}">上一页</a>
+            {% endif %}
+
+            第{{ page_obj.number }}页 共{{ paginator.num_pages }}页
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">下一页</a>
+            {% endif %}
+        {% endif %}
+    </div>
+    </div>
+{% endblock %}
+
+{% block sidebar %}
+
+{% endblock %}
