@@ -1,4 +1,8 @@
-{% extends 'blog/base.html' %}
+{% extends 'blog/article_list.html' %}
+
+{% block title %}
+{{ page_title|default:article.title }}
+{% endblock %}
 
 {% block css %}
     <link rel="stylesheet" href="https://cdn.bootcss.com/highlight.js/9.12.0/styles/googlecode.min.css">
@@ -13,11 +17,9 @@
 {% block main-page %}
     <div id="detail" href="{% url 'blog:article_point' %}">
         {% if article %}
-            <p id="detail-title">{{ article.title }}
-            </p>
+            <i></i><p id="detail-title"><i></i>{{ article.title }}</p>
 
             <div class="detail-cookies">
-
                 <span class="deep"><i class="fa fa-tags"></i>{{ article.category.name }}</span>
                 <span class="suit"><i class="fa fa-user-secret"></i>{{ article.owner.nickname }}</span>
                 <span class="little">阅览量:{{ article.pv|default:"1000+" }}</span>
@@ -40,7 +42,7 @@
         {% endif %}
     </div>
     <hr>
-
+<div class="autoMenu" id="autoMenu" data-autoMenu></div>
     <div id="comment">
         <div id="add-comment">
             <p class="add-comment-head clearfix">

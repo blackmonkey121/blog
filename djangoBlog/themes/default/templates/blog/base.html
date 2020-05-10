@@ -2,8 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="baidu-site-verification" content="zpsK473fFz" />
     <title>{% block title %}
-    {% endblock %}MonkeyBlog</title>
+    {% endblock %}</title>
+    {% load static %}
+    <link rel="icon" href="{% static '/img/favicon.ico' %}" type="image/x-icon" />
     {% load static %}
 </head>
 
@@ -16,7 +19,9 @@
 <link rel="stylesheet" href="{% static 'toastr/toastr.min.css' %}">
 <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
 <link rel="stylesheet" href="{% static 'css/default.css' %}">
+<link rel="stylesheet" href="{% static 'css/jquery.autoMenu.css' %}">
 <script src="{% static 'js/jquery3.2.1.js' %}"></script>
+<script src="{% static 'js/jquery.autoMenu.js' %}"></script>
 <script src="{% static 'js/jquery.cookie.js' %}"></script>
 {% block css %}
 
@@ -28,7 +33,7 @@
 
         <ul class="hList">
             <li>
-                <a href="#click" class="menu">
+                <a href="#" class="menu">
                     {% if user.is_authenticated %}
                         <p class="menu-title"><i class="fa fa-user-circle"></i> {{ user.nickname |default:"没有昵称" | truncatechars:9 }}</p>
                         <ul class="menu-dropdown">
@@ -40,8 +45,8 @@
                     {% else %}
                         <p class="menu-title"><i class="fa fa-user-circle"></i> [登陆了|注册]</p>
                         <ul class="menu-dropdown">
-                            <li id="li-login" onclick="location.href='{% url 'user:login' %}'"><i class="fa fa-paper-plane"></i> 登陆</li>
-                            <li id="li-regist" onclick="location.href='{% url 'user:regist' %}'"><i class="fa fa-registered"></i> 注册</li>
+                            <li id="li-login" onclick=location.href="{% url 'user:login' %}"><i class="fa fa-paper-plane"></i> 登陆</li>
+                            <li id="li-regist" onclick=location.href="{% url 'user:regist' %}"><i class="fa fa-registered"></i> 注册</li>
                         </ul>
 
                     {% endif %}
@@ -49,11 +54,11 @@
                 </a>
             </li>
             <li>
-                <a href="#click" class="menu">
+                <a href="#" class="menu">
                     <p class="menu-title menu-title_2nd"><i class="fa fa-server"></i> 文章分类</p>
                     <ul class="menu-dropdown">
-                        {% for category in categories %}
-                            <li>
+                        {% for category in category_list %}
+                            <li onclick=location.href="{% url 'blog:category_list' category.id %}">
                                 <i class="fa fa-map-o fa-fw"></i> {{ category.name }}
                             </li>
                         {% empty %}
@@ -63,12 +68,12 @@
                 </a>
             </li>
             <li>
-                <a href="#click" class="menu">
+                <a href="#" class="menu">
                     <p class="menu-title menu-title_3rd"><i class="fa fa-tags"></i> 标签分类</p>
                     <ul class="menu-dropdown">
 
-                        {% for tag in tags %}
-                            <li><i class="fa fa-tag"></i> {{ tag.name }}</li>
+                        {% for tag in tag_list %}
+                            <li onclick=location.href="{% url 'blog:tag_list' tag.id %}"><i class="fa fa-tag"></i> {{ tag.name }}</li>
                         {% empty %}
                             <li>没有标签</li>
                         {% endfor %}
@@ -116,34 +121,16 @@
             </ul>
 
             <div id="blog-status">
-                {% if visited_user %}
-                    <span>文章-{{ visited_user.post_set.count }}</span>
-                {% else %}
-                    <span>文章-{{ visited_user.post_set.count | default:"N+" }}</span>
-                {% endif %}
-                <span>分类-{{ categories|length }}</span>
-                <span>标签-{{ tags|length }}</span>
-            </div>
+	        <span>文章-{{ visited_user.post_set.count | default:'N+'}}</span>
+                <span>分类-{{ category_list|length }}</span>
+                <span>标签-{{ tag_list|length }}</span>
+	    </div>
 
         </div>
     </div>
 
     <!-- 页面导航结束 -->
-{% if visited_user %}
-    {{ visited_user.nickname }}<i class="fa fa-play"></i>
-    {% else %}
-    <span>Monkey'Blog 首页</span>
-    {% endif %}
-{% if category %}
-    <span>{{ category.name }}<i class="fa fa-play"></i></span>
-{% endif %}
-{% if article.category.name %}
-    <span>{{ article.category.name }}<i class="fa fa-play"></i></span>
-    {% if article.title %}
-        <span>{{ article.title }}<i class="fa fa-play"></i></span>
-        {% endif %}
 
-{% endif %}
 
     <!-- 页面左右分栏容器开始 -->
     <div id="main" class="clearfix">
@@ -158,23 +145,14 @@
         <!-- 右侧开始-->
         <div id="right" class="clearfix">
 
-            {% if visited_user %}
-                <div id="user-info" class="bar-block">
-                    <p class="bar-title"><i class="fa fa-book fa-fw"></i>博主信息</p>
-                    <a href="{% url 'blog:home' visited_user.id %}">
-                    <img id="avatar" src="{{ visited_user.avatar.url }}" alt="头像" title="头像"></a>
-                    <p><i class="fa fa-user-circle-o"></i>昵称: <span>{{ visited_user.nickname }}</span></p>
-                    <p><i class="fa fa-hourglass"></i>入坑: <span>{{ visited_user.date_joined | date:'Y-m-d' }}</span></p>
-                    <p id="signature"><i class="fa fa-pencil-square"></i>签名: <span>{{ visited_user.signature }}</span></p>
-                    <p id="profile"><i class="fa fa-info-circle"></i>自述: <span>{{ visited_user.profile }}</span></p>
-                </div>
-            {% endif %}
+            {% block sidebar %}
 
-            {% if index %}
-                <div id="category" class="bar-block">
+            {% endblock %}
+
+            <div id="category" class="bar-block">
                     <p class="bar-title"><i class="fa fa-map-o fa-fw"></i>最热文章</p>
                     <ul>
-                        {% for article in hot_articles %}
+                        {% for article in hot_article %}
                             <li>
                                 <a href="{% url 'blog:article_detail' article.id %}">{{ article.title}}</a>
                             </li>
@@ -182,10 +160,11 @@
                             <li>一个文章都没有</li>
                         {% endfor %}
                     </ul>
-                <div id="category" class="bar-block">
+                </div>
+            <div id="category" class="bar-block">
                     <p class="bar-title"><i class="fa fa-map-o fa-fw"></i>最新文章</p>
                     <ul>
-                        {% for article in article_list %}
+                        {% for article in latest_article   %}
                             <li>
                                 <a href="{% url 'blog:article_detail' article.id %}">{{ article.title}}</a>
                             </li>
@@ -194,79 +173,6 @@
                         {% endfor %}
                     </ul>
             </div>
-
-
-            {% else %}
-
-            <!-- sidebar category -->
-            <div id="category" class="bar-block">
-                <p class="bar-title"><i class="fa fa-map-o fa-fw"></i>分类</p>
-                <ul>
-                    {% for category in categories %}
-                        <li>
-                            <a href="{% url 'blog:category_list' category.id %}">{{ category.name }}</a>
-                        </li>
-                    {% empty %}
-                        <li>哎呀！还没有分类！</li>
-                    {% endfor %}
-                </ul>
-            </div>
-
-            <!-- sidebar tag-->
-
-            <div id="tag" class="bar-block">
-                <p class="bar-title"><i class="fa fa-tags fa-fw"></i>标签</p>
-                <ul>
-                    {% for tag in tags %}
-                        <li>
-                            <a href="{% url 'blog:tag_list' tag.id %}">{{ tag.name }}</a>
-                        </li>
-                    {% empty %}
-                        <li>哎呀！还没有标签！</li>
-                    {% endfor %}
-                </ul>
-            </div>
-
-            <!-- sidebar article -->
-            {% for sidebar in sidebars %}
-                <div class="bar-block">
-                    <p class="bar-title"><i class="fa fa-medium fa-fw"></i>{{ sidebar.title }}</p>
-
-                    {{ sidebar.html }}
-                </div>
-            {% endfor %}
-
-            <!-- links -->
-            <div id="links" class="bar-block">
-                <p class="bar-title"><i class="fa fa-tags fa-fw"></i>友链</p>
-                <ul>
-                    {% for link in links %}
-                        <li>
-                            <a href="{{ link.href }}">{{ link.title }}</a>
-                        </li>
-                    {% empty %}
-                        <li>还没有添加友链！<br>
-                            <a class="go-add" href="{% url 'xadmin:config_link_add' %}">去添加</a></li>
-                    {% endfor %}
-                </ul>
-            </div>
-
-            <div id="favorites" class="bar-block">
-                <p class="bar-title"><i class="fa fa-tags fa-fw"></i>收藏</p>
-                <ul>
-                    {% for favorite in favorites %}
-                        <li>
-                            <a href="{{ link.href }}">{{ favorite.title }}</a>
-                        </li>
-                    {% empty %}
-                        <li>还没有添加友链！<br>
-                            <a class="go-add" href="{% url 'xadmin:config_favorite_add' %}">去添加</a></li>
-                    {% endfor %}
-                </ul>
-            </div>
-            {% endif %}
-
-
 
         </div>
         <!-- 右侧结束-->
@@ -281,7 +187,7 @@
 
 
             <div class="text">
-                Copyright&copy; 2019-10-01 by Author:Monkey All Rights Reserved
+                Copyright&copy; 2019-10-01 by Author:Monkey All Rights Reserved <b> 豫ICP备20008247号</b>
             </div>
 
         </div>

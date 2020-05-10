@@ -1,0 +1,21 @@
+{% extends 'exception/base.html' %}
+
+{% block title %}
+    页面加载失败！
+{% endblock %}
+
+{% block status %}
+    STATUS: 500
+{% endblock %}
+
+{% block message-ch %}
+    服务器内部错误～拼命修复中...
+{% endblock %}
+
+{% block message-en %}
+Server internal error ~ desperately repairing ...
+{% endblock %}
+
+{% block footer %}
+    Server internal error, please check if the URL is legal.
+{% endblock %}

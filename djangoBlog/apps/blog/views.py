@@ -1,3 +1,6 @@
+import logging
+
+from django.core.cache import cache
 from django.http import JsonResponse
 from django.views.generic import DetailView, ListView, View
 from django.urls import reverse
@@ -5,192 +8,141 @@ from django.db.models import Q, F
 from datetime import date
 
 from .models import Post, Tag, Category
-from apps.config.models import SideBar, Link, Favorite
-from apps.user.models import UserInfo
+from apps.config.models import Link, Favorite
 from libs.login_tools import required_login
 
 # Create your views here.
 from ..comment.models import Comment
-from libs.warps import cache, cache_wrap
+
+logger = logging.getLogger(__name__)
 
 
-class CommonViewMixmin(object):
-    """
-    为IndexView 添加通用数据
-    """
-    # 获取文章的查询集
-    # key: 需要传入右边栏信息的模型名, value: 在上下文中的名字，如果为空 则 为模型名小写+s
-    update_context_dict = {
-        Category: 'categories',
-        Tag: 'tags',
-        Link: 'links',
-        Favorite: 'favorites'
-    }
+class BaseViewMixin(object):
+    """ 为Index、HomeView、TagView、CategoryView、Detail添加通用数据 """
 
-    @cache_wrap()
-    def get_queryset(self, **kwargs):
-        return Post.get_latest_article(**kwargs)
+    page_flag = None
 
     @staticmethod
-    @cache_wrap()
-    def get_sidebars(owner):
-        sidebars = []
-        titles = SideBar.objects.filter(status=SideBar.STATUS_SHOW, owner=owner).select_related('owner')
-        for title in titles:
-            sidebars.append({'title': title.title, 'html': title.content_html(owner)})
-        return sidebars
+    def get_query():
+        return Post.objects.filter(status=Post.STATUS_NORMAL).select_related('category', 'owner')
 
-    @cache_wrap()
-    def get_update(self, model, owner=None, relate=True):
-        qs = model.objects.filter(status=model.STATUS_NORMAL)
-        # TODO:依赖 STATUS.NORMAL 属性, 在模型中做约束，必须提供该属性。
+    def get_queryset(self, **kwargs):
+        return self.get_query()
 
-        if owner is not None:
-            qs = qs.filter(owner=owner)
-        else:
-            qs = qs.none()
-            return qs
+    def update_home_context(self, context):
 
-        if relate:
-            qs = qs.select_related('owner')
-        return qs
+        category_list = Category.objects.filter(owner_id=self.request.visited_user, status=Category.STATUS_NORMAL)
+        tag_list = Tag.objects.filter(owner=self.request.visited_user, status=Tag.STATUS_NORMAL)
+        link_list = Link.objects.filter(owner=self.request.visited_user, status=Link.STATUS_NORMAL)
+        favorite_list = Favorite.objects.filter(owner=self.request.visited_user, status=Favorite.STATUS_NORMAL)
 
-    # @cache_wrap()
-    def get_context_data(self, **kwargs):
-        """
-        重写get_context_data 方法 （这个方法属于ListView的父类 MultipleObjectMixin）
-        添加侧边栏数据 和 其它附加数据集
-        """
-        if hasattr(self, 'owner'):
-            owner = self.owner
-        else:
-            owner = None
-
-        context = super().get_context_data(**kwargs)  # 多继承 super 会按照MRO列表执行方法
-
-        for model, context_name in self.update_context_dict.items():
-            if context_name is None:
-                raise KeyError('context_name.values() 中不能存在元素为 None')
-
-            context_name = context_name.strip() or model.__name__.lower() + 's'
-            context.update({
-                context_name: self.get_update(model=model, owner=owner)
-            })
-
-        # add sidebars data
         context.update({
-            'sidebars': self.get_sidebars(owner=owner)
-        })
-
-        # current visited user id
-        context.update({
-            'visited_user': owner
+            'category_list': category_list,
+            'tag_list': tag_list,
+            'link_list': link_list,
+            'favorite_list': favorite_list,
+            'visited_user': self.request.visited_user,
         })
 
         return context
 
+    def update_Index_content(self, context):
+        hot_article = self.get_query().order_by('-pv')[:10]
+        latest_article = self.get_query()[:10]  # 默认的order_by ['-id']
+        context.update({
+            'hot_article': hot_article,
+            'latest_article': latest_article
+        })
+        return context
 
-class IndexView(CommonViewMixmin, ListView):
+
+class IndexView(BaseViewMixin, ListView):
+    """ 主页 最新的文章、最热的文章、推荐文章 """
 
     paginate_by = 5
 
-    index = False
+    context_object_name = "article_list"
+
+    template_name = "blog/index.html"
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+
+        context.update({'page_title': 'Monkey Blog 首页'})
+
+        return self.update_Index_content(context)
+
+
+class HomeView(BaseViewMixin, ListView):
+    """ 个人的最新文章、最热文章、分类、标签、个人信息、 """
+
+    paginate_by = 10
 
     context_object_name = "article_list"
 
     template_name = "blog/article_list.html"
 
-    @cache_wrap()
+    def get_query(self):
+        qs = super().get_query()
+        return qs.filter(owner=self.request.visited_user)
+
     def get_queryset(self, **kwargs):
-        user_id = self.kwargs.get('user_id', None)
-        if user_id is not None:
-            self.owner = UserInfo.objects.filter(pk=user_id).get()
-        else:
-            self.index = True
-        return super().get_queryset()
+        qs = super(HomeView, self).get_queryset()
+        return qs.filter(owner=self.request.visited_user)
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, *, object_list=None, **kwargs):
+        """ """
+        context = super(HomeView, self).get_context_data(**kwargs)  # {hot_article, latest_article, article_list}
 
-        if self.index:
-            article_list = Post.get_latest_article()
-            context = {
-                'hot_articles': Post.get_hot_articles(),
-                'article_list': article_list,
-                'index': self.index
-            }
-        else:
-            context = super().get_context_data(**kwargs)
-            context.update({
-                'index': self.index
-            })
+        context = self.update_Index_content(context)  # 最热 最新 文章
 
+        context.update({'page_title': '%s的主页' % (self.request.visited_user.nickname or self.request.visited_user.username) })
+
+        return self.update_home_context(context)  # 分类
+
+
+class CategoryView(HomeView):
+    """ 分类页面, 按照分类列出文章 """
+
+    def get_query(self):
+
+        qs = super(CategoryView, self).get_query()
+        return qs.filter(category=self.request.url_id)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(CategoryView, self).get_context_data(**kwargs)
+        context.update({'page_title': '分类页: %s' % self.request.cls_obj.name})
         return context
 
 
-class CategoryView(IndexView):
-    """
-    分类视图
-    """
-    @cache_wrap()
-    def get_queryset(self):
-        """ 重写queryset方法 依据分类来过滤信息 """
-        category_id = self.kwargs.get("category_id")
-        qs = super().get_queryset()
-        try:
-            self.owner = qs.first().owner
-        except AttributeError:
-            self.owner = Category.objects.filter(pk=category_id).first().owner
-        self.index = False
-        return qs.filter(category=category_id)
+class TagView(HomeView):
+    """ 标签页面， 按照标签列出文章 """
+
+    def get_query(self):
+        qs = super(TagView, self).get_query()
+        return qs.filter(tag=self.request.url_id)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(TagView, self).get_context_data(**kwargs)
+        context.update({'page_title': '标签页: %s' % self.request.cls_obj.name})
+        return context
 
 
-class TagView(IndexView):
-    """"""
-    @cache_wrap()
-    def get_queryset(self):
-        """ 重写queryset方法 依据分类来过滤信息 """
-        tag_id = self.kwargs.get("tag_id")
-        qs = super().get_queryset()
-        try:
-            self.owner = qs.first().owner
-        except AttributeError:
-            self.owner = Tag.objects.filter(pk=tag_id).first().owner
-        self.index = False
-        return qs.filter(tag=tag_id)
+class ArticleDetailView(BaseViewMixin, DetailView):
+    """ 文章详情页 """
 
-
-class SearchView(IndexView):
-    """
-    整站搜索
-    #TODO：使用全文检索框架 haystack
-    """
-
-    def get_queryset(self):
-        query_set = super().get_queryset()
-        keyword = self.request.GET.get('keyword')
-        if keyword:
-            return query_set.filter(Q(title__contains=keyword) | Q(desc__contains=keyword))
-        return query_set
-
-    def get_context_data(self, **kwargs):
-        content = super().get_context_data(**kwargs)
-        content.update({
-            'keyword': self.request.GET.get('keyword', '')
-        })
-        return content
-
-
-class ArticleDetailView(CommonViewMixmin, DetailView):
     template_name = 'blog/article_detail.html'
     context_object_name = "article"
-    pk_url_kwarg = "post_id"
 
-    @cache_wrap()
+    def get_query(self):
+        """ 过滤边栏数据 """
+        qs = super(ArticleDetailView, self).get_query()
+        return qs.filter(owner=self.request.visited_user)
+
     def get_object(self, queryset=None):
         """ 优化查询 加载外键字段 """
-        post_id = self.kwargs.get('post_id')
-        obj = Post.objects.filter(pk=post_id).select_related('category', 'owner').get()
-        self.owner = obj.owner
+        obj = Post.objects.filter(pk=self.request.url_id).select_related('category', 'owner').get()
         return obj
 
     def get(self, request, *args, **kwargs):
@@ -203,9 +155,11 @@ class ArticleDetailView(CommonViewMixmin, DetailView):
         """"""
         increase_pv = False
         increase_uv = False
+
         uid = request.uid
         pv_key = 'pv:{}:{}'.format(uid, self.request.path)
         uv_key = 'uv:{}:{}'.format(uid, str(date.today()), self.request.path)
+
         if not cache.get(pv_key):
             increase_pv = True
             cache.set(pv_key, 1, 1 * 60)  # 60s
@@ -223,11 +177,31 @@ class ArticleDetailView(CommonViewMixmin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        article_id = self.kwargs.get("post_id")
+        context = self.update_Index_content(context)
+        context = self.update_home_context(context)
         context.update({
-            'comments': Comment.objects.filter(target=article_id).order_by('-id').select_related('owner'),
+            'comments': Comment.objects.filter(target=self.request.url_id).order_by('-id').select_related('owner'),
+            'page_title': '%s详情页' % self.request.cls_obj.title
         })
         return context
+
+
+class SearchView(IndexView):
+    """ 整站搜索 """
+
+    def get_queryset(self):
+        query_set = super().get_queryset()
+        keyword = self.request.GET.get('keyword')
+        if keyword:
+            return query_set.filter(Q(title__contains=keyword) | Q(desc__contains=keyword))
+        return query_set
+
+    def get_context_data(self, **kwargs):
+        content = super().get_context_data(**kwargs)
+        content.update({
+            'keyword': self.request.GET.get('keyword', '')
+        })
+        return content
 
 
 class UpArticleView(View):

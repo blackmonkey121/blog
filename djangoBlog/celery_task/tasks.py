@@ -7,8 +7,8 @@ import os
 import django
 from django.urls import reverse
 
-HOST = '127.0.0.1'
-PORT = '8000'
+# HOST = 'www.xxxxxxx.cn'
+HOST = '127.0.0.1:8000'
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'djangoBlog.settings.setting')
 django.setup()
 
@@ -17,9 +17,9 @@ app = Celery('celery_bar.tasks', broker='redis://127.0.0.1:6379/0')
 
 
 # 定义任务函数
-@app.task
-def send_register_active_email(to_email, username, token):
-    URL = 'http://{}:{}{}'.format(HOST, PORT, reverse('user:active', kwargs={'token': token}))
+@app.task(bind=True, max_retries=3,default_retry_delay=1 * 6)
+def send_register_active_email(self, to_email, username, token):
+    URL = 'http://{}{}'.format(HOST, reverse('user:active', kwargs={'token': token}))
     subject = '欢迎注册 MonkeyBlog!'
     message = 'Join Us！'
     sender = setting.EMAIL_FROM
@@ -31,17 +31,17 @@ def send_register_active_email(to_email, username, token):
     except Exception as e:
         print(e)
 
-
-@app.task
-def send_update_pwd_email(to_email, username, token):
-    URL = 'http://{}:{}{}'.format(HOST, PORT, reverse('user:reset', kwargs={'token': token}))
+@app.task(bind=True, max_retries=3,default_retry_delay=1 * 6)
+def send_update_pwd_email(self, to_email, username, token):
+    URL = 'http://{}{}'.format(HOST, reverse('user:reset', kwargs={'token': token}))
     subject = '密码重置提示 确认邮件!'
     message = '您的密码重置申请已通过，点击下方链接进行修改'
     sender = setting.EMAIL_FROM
     receiver = [to_email]
     html_message = """{}:<br><p style="text-indent: 32px">{} 这是修改密码的验证链接，如果是你的操作，请点击下面的链接修改密码，如果不是，可能您的账户存在安全风险，请主动修改密码。</p><p> 链接:<a href="{}"> </a><br>{}<br></p><p style="margin-top: 160px; text-align: right">——MonkeyBlog 项目组！</p>
 """.format(username, username, URL, URL)
-
-    send_mail(subject, message, sender, receiver, html_message=html_message)
-
+    try:
+        send_mail(subject, message, sender, receiver, html_message=html_message)
+    except Exception as e:
+        print(e)
 # TODO:实现用户统计。应该异步的来做，以节省开支和每次浏览对数据的写操作。将这些事情交给 celery

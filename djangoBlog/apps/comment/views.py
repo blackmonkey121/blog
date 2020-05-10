@@ -1,11 +1,11 @@
+import logging
 from django.http import JsonResponse
 from django.views.generic import View
 from .models import Comment
 from django.urls import reverse
 
 
-# Create your views here.
-
+logger = logging.getLogger(__name__)
 
 class CommentMixin(object):
 
@@ -21,7 +21,7 @@ class CommentView(View):
     ret_msg = {"status": 0, "msg": {}}
 
     def post(self, request, *args, **kwargs):
-        if not request.user.is_authenticated():
+        if not request.user.is_authenticated:
             self.ret_msg['msg']['href'] = reverse('user:login')
             return JsonResponse(self.ret_msg)
 
@@ -67,7 +67,7 @@ class UpCommentView(View):
         super().__init__()
 
     def post(self, request, *args, **kwargs):
-        if not request.user.is_authenticated():
+        if not request.user.is_authenticated:
             self.ret['msg']['href'] = reverse('user:login')
             return JsonResponse(self.ret)
 

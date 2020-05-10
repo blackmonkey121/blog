@@ -42,6 +42,14 @@ urlpatterns = [
     path('', IndexView.as_view(), name="index"),
 ]
 
+from libs import exception_func
+
+handler400 = exception_func.bad_request
+handler403 = exception_func.permission_denied
+handler404 = exception_func.page_not_found
+handler500 = exception_func.server_error
+
+
 if setting.DEBUG:
     import debug_toolbar
     urlpatterns = [

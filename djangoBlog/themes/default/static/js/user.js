@@ -119,6 +119,35 @@ $btn.mouseup(function () {
     $(this).css('color', '#fff')
 });
 
+
+// 重新发送
+function re_send_active(email) {
+
+    $.get({
+        url: "/user/sendactive/",
+        data: {'email': email},
+        success: function (data) {
+            if (data.status) {
+                swal.fire({
+                    title: '发送成功',
+                    text: "如果不出意外，激活邮件已发至您的电子邮箱:" + email + "! 请您尽快激活。激活链接有效时长仅为30分钟。如果未收到邮件，它可能被您默认的扔进了垃圾箱。",
+                    type: 'success',
+                    showCancelButton: true,
+                    confirmButtonColor: '#63dbff',
+                })
+            } else {
+                swal.fire({
+                    title: '出现了一些意外',
+                    text: "激活邮件已发送失败:请确保您的邮箱" + email + "是可用的。",
+                    type: 'error',
+                    showCancelButton: true,
+                })
+            }
+        }
+    })
+}
+
+
 // 登陆
 $('input[value="登陆"]').on('click', function () {
 
@@ -155,6 +184,20 @@ $('input[value="登陆"]').on('click', function () {
             }
             // 失败 填充错误信息 修改样式
             else if (data.check) {
+                swal.fire({
+                    title: '账户未激活',
+                    text: "您的账户没有经过验证，因此不能登陆。如果您刚刚注册，那么可以直接到邮箱查询激活邮件，或者您可以选择重新发送一封。",
+                    type: 'info',
+                    showCancelButton: true,
+                    confirmButtonColor: '#63dbff',
+                    cancelButtonColor: '#5e5e5e',
+                    confirmButtonText: '重新发送',
+                    cancelButtonText: '到邮箱查验'
+                }).then(function (isConfirm) {
+                    if (isConfirm.value) {
+                        re_send_active(data.email)
+                    }
+                });
             } else {
                 swal.fire(
                     '账号或密码不正确',

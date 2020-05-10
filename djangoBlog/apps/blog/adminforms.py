@@ -1,12 +1,13 @@
 #!usr/bin/env python3
 # -*- coding: utf-8 -*-
 __author__ = "Monkey"
-
+import logging
 from dal import autocomplete
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from django import forms
 from .models import Post, Category, Tag
 
+logger = logging.getLogger(__name__)
 
 
 class PostAdminForm(forms.ModelForm):
@@ -44,7 +45,7 @@ class PostAdminForm(forms.ModelForm):
             elif instance.editor_type == 0:
                 initial['content_md'] = instance.content
             else:
-                raise (ValueError,"未找到对应的文章存储格式{}".format(instance.editor_type))
+                raise (ValueError, "未找到对应的文章存储格式{}".format(instance.editor_type))
 
         super().__init__(instance=instance, initial=initial, **kwargs)
 

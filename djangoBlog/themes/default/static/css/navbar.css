@@ -1,16 +1,16 @@
 html {
   /*height: 100%;*/
-  background-color: #f8f8f8;
+      background: -webkit-gradient(linear, 100% 100%,0 0, from(rgba(207, 32, 255, 0.25)), to(rgba(58, 153, 255, 0.4)));
 }
 
 body {
 
   width: 85%;
   margin: 0 auto;
-  background-color: #eaeaea00;
+  background: rgba(255,255,255,1);
   font-family: 'Microsoft Sans Serif', sans-serif;
   color: #555555;
-  box-shadow: 0 -2px 12px 1px #0093c482;
+  box-shadow: 13px 11px 13px 0px #0093c482;
 }
 
 a {

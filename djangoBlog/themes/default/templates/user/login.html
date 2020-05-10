@@ -5,6 +5,10 @@
 {% endblock %}
 
 {% block main %}
+    {% load static %}
+    <div align="center">
+    <img id="login-logo" src="{% static '/img/login-logo.png' %}" alt="">
+    </div>
     <div id="form" class="clearfix">
         <div class="input-line username">
             {{ form.username }}<span></span>

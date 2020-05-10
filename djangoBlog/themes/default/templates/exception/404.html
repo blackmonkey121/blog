@@ -1,0 +1,21 @@
+{% extends 'exception/base.html' %}
+
+{% block title %}
+    页面丢失了～
+{% endblock %}
+
+{% block status %}
+    STATUS: 404
+{% endblock %}
+
+{% block message-ch %}
+    您请求的资源不存在！检查URL。
+{% endblock %}
+
+{% block message-en %}
+    The server is lazy. Our page is lost.
+{% endblock %}
+
+{% block footer %}
+    Accidentally the page is lost, please check if your URL is correct
+{% endblock %}

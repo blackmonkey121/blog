@@ -1,3 +1,4 @@
+import logging
 from django.http import JsonResponse
 from django.shortcuts import redirect, HttpResponse
 from django.urls import reverse
@@ -16,6 +17,9 @@ from celery_task.tasks import send_register_active_email, send_update_pwd_email
 from .user_forms import LoginForm, RegistForm, UpdateForm, ResetForm
 from .models import UserInfo
 from libs.login_tools import authenticate
+
+
+logger = logging.getLogger(__name__)
 
 
 class Token(object):
@@ -92,14 +96,11 @@ class LoginView(FormView):
                 auth.login(self.request, user)
                 self.ret['status'] = True
                 self.ret['msg'] = reverse('index')
-                print('ok')
             else:
                 self.ret['msg'] = {"username": "账号尚未激活"}
                 self.ret["check"] = True
-                print('no login')
         else:
             self.ret['msg'] = {'password': '账号或密码不正确'}
-            print('msg error')
 
         ret = JsonResponse(self.ret)
         if self.request.user.username:
@@ -143,7 +144,6 @@ class RegistView(CreateView, SendEmailMixin):
         # 发送邮件
 
         user = UserInfo.objects.create_user(**form.cleaned_data, is_staff=True)
-        print(form.cleaned_data)
         user.groups.add(1)
 
         self.send_active(user=user)
@@ -182,7 +182,9 @@ class UpdatePassWordView(FormView, Token):
 
         # 发邮件
         email = form.cleaned_data.get('email')
+
         user = self.get_user(email)
+
         self.ret['msg'].update({'email': email, })
         if user:
             token = self.dump_token(user=user)
@@ -198,7 +200,7 @@ class UpdatePassWordView(FormView, Token):
         return JsonResponse(self.ret)
 
     def render_to_response(self, context, **response_kwargs):
-        context.update({"key": "提交修改"})
+        context.update({"key": "提交修改", 'status': True})
         return super().render_to_response(context, **response_kwargs)
 
 
@@ -220,9 +222,17 @@ class ResetView(UpdateView, Token):
             return user
 
         except SignatureExpired as e:
-            self.ret['msg'] = {"new_re_password": "激活链接已过期"}
-            # 激活链接已过期
-            return JsonResponse(self.ret)
+            logger.error(e)
+
+    def get(self, request, *args, **kwargs):
+
+        self.object = self.get_object()
+        if self.object:
+            return self.render_to_response(self.get_context_data())
+        else:
+            context = self.get_context_data()
+            context.update({'status': False})
+            return self.render_to_response(context)
 
     def form_valid(self, form):
         new_password = form.cleaned_data.get('new_re_password')

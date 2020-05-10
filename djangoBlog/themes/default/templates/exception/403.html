@@ -1,0 +1,21 @@
+{% extends 'exception/base.html' %}
+
+{% block title %}
+    您无权访问该资源。
+{% endblock %}
+
+{% block status %}
+    STATUS: 403
+{% endblock %}
+
+{% block message-ch %}
+    您处于一种不安全的状态～部分内容不可见。
+{% endblock %}
+
+{% block message-en %}
+    You are in an insecure state-some content is not visible.
+{% endblock %}
+
+{% block footer %}
+You are in an unsafe environment or have insufficient permissions.
+{% endblock %}

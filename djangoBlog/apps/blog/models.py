@@ -8,6 +8,7 @@ from libs.BaseModel import BasePoint
 # Create your models here.
 # 数据处理尽可能的集中在了models层，使得views层逻辑更为简单清晰
 
+
 class Category(models.Model):
     STATUS_DEFAULT = 2
     STATUS_NORMAL = 1
@@ -102,30 +103,6 @@ class Post(BasePoint):
             qs = qs.select_related('owner', 'category')
 
         return qs.order_by('-pv')
-
-    @staticmethod
-    @cache_wrap()
-    def get_tag_article(tag_id):
-        try:
-            tag = Tag.objects.get(id=tag_id)
-        except Tag.DoesNotExist:
-            tag = None
-            article_list = []
-        else:
-            article_list = tag.post_set.filter(status=Post.STATUS_NORMAL).select_related('owner', 'category')
-        return article_list, tag
-
-    @staticmethod
-    @cache_wrap()
-    def get_category_article(category_id):
-        try:
-            category = Category.objects.get(id=category_id)
-        except Category.DoesNotExist:
-            category = None
-            article_list = []
-        else:
-            article_list = category.post_set.filter(status=Post.STATUS_NORMAL).select_related('owner', 'category')
-        return article_list, category
 
     @classmethod
     @cache_wrap()
