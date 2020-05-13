@@ -307,39 +307,39 @@
     margin-left: 40px;
     color: deepskyblue;
 }
-#detail-content h2{
+.detail-content h2{
     color: #5f5f5f;
     margin: 40px 0 20px 0;
     -webkit-transition: all .4s ease-in-out;/* Safari 和 Chrome */
     -moz-transition: all .4s ease-in-out;/* Firefox */
     -o-transition: all .4s ease-in-out;/* Opera */
 }
-#detail-content h2:hover{
+.detail-content h2:hover{
     margin-left: 10px;
     color: black;
     border-left: 8px solid deepskyblue;
     padding-left: 10px;
 }
-#detail-content h3{
+.detail-content h3{
     color: #5f5f5f;
     margin: 30px 0 15px 20px;
     -webkit-transition: all .4s ease-in-out;/* Safari 和 Chrome */
     -moz-transition: all .4s ease-in-out;/* Firefox */
     -o-transition: all .4s ease-in-out;/* Opera */
 }
-#detail-content h3:hover{
+.detail-content h3:hover{
     color: black;
     border-left: 4px solid deepskyblue;
     padding-left: 10px;
 }
-#detail-content h4{
+.detail-content h4{
     -webkit-transition: all .4s ease-in-out;/* Safari 和 Chrome */
     -moz-transition: all .4s ease-in-out;/* Firefox */
     -o-transition: all .4s ease-in-out;/* Opera */
     margin: 10px 0 10px 30px;
     color: #5f5f5f;
 }
-#detail-content h4:hover{
+.detail-content h4:hover{
     color: black;
     border-left: 4px solid #000000;
     padding-left: 10px;
