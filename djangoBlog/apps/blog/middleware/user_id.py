@@ -46,12 +46,11 @@ class GetUserMiddleware(object):
 
     def __init__(self, get_response):
         self.get_response = get_response
-        # 提取 url 中参数
-        self.parse = re.compile('^/blog/(\w+)/(\d+)/$')
 
     def __call__(self, request, *args, **kwargs):
 
-        ret = self.parse.findall(request.path)   # 解析参数
+        ret = re.match('^/blog/(?P<cls_name>\w+)/(?P<url_id>\d+)/$', request.path)   # 解析参数
+
         # 定义 参数 -> 类 映射字典
         cls_dict = {
             'category': Category,
@@ -62,9 +61,11 @@ class GetUserMiddleware(object):
 
         #  不满足条件的请求走正常 请求 流程
         #  1 参数格式不对
-        try:
-            cls_name, url_id = ret[0]
-        except (ValueError, IndexError):
+        if ret:
+            ret = ret.groupdict()
+            cls_name = ret.get('cls_name')
+            url_id = ret.get('url_id')
+        else:
             return self.get_response(request)
 
         # 2 参数名不匹配
