@@ -364,7 +364,7 @@
     background-color: rgba(167, 255, 225, 0.24);
 }
 
-.detail-content p{
+.detail-content .son-img{
     white-space: nowrap;
     overflow-x: auto;
     overflow-y: hidden;

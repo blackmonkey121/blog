@@ -280,6 +280,10 @@ $(function () {
 
         }
     })
+
+    // Add class 'son-img' to control the img overflow border.
+    let $imgElem = $(".detail-content img");
+    $imgElem.parent('p').addClass('son-img')
 });
 
 
